@@ -1,0 +1,6 @@
+networkx>=2.0
+dwave_networkx>=0.6.0
+dwave_qbsolv
+numpy
+matplotlib
+dwave_sapi_dimod

@@ -11,6 +11,9 @@ generated
 *.sublime-workspace
 
 venv
+venv2
+
+sapi_token.py
 
 .coverage
 htmlcov

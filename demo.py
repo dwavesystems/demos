@@ -5,8 +5,7 @@ import dwave_networkx as dnx
 try:
     import dwave_sapi2
     import dwave_sapi_dimod as sapi
-    url = ''
-    token = ''
+    from sapi_token import url, token, solver_name
     _sapi = True
 except ImportError:
     _sapi = False
@@ -41,17 +40,16 @@ if __name__ == '__main__':
     # get a sampler
     sampler = qbsolv.QBSolv()
 
+    if _sapi:
+        subsolver = sapi.EmbeddingComposite(sapi.SAPISampler(solver_name, url, token))
+    else:
+        subsolver = None
+
     # get the graphs
     Global, Syria, Iraq = maps()
 
-    # calculate the imbalance of Syria
-    if _sapi:
-        # use the QPU
-        imbalance, bicoloring = dnx.structural_imbalance(Syria, sampler,
-                                                         solver=sapi.SAPISampler, url=url, token=token)
-    else:
-        # use QBSolv in classical mode
-        imbalance, bicoloring = dnx.structural_imbalance(Syria, sampler)
+    # calculate the imbalance of Global
+    imbalance, bicoloring = dnx.structural_imbalance(Global, sampler)
 
-    # draw the syria graph
-    sbdemo.draw('syria_imbalance.png', Syria, imbalance, bicoloring)
+    # draw the Global graph
+    sbdemo.draw('syria_imbalance.png', Global, imbalance, bicoloring)
