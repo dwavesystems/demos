@@ -1,8 +1,9 @@
 # Demo for the Structural Imbalance Project
 
-Data is from the Standford Militants Mapping Project. The project can be found at:
+## References
+Data is from the Stanford Militants Mapping Project
 
-http://web.stanford.edu/group/mappingmilitants/cgi-bin/
+Mapping Militant Organizations, Stanford University, last modified February 28, 2016, http://web.stanford.edu/group/mappingmilitants/cgi-bin/.
 
 ## How to run the demo
 
