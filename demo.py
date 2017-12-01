@@ -40,16 +40,19 @@ if __name__ == '__main__':
     # get a sampler
     sampler = qbsolv.QBSolv()
 
+    _sapi=False
     if _sapi:
+        print("Running on the QPU")
         subsolver = sapi.EmbeddingComposite(sapi.SAPISampler(solver_name, url, token))
     else:
+        print("Running classically")
         subsolver = None
 
     # get the graphs
     Global, Syria, Iraq = maps()
 
     # calculate the imbalance of Global
-    imbalance, bicoloring = dnx.structural_imbalance(Global, sampler)
+    imbalance, bicoloring = dnx.structural_imbalance(Global, sampler, solver=subsolver)
 
     # draw the Global graph
     sbdemo.draw('syria_imbalance.png', Global, imbalance, bicoloring)
