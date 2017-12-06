@@ -19,6 +19,7 @@ sapi_token.py
 htmlcov
 
 *.png
+*.csv
 
 *.DS_Store
 

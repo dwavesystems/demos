@@ -50,3 +50,4 @@ def draw(filename, S, imbalance, coloring, position=None):
             )
 
     plt.savefig(filename, facecolor='white', dpi=500)
+    plt.clf()
