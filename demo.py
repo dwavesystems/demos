@@ -89,7 +89,6 @@ if __name__ == '__main__':
     # get a sampler
     sampler = qbsolv.QBSolv()
 
-    _sapi = False
     if _sapi:
         print("Running on the QPU")
         subsolver = sapi.EmbeddingComposite(sapi.SAPISampler(solver_name, url, token))
