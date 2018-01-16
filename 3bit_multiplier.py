@@ -1,8 +1,35 @@
+# HACK TO FIX NUMPY IMPORT ERROR
+# https://stackoverflow.com/questions/48168482/keyerror-path-on-numpy-import
+import os
+os.environ.setdefault('PATH', '')
+#################################
+
 import itertools
+import sys
 
 import penaltymodel as pm
 import networkx as nx
 #import dwave_networkx as dnx
+import dwave_micro_client_dimod as system
+
+
+########### STOLEN FROM dwave_constraint_compilers
+_PY2 = sys.version_info.major == 2
+
+if _PY2:
+    def iteritems(d):
+        return d.iteritems()
+
+    def itervalues(d):
+        return d.itervalues()
+
+else:
+    def iteritems(d):
+        return d.items()
+
+    def itervalues(d):
+        return d.values()
+#############
 
 
 # (in1, in2, out): 0.
@@ -31,6 +58,7 @@ FAULT_GAP = .5
 print('Fault gap:', FAULT_GAP)
 
 
+# THIS TURNS OUT TO ESSENTIALLY BE A SIMPLER VERSION OF make_widgets_from() FROM dwave_constraint_compilers
 def fault_model(gate):
     configurations = fault_gate(gate, FAULT_GAP)
     size = len(next(iter(configurations)))
@@ -46,6 +74,43 @@ def fault_model(gate):
             print("penalty model fits on K%i" % size)
             break
     return pmodel
+
+
+# STOLEN FROM dwave_constraint_compilers
+def stitch(widgets):
+    """
+    Take a list of :class:`pm.PenaltyModel` widgets, and 'stitch' them together:
+    The variable set of the new model is the additive union of the variable sets of the widgets,
+    the relations set of the new model is the additive union of the relation sets of the widgets.
+
+    That is, the new widget contains every variable and coupler that is in any widget,
+    and the bias of a variable or relation is the sum of the biases in of the variable
+    or relation in all widgets that contain it.
+
+    Similarly, the offset is summed across all widgets.
+
+    All constraints are converted to :class:`pm.Vartype.SPIN`.
+
+    Args:
+        widgets (list[pm.PenaltyModel]): A list of penalty models to be stiched together.
+
+    Returns:
+        :class:`penaltymodel.BinaryQuadraticModel`: The resulting :class:`BinaryQuadraticModel`.
+
+    """
+    linear = {}
+    quadratic = {}
+    offset = 0
+    for widget in widgets:
+        for variable, bias in iteritems(widget.model.linear):
+            linear[variable] = linear.get(variable, 0) + bias
+
+        for relation, bias in iteritems(widget.model.quadratic):
+            quadratic[relation] = quadratic.get(relation, 0) + bias
+
+        offset += widget.model.offset
+
+    return pm.BinaryQuadraticModel(linear, quadratic, offset, pm.SPIN)
 
 
 ####################################################################################################
@@ -118,7 +183,9 @@ add12 = pmodel_full_add.relabel_variables({0: 'and12', 1: 'and21', 2: 'carry11',
 add13 = pmodel_full_add.relabel_variables({0: 'carry03', 1: 'and22', 2: 'carry12', 3: 'p4', 4: 'p5'}, copy=True)
 
 # COMBINE INTO ONE PENALTY MODEL
+bqm = stitch([and00, and01, and02, and10, and11, and12, and20, and21, and22, add01, add02, add03, add11, add12, add13])
 
 # FIND EMBEDDING TO SYSTEM
-
 # PUT ON SYSTEM
+sampler = system.EmbeddingComposite(system.DWaveSampler())
+response = sampler.sample_ising(bqm.linear, bqm.quadratic)
