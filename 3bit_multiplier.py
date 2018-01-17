@@ -155,15 +155,15 @@ print('J:', pmodel_full_add.model.quadratic)
 # ────────────────────────────────────────
 #   p5     p4     p3     p2     p1     p0
 
-and00 = pmodel_and.relabel_variables({0: 'a0', 1: 'b0', 2: 'p0'}, copy=True)
-and01 = pmodel_and.relabel_variables({0: 'a0', 1: 'b1', 2: 'and01'}, copy=True)
-and02 = pmodel_and.relabel_variables({0: 'a0', 1: 'b2', 2: 'and02'}, copy=True)
-and10 = pmodel_and.relabel_variables({0: 'a1', 1: 'b0', 2: 'and10'}, copy=True)
-and11 = pmodel_and.relabel_variables({0: 'a1', 1: 'b1', 2: 'and11'}, copy=True)
-and12 = pmodel_and.relabel_variables({0: 'a1', 1: 'b2', 2: 'and12'}, copy=True)
-and20 = pmodel_and.relabel_variables({0: 'a2', 1: 'b0', 2: 'and20'}, copy=True)
-and21 = pmodel_and.relabel_variables({0: 'a2', 1: 'b1', 2: 'and21'}, copy=True)
-and22 = pmodel_and.relabel_variables({0: 'a2', 1: 'b2', 2: 'and22'}, copy=True)
+and00 = pmodel_and.relabel_variables({0: 'a0', 1: 'b0', 2: 'p0', 3: 'dummy1'}, copy=True)
+and01 = pmodel_and.relabel_variables({0: 'a0', 1: 'b1', 2: 'and01', 3: 'dummy2'}, copy=True)
+and02 = pmodel_and.relabel_variables({0: 'a0', 1: 'b2', 2: 'and02', 3: 'dummy3'}, copy=True)
+and10 = pmodel_and.relabel_variables({0: 'a1', 1: 'b0', 2: 'and10', 3: 'dummy4'}, copy=True)
+and11 = pmodel_and.relabel_variables({0: 'a1', 1: 'b1', 2: 'and11', 3: 'dummy5'}, copy=True)
+and12 = pmodel_and.relabel_variables({0: 'a1', 1: 'b2', 2: 'and12', 3: 'dummy6'}, copy=True)
+and20 = pmodel_and.relabel_variables({0: 'a2', 1: 'b0', 2: 'and20', 3: 'dummy7'}, copy=True)
+and21 = pmodel_and.relabel_variables({0: 'a2', 1: 'b1', 2: 'and21', 3: 'dummy8'}, copy=True)
+and22 = pmodel_and.relabel_variables({0: 'a2', 1: 'b2', 2: 'and22', 3: 'dummy9'}, copy=True)
 
 #                                         and20         and10         and00
 #                                           |             |             |
@@ -175,17 +175,20 @@ and22 = pmodel_and.relabel_variables({0: 'a2', 1: 'b2', 2: 'and22'}, copy=True)
 #  ┌───────────┘|             |             |             |             |
 # p5            p4            p3            p2            p1            p0
 
-add01 = pmodel_half_add.relabel_variables({0: 'and01', 1: 'and10', 2: 'p1', 3: 'carry01'}, copy=True)
-add02 = pmodel_full_add.relabel_variables({0: 'and02', 1: 'sum11', 2: 'carry01', 3: 'p2', 4: 'carry02'}, copy=True)
-add03 = pmodel_half_add.relabel_variables({0: 'carry02', 1: 'sum12', 2: 'p3', 3: 'carry03'}, copy=True)
-add11 = pmodel_half_add.relabel_variables({0: 'and11', 1: 'and20', 2: 'sum11', 3: 'carry11'}, copy=True)
-add12 = pmodel_full_add.relabel_variables({0: 'and12', 1: 'and21', 2: 'carry11', 3: 'sum12', 4: 'carry12'}, copy=True)
-add13 = pmodel_full_add.relabel_variables({0: 'carry03', 1: 'and22', 2: 'carry12', 3: 'p4', 4: 'p5'}, copy=True)
+add01 = pmodel_half_add.relabel_variables({0: 'and01', 1: 'and10', 2: 'p1', 3: 'carry01', 4: 'dummy10'}, copy=True)
+add02 = pmodel_full_add.relabel_variables(
+    {0: 'and02', 1: 'sum11', 2: 'carry01', 3: 'p2', 4: 'carry02', 5: 'dummy11'}, copy=True)
+add03 = pmodel_half_add.relabel_variables({0: 'carry02', 1: 'sum12', 2: 'p3', 3: 'carry03', 4: 'dummy12'}, copy=True)
+add11 = pmodel_half_add.relabel_variables({0: 'and11', 1: 'and20', 2: 'sum11', 3: 'carry11', 4: 'dummy13'}, copy=True)
+add12 = pmodel_full_add.relabel_variables(
+    {0: 'and12', 1: 'and21', 2: 'carry11', 3: 'sum12', 4: 'carry12', 5: 'dummy14'}, copy=True)
+add13 = pmodel_full_add.relabel_variables(
+    {0: 'carry03', 1: 'and22', 2: 'carry12', 3: 'p4', 4: 'p5', 5: 'dummy15'}, copy=True)
 
 # COMBINE INTO ONE PENALTY MODEL
 bqm = stitch([and00, and01, and02, and10, and11, and12, and20, and21, and22, add01, add02, add03, add11, add12, add13])
 
 # FIND EMBEDDING TO SYSTEM
 # PUT ON SYSTEM
-sampler = system.EmbeddingComposite(system.DWaveSampler())
-response = sampler.sample_ising(bqm.linear, bqm.quadratic)
+sampler = system.EmbeddingComposite(system.DWaveSampler(permissive_ssl=True))
+response = sampler.sample_ising(bqm.linear, bqm.quadratic)#, num_reads=10)
