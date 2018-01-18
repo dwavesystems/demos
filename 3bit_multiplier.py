@@ -11,6 +11,7 @@ import penaltymodel as pm
 import networkx as nx
 #import dwave_networkx as dnx
 import dwave_micro_client_dimod as system
+import dimod
 
 
 ########### STOLEN FROM dwave_constraint_compilers
@@ -110,7 +111,7 @@ def stitch(widgets):
 
         offset += widget.model.offset
 
-    return pm.BinaryQuadraticModel(linear, quadratic, offset, pm.SPIN)
+    return dimod.BinaryQuadraticModel(linear, quadratic, offset, dimod.SPIN)
 
 
 ####################################################################################################
@@ -187,6 +188,12 @@ add13 = pmodel_full_add.relabel_variables(
 
 # COMBINE INTO ONE PENALTY MODEL
 bqm = stitch([and00, and01, and02, and10, and11, and12, and20, and21, and22, add01, add02, add03, add11, add12, add13])
+bqm.fix_variable('p0', 1)
+bqm.fix_variable('p1', 0)
+bqm.fix_variable('p2', 0)
+bqm.fix_variable('p3', 0)
+bqm.fix_variable('p4', 1)
+bqm.fix_variable('p5', 1)
 
 # FIND EMBEDDING TO SYSTEM
 # PUT ON SYSTEM

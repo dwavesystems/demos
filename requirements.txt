@@ -1,0 +1,4 @@
+penaltymodel
+networkx
+dwave_micro_client_dimod
+dimod==1.0.0.dev1
