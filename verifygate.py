@@ -9,4 +9,4 @@ def verifygate(model, vars):
 
     df = pd.DataFrame([dict(data['sample'], **{'energy': data['energy']}) for data in resp.data()])
 
-    return df.groupby(vars).energy.agg(min)
+    return df.groupby(vars).energy.agg(min).reset_index().sort_values('energy')
