@@ -14,7 +14,6 @@ import dwave_micro_client_dimod as system
 import dimod
 
 
-########### STOLEN FROM dwave_constraint_compilers
 _PY2 = sys.version_info.major == 2
 
 if _PY2:
@@ -30,18 +29,17 @@ else:
 
     def itervalues(d):
         return d.values()
-#############
 
 
 # (in1, in2, out): 0.
 AND = {(-1, -1, -1): 0., (+1, +1, +1): 0., (-1, +1, -1): 0., (+1, -1, -1): 0.}
 
 # (augend, addend, sum, carry_out): 0.
-HALF_ADD = {(-1, -1, -1, -1): -1., (-1, +1, +1, -1): -1., (+1, -1, +1, -1): -1., (+1, +1, -1, +1): -1.}
+HALF_ADD = {(-1, -1, -1, -1): 0., (-1, +1, +1, -1): 0., (+1, -1, +1, -1): 0., (+1, +1, -1, +1): 0.}
 
 # (augend, addend, carry_in, sum, carry_out): 0.
-FULL_ADD = {(-1, -1, -1, -1, -1): -1., (-1, -1, +1, +1, -1): -1., (-1, +1, -1, +1, -1): -1., (-1, +1, +1, -1, +1): -1.,
-            (+1, -1, -1, +1, -1): -1., (+1, -1, +1, -1, +1): -1., (+1, +1, -1, -1, +1): -1., (+1, +1, +1, +1, +1): -1.}
+FULL_ADD = {(-1, -1, -1, -1, -1): 0., (-1, -1, +1, +1, -1): 0., (-1, +1, -1, +1, -1): 0., (-1, +1, +1, -1, +1): 0.,
+            (+1, -1, -1, +1, -1): 0., (+1, -1, +1, -1, +1): 0., (+1, +1, -1, -1, +1): 0., (+1, +1, +1, +1, +1): 0.}
 
 
 def fault_gate(gate, explicit_gap):
@@ -55,11 +53,10 @@ def fault_gate(gate, explicit_gap):
     return fc
 
 
-FAULT_GAP = .5
+FAULT_GAP = .5 # BRAD try at 1.0 and 1.5
 print('Fault gap:', FAULT_GAP)
 
 
-# THIS TURNS OUT TO ESSENTIALLY BE A SIMPLER VERSION OF make_widgets_from() FROM dwave_constraint_compilers
 def fault_model(gate):
     configurations = fault_gate(gate, FAULT_GAP)
     size = len(next(iter(configurations)))
@@ -68,16 +65,19 @@ def fault_model(gate):
         spec = pm.Specification(G, range(len(next(iter(configurations)))), configurations, pm.SPIN)
         try:
             pmodel = pm.get_penalty_model(spec)
+            if pmodel:
+                print("penalty model fits on K%i" % size)
+            else:
+                raise LookupError("failed to get penalty model from factory")
+            break
         except pm.ImpossiblePenaltyModel:
             print("penalty model does not fit on K%i" % size)
             size += 1
-        else:
-            print("penalty model fits on K%i" % size)
-            break
+
     return pmodel
 
 
-# STOLEN FROM dwave_constraint_compilers
+# adapted from dwave_constraint_compilers
 def stitch(widgets):
     """
     Take a list of :class:`pm.PenaltyModel` widgets, and 'stitch' them together:
@@ -96,7 +96,7 @@ def stitch(widgets):
         widgets (list[pm.PenaltyModel]): A list of penalty models to be stiched together.
 
     Returns:
-        :class:`penaltymodel.BinaryQuadraticModel`: The resulting :class:`BinaryQuadraticModel`.
+        :class:`dimod.BinaryQuadraticModel`: The resulting :class:`BinaryQuadraticModel`.
 
     """
     linear = {}
@@ -188,14 +188,27 @@ add13 = pmodel_full_add.relabel_variables(
 
 # COMBINE INTO ONE PENALTY MODEL
 bqm = stitch([and00, and01, and02, and10, and11, and12, and20, and21, and22, add01, add02, add03, add11, add12, add13])
+
+# FIX VARIABLES
+# A == 7
+bqm.fix_variable('a0', 1)
+bqm.fix_variable('a1', 1)
+bqm.fix_variable('a2', 1)
+# B == 7
+bqm.fix_variable('b0', 1)
+bqm.fix_variable('b1', 1)
+bqm.fix_variable('b2', 1)
+# P == 49
 bqm.fix_variable('p0', 1)
-bqm.fix_variable('p1', 0)
-bqm.fix_variable('p2', 0)
-bqm.fix_variable('p3', 0)
+bqm.fix_variable('p1', -1)
+bqm.fix_variable('p2', -1)
+bqm.fix_variable('p3', -1)
 bqm.fix_variable('p4', 1)
 bqm.fix_variable('p5', 1)
+# 'aux1' becomes disconnected, so needs to be fixed
+bqm.fix_variable('aux1', 1) # don't care value
 
 # FIND EMBEDDING TO SYSTEM
 # PUT ON SYSTEM
 sampler = system.EmbeddingComposite(system.DWaveSampler(permissive_ssl=True))
-response = sampler.sample_ising(bqm.linear, bqm.quadratic)#, num_reads=10)
+response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=1000)
