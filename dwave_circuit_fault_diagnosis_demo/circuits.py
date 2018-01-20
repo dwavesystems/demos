@@ -2,7 +2,7 @@ import sys
 
 import dimod
 
-from dwave_circuit_fault_diagnosis_demo.gates import *
+from dwave_circuit_fault_diagnosis_demo.gates import * # TODO
 
 _PY2 = sys.version_info.major == 2
 
@@ -22,22 +22,22 @@ else:
 
 
 # adapted from dwave_constraint_compilers.stitch()
-def stitch(widgets):
+def stitch(models):
     """
-    Take a list of :class:`pm.PenaltyModel` widgets, and 'stitch' them together:
-    The variable set of the new model is the additive union of the variable sets of the widgets,
-    the relations set of the new model is the additive union of the relation sets of the widgets.
+    Take a list of :class:`pm.PenaltyModel` models, and 'stitch' them together:
+    The variable set of the new model is the additive union of the variable sets of the models,
+    the relations set of the new model is the additive union of the relation sets of the models.
 
     That is, the new widget contains every variable and coupler that is in any widget,
     and the bias of a variable or relation is the sum of the biases in of the variable
-    or relation in all widgets that contain it.
+    or relation in all models that contain it.
 
-    Similarly, the offset is summed across all widgets.
+    Similarly, the offset is summed across all models.
 
     All constraints are converted to :class:`pm.Vartype.SPIN`.
 
     Args:
-        widgets (list[pm.PenaltyModel]): A list of penalty models to be stiched together.
+        models (list[pm.PenaltyModel]): A list of penalty models to be stiched together.
 
     Returns:
         :class:`dimod.BinaryQuadraticModel`: The resulting :class:`BinaryQuadraticModel`.
@@ -46,7 +46,7 @@ def stitch(widgets):
     linear = {}
     quadratic = {}
     offset = 0
-    for widget in widgets:
+    for widget in models:
         for variable, bias in iteritems(widget.model.linear):
             linear[variable] = linear.get(variable, 0) + bias
 
@@ -58,23 +58,37 @@ def stitch(widgets):
     return dimod.BinaryQuadraticModel(linear, quadratic, offset, dimod.SPIN)
 
 
+def new_pmodel(pmodel, old_labels, new_labels):
+    def new_aux():
+        new_pmodel.counter += 1
+        return "aux%i" % new_pmodel.counter
+
+    mapping = dict(zip(old_labels, new_labels))
+    mapping.update({x: new_aux() for x in pmodel.graph.nodes if x not in old_labels})
+    return pmodel.relabel_variables(mapping, copy=True)
+new_pmodel.counter = 0
+
+
 def three_bit_multiplier():
     ####################################################################################################
     # get basic gate fault models
     ####################################################################################################
 
     print("AND gate fault model")
-    pmodel_and = fault_model(AND)
+    pmodel_and = fault_model('AND')
 
     print("half adder fault model")
-    pmodel_half_add = fault_model(HALF_ADD)
+    pmodel_half_add = fault_model('HALF_ADD')
 
     print("full adder fault model")
-    pmodel_full_add = fault_model(FULL_ADD)
+    pmodel_full_add = fault_model('FULL_ADD')
 
     ####################################################################################################
     # wire the whole thing up
     ####################################################################################################
+
+    models = []
+    labels = {}
 
     #                            a2 & b0  a1 & b0  a0 & b0
     #                   a2 & b1  a1 & b1  a0 & b1
@@ -88,15 +102,28 @@ def three_bit_multiplier():
     # ────────────────────────────────────────
     #   p5     p4     p3     p2     p1     p0
 
-    and00 = pmodel_and.relabel_variables({0: 'a0', 1: 'b0', 2: 'p0', 3: 'aux1'}, copy=True)
-    and01 = pmodel_and.relabel_variables({0: 'a0', 1: 'b1', 2: 'and01', 3: 'aux2'}, copy=True)
-    and02 = pmodel_and.relabel_variables({0: 'a0', 1: 'b2', 2: 'and02', 3: 'aux3'}, copy=True)
-    and10 = pmodel_and.relabel_variables({0: 'a1', 1: 'b0', 2: 'and10', 3: 'aux4'}, copy=True)
-    and11 = pmodel_and.relabel_variables({0: 'a1', 1: 'b1', 2: 'and11', 3: 'aux5'}, copy=True)
-    and12 = pmodel_and.relabel_variables({0: 'a1', 1: 'b2', 2: 'and12', 3: 'aux6'}, copy=True)
-    and20 = pmodel_and.relabel_variables({0: 'a2', 1: 'b0', 2: 'and20', 3: 'aux7'}, copy=True)
-    and21 = pmodel_and.relabel_variables({0: 'a2', 1: 'b1', 2: 'and21', 3: 'aux8'}, copy=True)
-    and22 = pmodel_and.relabel_variables({0: 'a2', 1: 'b2', 2: 'and22', 3: 'aux9'}, copy=True)
+    labels_and, _ = GATES['AND']
+    labels['AND'] = {}
+
+    labels['AND']['and00'] = ('a0', 'b0', 'p0')
+    labels['AND']['and01'] = ('a0', 'b1', 'and01')
+    labels['AND']['and02'] = ('a0', 'b2', 'and02')
+    labels['AND']['and10'] = ('a1', 'b0', 'and10')
+    labels['AND']['and11'] = ('a1', 'b1', 'and11')
+    labels['AND']['and12'] = ('a1', 'b2', 'and12')
+    labels['AND']['and20'] = ('a2', 'b0', 'and20')
+    labels['AND']['and21'] = ('a2', 'b1', 'and21')
+    labels['AND']['and22'] = ('a2', 'b2', 'and22')
+
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and00']))
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and01']))
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and02']))
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and10']))
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and11']))
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and12']))
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and20']))
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and21']))
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']['and22']))
 
     #                                         and20         and10         and00
     #                                           |             |             |
@@ -108,20 +135,31 @@ def three_bit_multiplier():
     #  ┌───────────┘|             |             |             |             |
     # p5            p4            p3            p2            p1            p0
 
-    add01 = pmodel_half_add.relabel_variables({0: 'and01', 1: 'and10', 2: 'p1', 3: 'carry01', 4: 'aux10'}, copy=True)
-    add02 = pmodel_full_add.relabel_variables(
-        {0: 'and02', 1: 'sum11', 2: 'carry01', 3: 'p2', 4: 'carry02', 5: 'aux11'}, copy=True)
-    add03 = pmodel_half_add.relabel_variables({0: 'carry02', 1: 'sum12', 2: 'p3', 3: 'carry03', 4: 'aux12'}, copy=True)
-    add11 = pmodel_half_add.relabel_variables({0: 'and11', 1: 'and20', 2: 'sum11', 3: 'carry11', 4: 'aux13'}, copy=True)
-    add12 = pmodel_full_add.relabel_variables(
-        {0: 'and12', 1: 'and21', 2: 'carry11', 3: 'sum12', 4: 'carry12', 5: 'aux14'}, copy=True)
-    add13 = pmodel_full_add.relabel_variables(
-        {0: 'carry03', 1: 'and22', 2: 'carry12', 3: 'p4', 4: 'p5', 5: 'aux15'}, copy=True)
+    labels_half_add, _ = GATES['HALF_ADD']
+    labels['HALF_ADD'] = {}
+
+    labels['HALF_ADD']['add01'] = ('and01', 'and10', 'p1', 'carry01')
+    labels['HALF_ADD']['add03'] = ('carry02', 'sum12', 'p3', 'carry03')
+    labels['HALF_ADD']['add11'] = ('and11', 'and20', 'sum11', 'carry11')
+
+    models.append(new_pmodel(pmodel_half_add, labels_half_add, labels['HALF_ADD']['add01']))
+    models.append(new_pmodel(pmodel_half_add, labels_half_add, labels['HALF_ADD']['add03']))
+    models.append(new_pmodel(pmodel_half_add, labels_half_add, labels['HALF_ADD']['add11']))
+
+    labels_full_add, _ = GATES['FULL_ADD']
+    labels['FULL_ADD'] = {}
+
+    labels['FULL_ADD']['add02'] = ('and02', 'sum11', 'carry01', 'p2', 'carry02')
+    labels['FULL_ADD']['add12'] = ('and12', 'and21', 'carry11', 'sum12', 'carry12')
+    labels['FULL_ADD']['add13'] = ('carry03', 'and22', 'carry12', 'p4', 'p5')
+
+    models.append(new_pmodel(pmodel_full_add, labels_full_add, labels['FULL_ADD']['add02']))
+    models.append(new_pmodel(pmodel_full_add, labels_full_add, labels['FULL_ADD']['add12']))
+    models.append(new_pmodel(pmodel_full_add, labels_full_add, labels['FULL_ADD']['add13']))
 
     ####################################################################################################
     # combine into one binary quadratic model
     ####################################################################################################
 
-    bqm = stitch([and00, and01, and02, and10, and11, and12, and20,
-                  and21, and22, add01, add02, add03, add11, add12, add13])
-    return bqm
+    bqm = stitch(models)
+    return (bqm, labels)

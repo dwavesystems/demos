@@ -3,15 +3,29 @@ import itertools
 import networkx as nx
 import penaltymodel as pm
 
-# (in1, in2, out): 0.
-AND = {(-1, -1, -1): 0., (+1, +1, +1): 0., (-1, +1, -1): 0., (+1, -1, -1): 0.}
+GATES = {}
 
-# (augend, addend, sum, carry_out): 0.
-HALF_ADD = {(-1, -1, -1, -1): 0., (-1, +1, +1, -1): 0., (+1, -1, +1, -1): 0., (+1, +1, -1, +1): 0.}
+GATES['AND'] = (('in1', 'in2', 'out'),
+                {(-1, -1, -1): 0.,
+                 (+1, +1, +1): 0.,
+                 (-1, +1, -1): 0.,
+                 (+1, -1, -1): 0.})
 
-# (augend, addend, carry_in, sum, carry_out): 0.
-FULL_ADD = {(-1, -1, -1, -1, -1): 0., (-1, -1, +1, +1, -1): 0., (-1, +1, -1, +1, -1): 0., (-1, +1, +1, -1, +1): 0.,
-            (+1, -1, -1, +1, -1): 0., (+1, -1, +1, -1, +1): 0., (+1, +1, -1, -1, +1): 0., (+1, +1, +1, +1, +1): 0.}
+GATES['HALF_ADD'] = (('augend', 'addend', 'sum', 'carry_out'),
+                     {(-1, -1, -1, -1): 0.,
+                      (-1, +1, +1, -1): 0.,
+                      (+1, -1, +1, -1): 0.,
+                      (+1, +1, -1, +1): 0.})
+
+GATES['FULL_ADD'] = (('augend', 'addend', 'carry_in', 'sum', 'carry_out'),
+                     {(-1, -1, -1, -1, -1): 0.,
+                      (-1, -1, +1, +1, -1): 0.,
+                      (-1, +1, -1, +1, -1): 0.,
+                      (-1, +1, +1, -1, +1): 0.,
+                      (+1, -1, -1, +1, -1): 0.,
+                      (+1, -1, +1, -1, +1): 0.,
+                      (+1, +1, -1, -1, +1): 0.,
+                      (+1, +1, +1, +1, +1): 0.})
 
 
 def fault_gate(gate, explicit_gap):
@@ -29,12 +43,14 @@ FAULT_GAP = .5  # BRAD try at 1.0 and 1.5
 #print('Fault gap:', FAULT_GAP)
 
 
-def fault_model(gate):
-    configurations = fault_gate(gate, FAULT_GAP)
+def fault_model(gate_type):
+    labels, configurations = GATES[gate_type]
+    configurations = fault_gate(configurations, FAULT_GAP)
     size = len(next(iter(configurations)))
     while True:
         G = nx.complete_graph(size)
-        spec = pm.Specification(G, range(len(next(iter(configurations)))), configurations, pm.SPIN)
+        nx.relabel_nodes(G, dict(enumerate(labels)), copy=False)
+        spec = pm.Specification(G, labels, configurations, pm.SPIN)
         try:
             pmodel = pm.get_penalty_model(spec)
             if pmodel:
