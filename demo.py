@@ -1,9 +1,3 @@
-# # HACK TO FIX NUMPY IMPORT ERROR
-# # https://stackoverflow.com/questions/48168482/keyerror-path-on-numpy-import
-# import os
-# os.environ.setdefault('PATH', '')
-# #################################
-
 import dwave_micro_client_dimod as system
 
 from dwave_circuit_fault_diagnosis_demo import *  # TODO
