@@ -1,0 +1,7 @@
+penaltymodel==1.0.0.dev5
+#penaltymodel_cache
+#penaltymodel_maxgap
+networkx
+dwave_micro_client_dimod==0.3.0
+dimod==1.0.0.dev2
+pysmt # need to do pysmt-install
