@@ -76,12 +76,15 @@ def three_bit_multiplier():
 
     print("AND gate fault model")
     pmodel_and = fault_model('AND')
+    print()
 
     print("half adder fault model")
     pmodel_half_add = fault_model('HALF_ADD')
+    print()
 
     print("full adder fault model")
     pmodel_full_add = fault_model('FULL_ADD')
+    print()
 
     ####################################################################################################
     # wire the whole thing up

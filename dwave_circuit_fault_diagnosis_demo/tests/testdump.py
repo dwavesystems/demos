@@ -10,9 +10,9 @@ a = int("".join(str(i) for i in a), 2)
 b = int("".join(str(i) for i in b), 2)
 p = int("".join(str(i) for i in p), 2)
 
-print("a = %i" % a)
-print("b = %i" % b)
-print("p = %i (should be %i)" % (p, a * b))
+print("a = {}".format(a))
+print("b = {}".format(b))
+print("p = {} (should be {})".format(p, a * b))
 
 valid = [False] * len(list(r.samples()))
 for e, sample in enumerate(r.samples()):
@@ -26,7 +26,3 @@ for e, sample in enumerate(r.samples()):
 
     if a * b == p:
         valid[e] = True
-
-    # print("a = %i" % a)
-    # print("b = %i" % b)
-    # print("p = %i (should be %i)" % (p, a * b))

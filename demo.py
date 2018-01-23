@@ -47,6 +47,8 @@ if __name__ == '__main__':
     sampler = system.EmbeddingComposite(system.DWaveSampler(permissive_ssl=True))
     response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=1000)
 
+    print()
+
     # output results
     best_sample = next(response.samples())
     best_sample.update(fixed_variables)
@@ -55,8 +57,7 @@ if __name__ == '__main__':
         _, configurations = GATES[gate_type]
         for gate_name, gate in gates.items():
             res = tuple(best_sample[var] for var in gate)
-            print(res)
             if res in configurations:
-                print('%s is good' % gate_name)
+                print('{} - valid {}'.format(gate_name, res))
             else:
-                print('%s is faulty' % gate_name)
+                print('{} - fault {}'.format(gate_name, res))
