@@ -5,7 +5,7 @@ from dwave_circuit_fault_diagnosis_demo import *  # TODO
 
 def sanitised_input(description, variable, range_):
     while True:
-        ui = input("Input {0:15}({2.start} <= {1:1} < {2.stop}): ".format(description, variable, range_))
+        ui = input("Input {0:15}({2.start:2} <= {1:1} < {2.stop:2}): ".format(description, variable, range_))
 
         try:
             ui = int(ui)
