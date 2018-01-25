@@ -12,7 +12,7 @@ if __name__ == '__main__':
     while not got:
         try:
             A = int(input("Input multiplier A (<=7):"))
-            fixed_variables['a2'], fixed_variables['a1'], fixed_variables['a0'] = "{:3b}".format(A)
+            fixed_variables['a2'], fixed_variables['a1'], fixed_variables['a0'] = "{:03b}".format(A)
             got = True
         except ValueError:
             pass
@@ -21,7 +21,7 @@ if __name__ == '__main__':
     while not got:
         try:
             B = int(input("Input multiplicand B (<=7):"))
-            fixed_variables['b2'], fixed_variables['b1'], fixed_variables['b0'] = "{:3b}".format(B)
+            fixed_variables['b2'], fixed_variables['b1'], fixed_variables['b0'] = "{:03b}".format(B)
             got = True
         except ValueError:
             pass
@@ -30,7 +30,7 @@ if __name__ == '__main__':
     while not got:
         try:
             P = int(input("Input product P (<=63):"))
-            fixed_variables['p5'], fixed_variables['p4'], fixed_variables['p3'], fixed_variables['p2'], fixed_variables['p1'], fixed_variables['p0'] = "{:6b}".format(P)
+            fixed_variables['p5'], fixed_variables['p4'], fixed_variables['p3'], fixed_variables['p2'], fixed_variables['p1'], fixed_variables['p0'] = "{:06b}".format(P)
             got = True
         except ValueError:
             pass
