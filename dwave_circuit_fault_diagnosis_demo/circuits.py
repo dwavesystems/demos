@@ -165,4 +165,8 @@ def three_bit_multiplier():
     ####################################################################################################
 
     bqm = stitch(models)
+    print("three-bit multiplier fault model")
+    print('h:', bqm.linear)
+    print('J:', bqm.quadratic)
+    print()
     return (bqm, labels)

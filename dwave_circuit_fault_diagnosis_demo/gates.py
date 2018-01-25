@@ -51,7 +51,7 @@ def fault_gate(gate, explicit_gap):
     return fc
 
 
-FAULT_GAP = .5  # BRAD try at 1.0 and 1.5
+FAULT_GAP = .5
 #print('Fault gap:', FAULT_GAP)
 
 
