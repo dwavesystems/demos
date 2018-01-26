@@ -76,13 +76,13 @@ def three_bit_multiplier():
     # get basic gate fault models
     ####################################################################################################
 
-    print("AND gate fault model")
+    # print("AND gate fault model")
     pmodel_and = fault_model('AND')
 
-    print("half adder fault model")
+    # print("half adder fault model")
     pmodel_half_add = fault_model('HALF_ADD')
 
-    print("full adder fault model")
+    # print("full adder fault model")
     pmodel_full_add = fault_model('FULL_ADD')
 
     ####################################################################################################
@@ -164,9 +164,9 @@ def three_bit_multiplier():
     ####################################################################################################
 
     bqm = stitch(models)
-    print("three-bit multiplier fault model")
-    print('h: {}'.format(bqm.linear))
-    print('J: {}\n'.format(bqm.quadratic))
+    # print("three-bit multiplier fault model")
+    # print('h: {}'.format(bqm.linear))
+    # print('J: {}\n'.format(bqm.quadratic))
     return (bqm, labels)
 
 
@@ -175,10 +175,10 @@ def half_adder():
     # get basic gate fault models
     ####################################################################################################
 
-    print("XOR gate fault model")
+    # print("XOR gate fault model")
     pmodel_xor = fault_model('XOR')
 
-    print("AND gate fault model")
+    # print("AND gate fault model")
     pmodel_and = fault_model('AND')
 
     ####################################################################################################
@@ -201,9 +201,9 @@ def half_adder():
     ####################################################################################################
 
     bqm = stitch(models)
-    print("half adder fault model")
-    print('h: {}'.format(bqm.linear))
-    print('J: {}\n'.format(bqm.quadratic))
+    # print("half adder fault model")
+    # print('h: {}'.format(bqm.linear))
+    # print('J: {}\n'.format(bqm.quadratic))
     return (bqm, labels)
 
 
@@ -212,10 +212,10 @@ def full_adder():
     # get basic gate fault models
     ####################################################################################################
 
-    print("half adder fault model")
+    # print("half adder fault model")
     pmodel_half_add = fault_model('HALF_ADD')
 
-    print("OR gate fault model")
+    # print("OR gate fault model")
     pmodel_or = fault_model('OR')
 
     ####################################################################################################
@@ -244,7 +244,7 @@ def full_adder():
     ####################################################################################################
 
     bqm = stitch(models)
-    print("full adder fault model")
-    print('h: {}'.format(bqm.linear))
-    print('J: {}\n'.format(bqm.quadratic))
+    # print("full adder fault model")
+    # print('h: {}'.format(bqm.linear))
+    # print('J: {}\n'.format(bqm.quadratic))
     return (bqm, labels)

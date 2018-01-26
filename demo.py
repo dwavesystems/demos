@@ -32,6 +32,8 @@ if __name__ == '__main__':
     # get input from user
     fixed_variables = {}
 
+    print("Enter the test conditions")
+
     A = sanitised_input("multiplier", "A", range(2**3))
     fixed_variables.update(zip(('a2', 'a1', 'a0'), "{:03b}".format(A)))
 
