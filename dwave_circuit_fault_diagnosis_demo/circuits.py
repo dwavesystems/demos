@@ -1,3 +1,5 @@
+# This Python file uses the following encoding: utf-8
+
 import sys
 
 import dimod
@@ -76,15 +78,12 @@ def three_bit_multiplier():
 
     print("AND gate fault model")
     pmodel_and = fault_model('AND')
-    print()
 
     print("half adder fault model")
     pmodel_half_add = fault_model('HALF_ADD')
-    print()
 
     print("full adder fault model")
     pmodel_full_add = fault_model('FULL_ADD')
-    print()
 
     ####################################################################################################
     # wire the whole thing up
@@ -166,9 +165,8 @@ def three_bit_multiplier():
 
     bqm = stitch(models)
     print("three-bit multiplier fault model")
-    print('h:', bqm.linear)
-    print('J:', bqm.quadratic)
-    print()
+    print('h: {}'.format(bqm.linear))
+    print('J: {}\n'.format(bqm.quadratic))
     return (bqm, labels)
 
 
@@ -179,11 +177,9 @@ def half_adder():
 
     print("XOR gate fault model")
     pmodel_xor = fault_model('XOR')
-    print()
 
     print("AND gate fault model")
     pmodel_and = fault_model('AND')
-    print()
 
     ####################################################################################################
     # wire the whole thing up
@@ -206,9 +202,8 @@ def half_adder():
 
     bqm = stitch(models)
     print("half adder fault model")
-    print('h:', bqm.linear)
-    print('J:', bqm.quadratic)
-    print()
+    print('h: {}'.format(bqm.linear))
+    print('J: {}\n'.format(bqm.quadratic))
     return (bqm, labels)
 
 
@@ -219,11 +214,9 @@ def full_adder():
 
     print("half adder fault model")
     pmodel_half_add = fault_model('HALF_ADD')
-    print()
 
     print("OR gate fault model")
     pmodel_or = fault_model('OR')
-    print()
 
     ####################################################################################################
     # wire the whole thing up
@@ -252,7 +245,6 @@ def full_adder():
 
     bqm = stitch(models)
     print("full adder fault model")
-    print('h:', bqm.linear)
-    print('J:', bqm.quadratic)
-    print()
+    print('h: {}'.format(bqm.linear))
+    print('J: {}\n'.format(bqm.quadratic))
     return (bqm, labels)

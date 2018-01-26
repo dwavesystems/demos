@@ -1,11 +1,17 @@
 import dwave_micro_client_dimod as system
-
 from dwave_circuit_fault_diagnosis_demo import *  # TODO
+
+_PY2 = sys.version_info.major == 2
+if _PY2:
+    input = raw_input
 
 
 def sanitised_input(description, variable, range_):
+    start = range_[0]
+    stop = range_[-1]
+
     while True:
-        ui = input("Input {0:15}({2.start:2} <= {1:1} < {2.stop:2}): ".format(description, variable, range_))
+        ui = input("Input {:15}({:2} <= {:1} <= {:2}): ".format(description, start, variable, stop))
 
         try:
             ui = int(ui)
@@ -14,7 +20,7 @@ def sanitised_input(description, variable, range_):
             continue
 
         if ui not in range_:
-            print("Input must be between {0.start} and {0.stop}".format(range_))
+            print("Input must be between {} and {}".format(start, stop))
             continue
 
         return ui
@@ -38,8 +44,7 @@ if __name__ == '__main__':
     print("A   =    {:03b}".format(A))
     print("B   =    {:03b}".format(B))
     print("A*B = {:06b}".format(A * B))
-    print("P   = {:06b}".format(P))
-    print()
+    print("P   = {:06b}\n".format(P))
 
     fixed_variables = {var: 1 if x == '1' else -1 for (var, x) in fixed_variables.items()}
 
@@ -57,9 +62,9 @@ if __name__ == '__main__':
     best_sample = next(response.samples())
     best_sample.update(fixed_variables)
 
-    for gate_type, gates in labels.items():
+    for gate_type, gates in sorted(labels.items()):
         _, configurations = GATES[gate_type]
-        for gate_name, gate in gates.items():
+        for gate_name, gate in sorted(gates.items()):
             res = tuple(best_sample[var] for var in gate)
             if res in configurations:
                 print('{} - valid {}'.format(gate_name, res))

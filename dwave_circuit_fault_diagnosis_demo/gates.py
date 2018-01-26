@@ -52,7 +52,6 @@ def fault_gate(gate, explicit_gap):
 
 
 FAULT_GAP = .5
-#print('Fault gap:', FAULT_GAP)
 
 
 def fault_model(gate_type):
@@ -74,6 +73,6 @@ def fault_model(gate_type):
             print("penalty model does not fit on K{}".format(size))
             size += 1
 
-    print('h:', pmodel.model.linear)
-    print('J:', pmodel.model.quadratic)
+    print('h: {}'.format(pmodel.model.linear))
+    print('J: {}\n'.format(pmodel.model.quadratic))
     return pmodel
