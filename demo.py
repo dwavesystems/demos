@@ -1,3 +1,5 @@
+import pandas as pd
+
 import dwave_micro_client_dimod as system
 from dwave_circuit_fault_diagnosis_demo import *  # TODO
 
@@ -26,11 +28,15 @@ def sanitised_input(description, variable, range_):
         return ui
 
 
+NUM_READS = 1000
+
 if __name__ == '__main__':
     bqm, labels = three_bit_multiplier()
 
     # get input from user
     fixed_variables = {}
+
+    print("Enter the test conditions")
 
     A = sanitised_input("multiplier", "A", range(2**3))
     fixed_variables.update(zip(('a2', 'a1', 'a0'), "{:03b}".format(A)))
@@ -56,17 +62,37 @@ if __name__ == '__main__':
 
     # find embedding and put on system
     sampler = system.EmbeddingComposite(system.DWaveSampler(permissive_ssl=True))
-    response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=1000)
+    response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
 
     # output results
-    best_sample = next(response.samples())
-    best_sample.update(fixed_variables)
+    min_energy = next(response.energies())
 
-    for gate_type, gates in sorted(labels.items()):
-        _, configurations = GATES[gate_type]
-        for gate_name, gate in sorted(gates.items()):
-            res = tuple(best_sample[var] for var in gate)
-            if res in configurations:
-                print('{} - valid {}'.format(gate_name, res))
-            else:
-                print('{} - fault {}'.format(gate_name, res))
+    best_samples = [datum['sample'] for datum in response.data() if datum['energy'] == min_energy]
+    for sample in best_samples:
+        for variable in list(sample.keys()):
+            if 'aux' in variable:
+                sample.pop(variable)
+        sample.update(fixed_variables)
+
+    best_results = []
+    for sample in best_samples:
+        result = {}
+        for gate_type, gates in sorted(labels.items()):
+            _, configurations = GATES[gate_type]
+            for gate_name, gate in sorted(gates.items()):
+                result[gate_name] = 'valid' if tuple(sample[var] for var in gate) in configurations else 'fault'
+        best_results.append(result)
+    best_results = pd.DataFrame(best_results)
+
+    num_faults = next(best_results.itertuples()).count('fault')
+    # num_ground_samples = len(best_results)
+    # best_results = best_results.groupby(best_results.columns.tolist(), as_index=False).size().reset_index().set_index(0)
+    best_results = best_results.drop_duplicates().reset_index(drop=True)
+    num_ground_states = len(best_results)
+
+    print("The minimum fault diagnosis is {} fault(s).\n".format(num_faults))
+    # print("Out of {} samples, the following ground states {} were returned a total of {} times:".format(
+    #     NUM_READS, num_ground_states, num_ground_samples))
+    print("{} distinct fault state(s) observed.".format(num_ground_states))
+    # pd.set_option('display.width', 120)
+    # print(best_results)

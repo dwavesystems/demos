@@ -64,15 +64,14 @@ def fault_model(gate_type):
         spec = pm.Specification(G, labels, configurations, pm.SPIN)
         try:
             pmodel = pm.get_penalty_model(spec)
-            if pmodel:
-                print("penalty model fits on K{}".format(size))
-            else:
+            if not pmodel:
                 raise LookupError("failed to get penalty model from factory")
+            # print("penalty model fits on K{}".format(size))
             break
         except pm.ImpossiblePenaltyModel:
-            print("penalty model does not fit on K{}".format(size))
+            # print("penalty model does not fit on K{}".format(size))
             size += 1
 
-    print('h: {}'.format(pmodel.model.linear))
-    print('J: {}\n'.format(pmodel.model.quadratic))
+    # print('h: {}'.format(pmodel.model.linear))
+    # print('J: {}\n'.format(pmodel.model.quadratic))
     return pmodel
