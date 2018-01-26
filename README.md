@@ -11,6 +11,8 @@ Note that one of the requirements, penaltymodelmaxgap_, will not function withou
 The solvers are accessed through the pysmt_ package.
 See the accompanying pysmt documentation for installing smt solvers.
 
+Access to a D-Wave system needs to be set up with a .dwrc_ file.
+
 The demo will construct a Binary Quadratic Model for a three-bit multiplier and embed it on the system.
 The user will be prompted for 3 integers:
  * multiplier     ( 0 <= A <=  7)
@@ -47,3 +49,4 @@ See LICENSE file.
 
 .. _penaltymodelmaxgap: https://github.com/dwavesystems/penaltymodel_maxgap
 .. _pysmt: https://github.com/pysmt/pysmt
+.. _.dwrc: http://dwave-micro-client.readthedocs.io/en/latest/#configuration
