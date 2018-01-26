@@ -1,3 +1,5 @@
+# This Python file uses the following encoding: utf-8
+
 import sys
 
 import dimod
@@ -162,4 +164,87 @@ def three_bit_multiplier():
     ####################################################################################################
 
     bqm = stitch(models)
+    print("three-bit multiplier fault model")
+    print('h: {}'.format(bqm.linear))
+    print('J: {}\n'.format(bqm.quadratic))
+    return (bqm, labels)
+
+
+def half_adder():
+    ####################################################################################################
+    # get basic gate fault models
+    ####################################################################################################
+
+    print("XOR gate fault model")
+    pmodel_xor = fault_model('XOR')
+
+    print("AND gate fault model")
+    pmodel_and = fault_model('AND')
+
+    ####################################################################################################
+    # wire the whole thing up
+    ####################################################################################################
+
+    models = []
+    labels = {}
+
+    labels_xor, _ = GATES['XOR']
+    labels['XOR'] = ('augend', 'addend', 'sum')
+    models.append(new_pmodel(pmodel_xor, labels_xor, labels['XOR']))
+
+    labels_and, _ = GATES['AND']
+    labels['AND'] = ('augend', 'addend', 'carry_out')
+    models.append(new_pmodel(pmodel_and, labels_and, labels['AND']))
+
+    ####################################################################################################
+    # combine into one binary quadratic model
+    ####################################################################################################
+
+    bqm = stitch(models)
+    print("half adder fault model")
+    print('h: {}'.format(bqm.linear))
+    print('J: {}\n'.format(bqm.quadratic))
+    return (bqm, labels)
+
+
+def full_adder():
+    ####################################################################################################
+    # get basic gate fault models
+    ####################################################################################################
+
+    print("half adder fault model")
+    pmodel_half_add = fault_model('HALF_ADD')
+
+    print("OR gate fault model")
+    pmodel_or = fault_model('OR')
+
+    ####################################################################################################
+    # wire the whole thing up
+    ####################################################################################################
+
+    models = []
+    labels = {}
+
+    labels_half_add, _ = GATES['HALF_ADD']
+    labels['HALF_ADD'] = {}
+
+    labels['HALF_ADD']['add1'] = ('augend', 'addend', 'sum1', 'carry_out1')
+    labels['HALF_ADD']['add2'] = ('sum1','carry_in','sum','carry_out2')
+
+    models.append(new_pmodel(pmodel_half_add, labels_half_add, labels['HALF_ADD']['add1']))
+    models.append(new_pmodel(pmodel_half_add, labels_half_add, labels['HALF_ADD']['add2']))
+
+    labels_or, _ = GATES['OR']
+    labels['OR'] = {}
+    labels['OR']['or'] = ('carry_out1', 'carry_out2', 'carry_out')
+    models.append(new_pmodel(pmodel_or, labels_or, labels['OR']['or']))
+
+    ####################################################################################################
+    # combine into one binary quadratic model
+    ####################################################################################################
+
+    bqm = stitch(models)
+    print("full adder fault model")
+    print('h: {}'.format(bqm.linear))
+    print('J: {}\n'.format(bqm.quadratic))
     return (bqm, labels)

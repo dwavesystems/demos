@@ -7,9 +7,21 @@ GATES = {}
 
 GATES['AND'] = (('in1', 'in2', 'out'),
                 {(-1, -1, -1): 0.,
-                 (+1, +1, +1): 0.,
                  (-1, +1, -1): 0.,
-                 (+1, -1, -1): 0.})
+                 (+1, -1, -1): 0.,
+                 (+1, +1, +1): 0., })
+
+GATES['OR'] = (('in1', 'in2', 'out'),
+               {(-1, -1, -1): 0.,
+                (-1, +1, +1): 0.,
+                (+1, -1, +1): 0.,
+                (+1, +1, +1): 0., })
+
+GATES['XOR'] = (('in1', 'in2', 'out'),
+                {(-1, -1, -1): 0.,
+                 (-1, +1, +1): 0.,
+                 (+1, -1, +1): 0.,
+                 (+1, +1, -1): 0., })
 
 GATES['HALF_ADD'] = (('augend', 'addend', 'sum', 'carry_out'),
                      {(-1, -1, -1, -1): 0.,
@@ -39,8 +51,7 @@ def fault_gate(gate, explicit_gap):
     return fc
 
 
-FAULT_GAP = .5  # BRAD try at 1.0 and 1.5
-#print('Fault gap:', FAULT_GAP)
+FAULT_GAP = .5
 
 
 def fault_model(gate_type):
@@ -54,14 +65,14 @@ def fault_model(gate_type):
         try:
             pmodel = pm.get_penalty_model(spec)
             if pmodel:
-                print("penalty model fits on K%i" % size)
+                print("penalty model fits on K{}".format(size))
             else:
                 raise LookupError("failed to get penalty model from factory")
             break
         except pm.ImpossiblePenaltyModel:
-            print("penalty model does not fit on K%i" % size)
+            print("penalty model does not fit on K{}".format(size))
             size += 1
 
-    print('h:', pmodel.model.linear)
-    print('J:', pmodel.model.quadratic)
+    print('h: {}'.format(pmodel.model.linear))
+    print('J: {}\n'.format(pmodel.model.quadratic))
     return pmodel
