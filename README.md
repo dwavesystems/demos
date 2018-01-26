@@ -7,20 +7,17 @@
 >>> python demo.py
 ```
 
+Note that one of the requirements, penaltymodelmaxgap_, will not function without smt solvers installed.
+The solvers are accessed through the pysmt_ package.
+See the accompanying pysmt documentation for installing smt solvers.
+
 The demo will construct a Binary Quadratic Model for a three-bit multiplier and embed it on the system.
 The user will be prompted for 3 integers:
- * multiplier A (<=7)
- * multiplicand B (<=7)
- * product P (<=63)
+ * multiplier     ( 0 <= A <=  7)
+ * multiplicand   ( 0 <= B <=  7)
+ * product        ( 0 <= P <= 63)
 
 The system will find a minimum fault diagnosis and output for each gate whether it is valid or faulty.
-
-<!-- ## How to run the demo with the QPU
-
-```
->>> pip install -r requirements_qpu.txt
->>> python demo.py
-``` -->
 
 ## Interesting cases to try
 There are four cases (two isomorphic sets due to the commutative property of multiplication) in which only one faulty
@@ -47,3 +44,6 @@ In general, the number of incorrect bits in the product is greater than or equal
 ## License
 
 See LICENSE file.
+
+.. _penaltymodelmaxgap: https://github.com/dwavesystems/penaltymodel_maxgap
+.. _pysmt: https://github.com/pysmt/pysmt

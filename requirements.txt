@@ -1,6 +1,4 @@
-penaltymodel==1.0.0.dev5
-#penaltymodel_cache
-#penaltymodel_maxgap
+penaltymodel==0.12.1 [all]
 networkx
 dwave_micro_client_dimod==0.3.0
 dimod==1.0.0.dev2
