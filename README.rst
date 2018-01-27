@@ -16,7 +16,7 @@ See the accompanying pysmt documentation for installing smt solvers.
 Access to a D-Wave system needs to be set up with a dwrc_ file.
 
 The demo will construct a Binary Quadratic Model for a three-bit multiplier and embed it on the system.
-The user will be prompted for 3 integers:
+The user will be prompted for three integers:
     * multiplier     ( 0 <= A <=  7)
     * multiplicand   ( 0 <= B <=  7)
     * product        ( 0 <= P <= 63)
