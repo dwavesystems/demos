@@ -1,4 +1,4 @@
-penaltymodel==0.12.1 [all]
+penaltymodel[all]==0.12.1
 networkx
 dwave_micro_client_dimod==0.3.0
 dimod==1.0.0.dev2
