@@ -55,7 +55,7 @@ In general, the number of incorrect bits in the product is greater than or equal
 License
 -------
 
-See LICENSE file.
+Released under the Apache License 2.0. See LICENSE file.
 
 .. _penaltymodelmaxgap: https://github.com/dwavesystems/penaltymodel_maxgap
 .. _pysmt: https://github.com/pysmt/pysmt
