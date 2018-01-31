@@ -1,6 +1,8 @@
+import sys
+
 import pandas as pd
 
-from dwave_circuit_fault_diagnosis_demo import *  # TODO
+from dwave_circuit_fault_diagnosis_demo import three_bit_multiplier, GATES
 
 try:
     import dwave_micro_client_dimod as system
@@ -103,7 +105,7 @@ if __name__ == '__main__':
     num_ground_states = len(best_results)
 
     print("The minimum fault diagnosis found is {} faulty component(s)".format(num_faults))
-    # print("Out of {} samples, the following ground states {} were returned a total of {} times:".format(
+    # print("Out of {} samples, the following {} ground states were returned a total of {} times:".format(
     #     NUM_READS, num_ground_states, num_ground_samples))
     print("{} distinct fault state(s) with this many faults observed".format(num_ground_states))
     # pd.set_option('display.width', 120)
