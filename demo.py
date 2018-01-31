@@ -61,8 +61,16 @@ if __name__ == '__main__':
     bqm.fix_variable('aux1', 1)  # don't care value
 
     # find embedding and put on system
-    sampler = system.EmbeddingComposite(system.DWaveSampler())
-    response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
+    try:
+        sampler = system.EmbeddingComposite(system.DWaveSampler())
+        print("Structure: {}".format(sampler.children[0].structure))
+        response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
+    except Exception as err:
+        print(err)
+        print("Running using simulated annealing.\n")
+        import dwave_neal as neal
+        sampler = neal.Neal()
+        response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_samples=NUM_READS) # TODO: NOT WORKING
 
     # output results
     min_energy = next(response.energies())
