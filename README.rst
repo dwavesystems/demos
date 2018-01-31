@@ -1,5 +1,5 @@
 Demo of Circuit Fault Diagnosis
-================================
+===============================
 
 Fault diagnosis is the combinational problem of quickly localizing failures as soon as they are detected in systems.
 Circuit fault diagnosis is the problem of identifying a minimum-sized set of components that, if faulty, explains an
@@ -17,7 +17,7 @@ The demo constructs a binary quadratic model and minor-embeds it on the D-Wave s
 fault diagnosis and the number of distinct fault states it found.
 
 Requirements
--------------
+------------
 
 * An installed SMT solver
 
@@ -27,17 +27,33 @@ Requirements
 * Access to a D-Wave system set up with a dwrc_ file.
 
 Running the Demo
--------------------
+----------------
 
 .. code-block:: bash
 
   pip install -r requirements.txt
   pysmt-install --z3 # accept the license terms when prompted
+
+.. code-block:: bash
+
+  source <(pysmt-install --env)
+  python demo.py
+
+Running the Demo with the QPU
+-----------------------------
+
+.. code-block:: bash
+
+  pip install -r requirements_qpu.txt
+  pysmt-install --z3 # accept the license terms when prompted
+
+.. code-block:: bash
+
   source <(pysmt-install --env)
   python demo.py
 
 Interesting Use Cases
-------------------------
+---------------------
 
 A single faulty component leads to five incorrect bits in the product's six bits (due to the commutative property of
 multiplication, these are two isomorphic sets) in these four cases:
