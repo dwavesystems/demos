@@ -61,7 +61,7 @@ if __name__ == '__main__':
     bqm.fix_variable('aux1', 1)  # don't care value
 
     # find embedding and put on system
-    sampler = system.EmbeddingComposite(system.DWaveSampler(permissive_ssl=True))
+    sampler = system.EmbeddingComposite(system.DWaveSampler())
     response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
 
     # output results
