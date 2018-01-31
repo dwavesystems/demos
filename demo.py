@@ -1,7 +1,13 @@
 import pandas as pd
 
-import dwave_micro_client_dimod as system
 from dwave_circuit_fault_diagnosis_demo import *  # TODO
+
+try:
+    import dwave_micro_client_dimod as system
+    _qpu = True
+except ImportError:
+    import dwave_qbsolv as qbsolv
+    _qpu = False
 
 _PY2 = sys.version_info.major == 2
 if _PY2:
@@ -47,7 +53,7 @@ if __name__ == '__main__':
     P = sanitised_input("product", "P", range(2**6))
     fixed_variables.update(zip(('p5', 'p4', 'p3', 'p2', 'p1', 'p0'), "{:06b}".format(P)))
 
-    print("A   =    {:03b}".format(A))
+    print("\nA   =    {:03b}".format(A))
     print("B   =    {:03b}".format(B))
     print("A*B = {:06b}".format(A * B))
     print("P   = {:06b}\n".format(P))
@@ -61,16 +67,14 @@ if __name__ == '__main__':
     bqm.fix_variable('aux1', 1)  # don't care value
 
     # find embedding and put on system
-    try:
+    if _qpu:
+        print("Running using QPU\n")
         sampler = system.EmbeddingComposite(system.DWaveSampler())
-        print("Structure: {}".format(sampler.children[0].structure))
         response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
-    except Exception as err:
-        print(err)
-        print("Running using simulated annealing.\n")
-        import dwave_neal as neal
-        sampler = neal.Neal()
-        response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_samples=NUM_READS) # TODO: NOT WORKING
+    else:
+        print("Running using tabu search\n")
+        sampler = qbsolv.QBSolv()
+        response = sampler.sample_ising(bqm.linear, bqm.quadratic)
 
     # output results
     min_energy = next(response.energies())
@@ -98,9 +102,9 @@ if __name__ == '__main__':
     best_results = best_results.drop_duplicates().reset_index(drop=True)
     num_ground_states = len(best_results)
 
-    print("The minimum fault diagnosis is {} fault(s).\n".format(num_faults))
+    print("The minimum fault diagnosis found is {} faulty component(s)".format(num_faults))
     # print("Out of {} samples, the following ground states {} were returned a total of {} times:".format(
     #     NUM_READS, num_ground_states, num_ground_samples))
-    print("{} distinct fault state(s) observed.".format(num_ground_states))
+    print("{} distinct fault state(s) with this many faults observed".format(num_ground_states))
     # pd.set_option('display.width', 120)
     # print(best_results)
