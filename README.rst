@@ -1,20 +1,6 @@
 Demo for Circuit Fault Diagnosis
 ================================
 
-How to run the demo
--------------------
-
-.. code-block:: bash
-
-    pip install -r requirements.txt
-    python demo.py
-
-Note that one of the requirements, penaltymodelmaxgap_, will not function without smt solvers installed.
-The solvers are accessed through the pysmt_ package.
-See the accompanying pysmt documentation for installing smt solvers.
-
-Access to a D-Wave system needs to be set up with a dwrc_ file.
-
 The demo will construct a Binary Quadratic Model for a three-bit multiplier and embed it on the system.
 The user will be prompted for three integers:
 
@@ -23,6 +9,22 @@ The user will be prompted for three integers:
 * :code:`product        ( 0 <= P <= 63)`
 
 The system will find a minimum fault diagnosis and output for each gate whether it is valid or faulty.
+
+How to run the demo
+-------------------
+
+.. code-block:: bash
+
+  pip install -r requirements.txt
+  pysmt-install --z3 # accept the license terms when prompted
+  source <(pysmt-install --env)
+  python demo.py
+
+Note that one of the requirements, penaltymodelmaxgap_, will not function without smt solvers installed.
+The solvers are accessed through the pysmt_ package.
+See the accompanying pysmt documentation for installing smt solvers.
+
+Access to a D-Wave system needs to be set up with a dwrc_ file.
 
 Interesting cases to try
 ------------------------
