@@ -56,7 +56,7 @@ Running the Demo
   eval $(pysmt-install --env)
   python demo.py
 
-The :code:`--verbose` option will display the status (valid/fault) for each minimum fault diagnosis.
+The :code:`--verbose` option will display the status (valid/fault) of each component for each minimum fault diagnosis.
 
 Running the Demo with the QPU
 -----------------------------
@@ -71,7 +71,7 @@ Running the Demo with the QPU
   eval $(pysmt-install --env)
   python demo.py
 
-The :code:`--verbose` option will display the status (valid/fault) for each minimum fault diagnosis.
+The :code:`--verbose` option will display the status (valid/fault) of each component for each minimum fault diagnosis.
 
 Interesting Use Cases
 ---------------------
