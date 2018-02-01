@@ -16,6 +16,15 @@ circuit's output, P, which represents either a valid or incorrect product of the
 The demo constructs a binary quadratic model and minor-embeds it on the D-Wave system. The system returns a minimum
 fault diagnosis and the number of distinct fault states it found.
 
+References
+----------
+
+[1] Z. Bian, F. Chudak, R. B. Israel, B. Lackey, W. G. Macready, and A. Roy, “Mapping constrained optimization problems
+to quantum annealing with application to fault diagnosis,” Frontiers in ICT, vol. 3, p. 14, 2016.
+
+[2] A. Perdomo-Ortiz, J. Fluegemann, S. Narasimhan, R. Biswas, and V. N. Smelyanskiy, “A quantum annealing approach for
+fault detection and diagnosis of graph-based systems,” European Physical Journal Special Topics, vol. 224, Feb. 2015.
+
 Requirements
 ------------
 
@@ -27,9 +36,9 @@ Requirements
 * Access to a D-Wave system set up with a dwrc_ file
 
   :code:`connection label | server url, token, proxy url, default solver name`
-  
+
   The first connection is used. A default solver is required. For example:
-  
+
   :code:`connection-one|https://one.com,token-one,,solver-one`
 
 Running the Demo
