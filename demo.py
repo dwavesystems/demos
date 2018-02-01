@@ -108,5 +108,8 @@ if __name__ == '__main__':
     # print("Out of {} samples, the following {} ground states were returned a total of {} times:".format(
     #     NUM_READS, num_ground_states, num_ground_samples))
     print("{} distinct fault state(s) with this many faults observed".format(num_ground_states))
-    # pd.set_option('display.width', 120)
-    # print(best_results)
+
+    # verbose output
+    if len(sys.argv) == 2 and sys.argv[1] == '--verbose':
+        pd.set_option('display.width', 120)
+        print(best_results)
