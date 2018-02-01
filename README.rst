@@ -48,7 +48,9 @@ algorithm returns a minimum fault diagnosis and the number of distinct fault sta
 .. code-block:: bash
 
   pip install -r requirements.txt
-  pysmt-install --z3 # accept the license terms when prompted
+  pysmt-install --z3
+
+accept the license terms when prompted
 
 .. code-block:: bash
 
@@ -68,7 +70,9 @@ fault diagnosis and the number of distinct fault states it found.
 .. code-block:: bash
 
   pip install -r requirements_qpu.txt
-  pysmt-install --z3 # accept the license terms when prompted
+  pysmt-install --z3
+
+accept the license terms when prompted
 
 .. code-block:: bash
 
