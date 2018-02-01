@@ -24,7 +24,13 @@ Requirements
   The *circuit-fault-diagnosis-demo* code has a dependency on penaltymodelmaxgap_, which requires that an SMT solver is
   installed. The solvers are accessed through the pysmt_ package. See the accompanying *pysmt* documentation for
   installing smt solvers.
-* Access to a D-Wave system set up with a dwrc_ file.
+* Access to a D-Wave system set up with a dwrc_ file
+
+  :code:`connection label | server url, token, proxy url, default solver name`
+  
+  The first connection is used. A default solver is required. For example:
+  
+  :code:`connection-one|https://one.com,token-one,,solver-one`
 
 Running the Demo
 ----------------
