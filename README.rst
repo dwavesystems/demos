@@ -21,9 +21,11 @@ References
 
 [1] Z. Bian, F. Chudak, R. B. Israel, B. Lackey, W. G. Macready, and A. Roy, “Mapping constrained optimization problems
 to quantum annealing with application to fault diagnosis,” Frontiers in ICT, vol. 3, p. 14, 2016.
+https://www.frontiersin.org/articles/10.3389/fict.2016.00014/full
 
 [2] A. Perdomo-Ortiz, J. Fluegemann, S. Narasimhan, R. Biswas, and V. N. Smelyanskiy, “A quantum annealing approach for
 fault detection and diagnosis of graph-based systems,” European Physical Journal Special Topics, vol. 224, Feb. 2015.
+https://arxiv.org/abs/1406.7601v2
 
 Requirements
 ------------
