@@ -51,7 +51,7 @@ Running the Demo
 
 .. code-block:: bash
 
-  source <(pysmt-install --env)
+  eval $(pysmt-install --env)
   python demo.py
 
 Running the Demo with the QPU
@@ -64,7 +64,7 @@ Running the Demo with the QPU
 
 .. code-block:: bash
 
-  source <(pysmt-install --env)
+  eval $(pysmt-install --env)
   python demo.py
 
 Interesting Use Cases
