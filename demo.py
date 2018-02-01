@@ -74,7 +74,7 @@ if __name__ == '__main__':
         sampler = system.EmbeddingComposite(system.DWaveSampler())
         response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
     else:
-        print("Running using tabu search\n")
+        print("Running using qbsolv's classical tabu search\n")
         sampler = qbsolv.QBSolv()
         response = sampler.sample_ising(bqm.linear, bqm.quadratic)
 
