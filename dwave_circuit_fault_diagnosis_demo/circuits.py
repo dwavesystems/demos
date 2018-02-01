@@ -4,7 +4,7 @@ import sys
 
 import dimod
 
-from dwave_circuit_fault_diagnosis_demo.gates import * # TODO
+from dwave_circuit_fault_diagnosis_demo.gates import fault_model, GATES
 
 _PY2 = sys.version_info.major == 2
 
