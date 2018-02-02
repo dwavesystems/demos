@@ -6,44 +6,45 @@ Circuit fault diagnosis is the problem of identifying a minimum-sized set of com
 observation of incorrect outputs given a set of inputs.
 
 This code demonstrates the use of the D-Wave system to solve such a problem in the case of a three-bit multiplier
-circuit. The user is prompted to enter three integers: A and B, the inputs the circuit is expected to multiply, and the
+circuit. The user is prompted to enter three integers: A and B, which are the inputs the circuit is expected to multiply, and the
 circuit's output, P, which represents either a valid or incorrect product of the inputs.
 
 * :code:`multiplier     ( 0 <= A <=  7)`
 * :code:`multiplicand   ( 0 <= B <=  7)`
 * :code:`product        ( 0 <= P <= 63)`
 
-General References
-------------------
-
-* Z. Bian, F. Chudak, R. B. Israel, B. Lackey, W. G. Macready, and A. Roy, “Mapping constrained optimization problems
-  to quantum annealing with application to fault diagnosis,” Frontiers in ICT, vol. 3, p. 14, 2016.
-  https://www.frontiersin.org/articles/10.3389/fict.2016.00014/full
-* A. Perdomo-Ortiz, J. Fluegemann, S. Narasimhan, R. Biswas, and V. N. Smelyanskiy, “A quantum annealing approach for
-  fault detection and diagnosis of graph-based systems,” European Physical Journal Special Topics, vol. 224, Feb. 2015.
-  https://arxiv.org/abs/1406.7601v2
 
 Requirements
 ------------
 
 * An installed SMT solver
 
-  The *circuit-fault-diagnosis-demo* code has a dependency on `penaltymodel_maxgap`_, which requires that an SMT solver
+  The demo code has a dependency on `penaltymodel_maxgap`_, which requires that an SMT solver
   is installed. The solvers are accessed through the pysmt_ package. See the accompanying *pysmt* documentation for
   installing smt solvers.
-* Access to a D-Wave system set up with a `.dwrc`_ file
+* Access configured to a D-Wave system
 
-  :code:`connection label | server url, token, proxy url, default solver name`
+  This requires setting up a `.dwrc`_ configuration file as described in the
+  `dwave_micro_client`_ documentation.
 
-  The first connection is used. A default solver is required. For example:
-
-  :code:`connection-one|https://one.com,token-one,,solver-one`
 
 Running the Demo
 ----------------
 
-The demo constructs a binary quadratic model and `qbsolv's`_ tabu search to solve the problem **classically**. The
-algorithm returns a minimum fault diagnosis and the number of distinct fault states it found.
+You can run the demo on classical hardware (a CPU) or on a D-Wave QPU, with
+the selection made by the requirements file used.
+
+The algorithm returns a minimum fault diagnosis
+and the number of distinct fault states it found.
+
+The :code:`--verbose` option (\ :code:`python demo.py --verbose`\ ) displays the
+valid/fault status of each component for each minimum fault diagnosis.
+
+Running on a CPU
+~~~~~~~~~~~~~~~~~~~
+
+The demo constructs a binary quadratic model and uses `qbsolv's`_ tabu search to
+solve the problem classically.
 
 .. code-block:: bash
 
@@ -57,15 +58,13 @@ accept the license terms when prompted
   eval $(pysmt-install --env)
   python demo.py
 
-The :code:`--verbose` option will display the status (valid/fault) of each component for each minimum fault diagnosis.
 
-Running the Demo with the QPU
------------------------------
+Running on a QPU
+~~~~~~~~~~~~~~~~~~~
 
-The demo constructs a binary quadratic model and minor-embeds it on the **D-Wave system**. The system returns a minimum
-fault diagnosis and the number of distinct fault states it found.
+The demo constructs a binary quadratic model and minor-embeds it on
+the D-Wave system.
 
-**Note that the only difference from running the demo classically is the requirements file used.**
 
 .. code-block:: bash
 
@@ -79,7 +78,6 @@ accept the license terms when prompted
   eval $(pysmt-install --env)
   python demo.py
 
-The :code:`--verbose` option will display the status (valid/fault) of each component for each minimum fault diagnosis.
 
 Interesting Use Cases
 ---------------------
@@ -112,7 +110,18 @@ License
 
 Released under the Apache License 2.0. See LICENSE file.
 
+Further Reading
+------------------
+
+* Z. Bian, F. Chudak, R. B. Israel, B. Lackey, W. G. Macready, and A. Roy, “Mapping constrained optimization problems
+  to quantum annealing with application to fault diagnosis,” Frontiers in ICT, vol. 3, p. 14, 2016.
+  https://www.frontiersin.org/articles/10.3389/fict.2016.00014/full
+* A. Perdomo-Ortiz, J. Fluegemann, S. Narasimhan, R. Biswas, and V. N. Smelyanskiy, “A quantum annealing approach for
+  fault detection and diagnosis of graph-based systems,” European Physical Journal Special Topics, vol. 224, Feb. 2015.
+  https://arxiv.org/abs/1406.7601v2
+
 .. _`penaltymodel_maxgap`: https://github.com/dwavesystems/penaltymodel_maxgap
 .. _pysmt: https://github.com/pysmt/pysmt
 .. _`.dwrc`: http://dwave-micro-client.readthedocs.io/en/latest/#configuration
 .. _`qbsolv's`: https://github.com/dwavesystems/qbsolv
+.. _`dwave_micro_client`: http://dwave-micro-client.readthedocs.io/en/latest/#
