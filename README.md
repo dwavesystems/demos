@@ -8,7 +8,7 @@ Mapping Militant Organizations, Stanford University, last modified February 28, 
 ## How to run the demo
 
 ```
->>> pip install -r requirements.txt
+>>> pip install -r requirements_cpu.txt
 >>> python demo.py
 ```
 
