@@ -26,8 +26,8 @@ file used.
 
 .. code-block:: bash
 
-  pip install -r requirements.txt      # to run on CPU
-  pip install -r requirements_qpu.txt  # to run on QPU
+  pip install -r requirements_cpu.txt   # to run on CPU
+  pip install -r requirements_qpu.txt   # to run on QPU
   
 The demo code has a dependency on `penaltymodel_maxgap`_, which requires that an SMT solver is installed. The solvers
 are accessed through the pysmt_ package. See the accompanying *pysmt* documentation for installing smt solvers.
@@ -41,7 +41,7 @@ First, install the required files:
 
 .. code-block:: bash
 
-  pip install -r requirements.txt
+  pip install -r requirements_cpu.txt
 
 Use :code:`pysmt-install` as outlined in the `pysmt installation instructions`_ to setup an smt solver.
 

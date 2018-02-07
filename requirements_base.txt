@@ -2,7 +2,6 @@ penaltymodel==0.12.1
 penaltymodel-maxgap==0.0.1
 penaltymodel-cache==0.1.0
 dimod==1.0.0.dev2
-dwave_qbsolv==0.2.0
 networkx
 pandas
 pysmt # need to do pysmt-install
