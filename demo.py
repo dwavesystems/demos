@@ -39,9 +39,15 @@ def sanitised_input(description, variable, range_):
 NUM_READS = 1000
 
 if __name__ == '__main__':
+    ####################################################################################################
+    # get circuit
+    ####################################################################################################
     bqm, labels = three_bit_multiplier()
 
+    ####################################################################################################
     # get input from user
+    ####################################################################################################
+
     fixed_variables = {}
 
     print("Enter the test conditions")
@@ -79,7 +85,11 @@ if __name__ == '__main__':
         sampler = qbsolv.QBSolv()
         response = sampler.sample_ising(bqm.linear, bqm.quadratic)
 
+    ####################################################################################################
     # output results
+    ####################################################################################################
+
+    # responses are sorted in order of increasing energy, so the first energy is the minimum
     min_energy = next(response.energies())
 
     best_samples = [datum['sample'] for datum in response.data() if datum['energy'] == min_energy]
@@ -99,7 +109,9 @@ if __name__ == '__main__':
         best_results.append(result)
     best_results = pd.DataFrame(best_results)
 
+    # at this point, our filtered "best results" all have the same number of faults, so just grab the first one
     num_faults = next(best_results.itertuples()).count('fault')
+
     # num_ground_samples = len(best_results)
     # best_results = best_results.groupby(best_results.columns.tolist(), as_index=False).size().reset_index().set_index(0)
     best_results = best_results.drop_duplicates().reset_index(drop=True)
