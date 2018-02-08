@@ -68,12 +68,13 @@ if __name__ == '__main__':
     # 'aux1' becomes disconnected, so needs to be fixed
     bqm.fix_variable('aux1', 1)  # don't care value
 
-    # find embedding and put on system
     if _qpu:
+        # find embedding and put on system
         print("Running using QPU\n")
         sampler = system.EmbeddingComposite(system.DWaveSampler())
         response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
     else:
+        # if no qpu access, use qbsolv's tabu
         print("Running using qbsolv's classical tabu search\n")
         sampler = qbsolv.QBSolv()
         response = sampler.sample_ising(bqm.linear, bqm.quadratic)
