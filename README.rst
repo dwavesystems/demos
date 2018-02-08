@@ -59,10 +59,10 @@ described in the `dwave_micro_client`_ documentation. A default solver is requir
 
 .. code-block::
 
-  cloud | https://cloud.dwavesys.com/sapi, api-token, , DW_2000Q
+  cloud | https://cloud.dwavesys.com/sapi, token,  , DW_2000Q
 
-where api-token is a valid token for a system with URL https://cloud.dwavesys.com/sapi corresponding to the solver with
-name DW_2000Q. In this example, no proxy url is required, so the field is left blank.
+where :code:`token` is a valid token for a system with server URL https://cloud.dwavesys.com/sapi corresponding to the
+solver with name DW_2000Q. In this example, no proxy URL is required, so the field is left blank.
 
 First, install the required files:
 
