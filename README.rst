@@ -28,7 +28,7 @@ file used.
 
   pip install -r requirements_cpu.txt   # to run on CPU
   pip install -r requirements_qpu.txt   # to run on QPU
-  
+
 The demo code has a dependency on `penaltymodel_maxgap`_, which requires that an SMT solver is installed. The solvers
 are accessed through the pysmt_ package. See the accompanying *pysmt* documentation for installing smt solvers.
 
@@ -59,7 +59,10 @@ described in the `dwave_micro_client`_ documentation. A default solver is requir
 
 .. code-block::
 
-  connection-one|https://one.com,token-one,,solver-one
+  cloud | https://cloud.dwavesys.com/sapi, api-token, , DW_2000Q
+
+where api-token is a valid token for a system with URL https://cloud.dwavesys.com/sapi corresponding to the solver with
+name DW_2000Q. In this example, no proxy url is required, so the field is left blank.
 
 First, install the required files:
 
