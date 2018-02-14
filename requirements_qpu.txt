@@ -1,2 +1,2 @@
 -r requirements_base.txt
-dwave_micro_client_dimod==0.3.0
+dwave_micro_client_dimod==0.3.1
