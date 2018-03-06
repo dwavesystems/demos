@@ -45,6 +45,8 @@ First, install the required files:
 
 Use :code:`pysmt-install` as outlined in the `pysmt installation instructions`_ to setup an smt solver.
 
+Note: For Windows, ``z3`` is currently the only supported solver.
+
 .. code-block:: bash
 
   python demo.py
@@ -71,6 +73,8 @@ First, install the required files:
   pip install -r requirements_qpu.txt
 
 Use :code:`pysmt-install` as outlined in the `pysmt installation instructions`_ to setup an smt solver.
+
+Note: For Windows, ``z3`` is currently the only supported solver.
 
 .. code-block:: bash
 
