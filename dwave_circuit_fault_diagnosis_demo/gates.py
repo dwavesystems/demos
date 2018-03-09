@@ -54,9 +54,10 @@ def fault_gate(gate, explicit_gap):
 FAULT_GAP = .5
 
 
-def fault_model(gate_type):
+def gate_model(gate_type, fault=True):
     labels, configurations = GATES[gate_type]
-    configurations = fault_gate(configurations, FAULT_GAP)
+    if fault:
+        configurations = fault_gate(configurations, FAULT_GAP)
     size = len(next(iter(configurations)))
     while True:
         G = nx.complete_graph(size)
