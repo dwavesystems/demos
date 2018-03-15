@@ -2,6 +2,7 @@ import itertools
 
 import networkx as nx
 import penaltymodel as pm
+import dimod
 
 GATES = {}
 
@@ -62,7 +63,7 @@ def gate_model(gate_type, fault=True):
     while True:
         G = nx.complete_graph(size)
         nx.relabel_nodes(G, dict(enumerate(labels)), copy=False)
-        spec = pm.Specification(G, labels, configurations, pm.SPIN)
+        spec = pm.Specification(G, labels, configurations, dimod.SPIN)
         try:
             pmodel = pm.get_penalty_model(spec)
             if not pmodel:

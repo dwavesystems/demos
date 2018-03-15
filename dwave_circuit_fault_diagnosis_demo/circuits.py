@@ -67,7 +67,7 @@ def new_pmodel(pmodel, old_labels, new_labels):
 
     mapping = dict(zip(old_labels, new_labels))
     mapping.update({x: new_aux() for x in pmodel.graph.nodes if x not in old_labels})
-    return pmodel.relabel_variables(mapping, copy=True)
+    return pmodel.relabel_variables(mapping, inplace=False)
 new_pmodel.counter = 0
 
 
