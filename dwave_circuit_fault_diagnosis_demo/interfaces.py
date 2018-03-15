@@ -1,5 +1,8 @@
+from __future__ import division
+
 import sys
 import re
+from collections import OrderedDict
 
 import pandas as pd
 
@@ -59,6 +62,8 @@ def factor(P, _qpu=True):
     # get circuit
     ####################################################################################################
     bqm, labels = three_bit_multiplier(False)
+    a_vars = ['a0', 'a1', 'a2']
+    b_vars = ['b0', 'b1', 'b2']
 
     ####################################################################################################
     # fix product qubits
@@ -79,10 +84,20 @@ def factor(P, _qpu=True):
     output['status'] = "in progress"
 
     if _qpu:
-        import dwave_micro_client_dimod as system
+        from dwave.system.samplers import DWaveSampler
+        from dwave.system.composites import EmbeddingComposite
         # find embedding and put on system
-        sampler = system.EmbeddingComposite(system.DWaveSampler())
-        response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
+        sampler = EmbeddingComposite(DWaveSampler())
+
+        kwargs = {}
+        if 'num_reads' in sampler.parameters:
+            kwargs['num_reads'] = NUM_READS
+        if 'num_spin_reversal_transforms' in sampler.parameters:
+            kwargs['num_spin_reversal_transforms'] = 1
+        if 'answer_mode' in sampler.parameters:
+            kwargs['answer_mode'] = 'histogram'
+
+        response = sampler.sample_ising(bqm.linear, bqm.quadratic, **kwargs)
     else:
         import dwave_qbsolv as qbsolv
         # if no qpu access, use qbsolv's tabu
@@ -95,29 +110,36 @@ def factor(P, _qpu=True):
     # output results
     ####################################################################################################
 
-    for sample in response.samples():
-        for variable in list(sample.keys()):
-            if not (re.match('[ab]\d', variable)):
-                sample.pop(variable)
+    # we know that three_bit_multiplier has created variables
 
-    for datum in response.data():
-        A = B = 0
-        for key, value in sorted(datum['sample'].items(), reverse=True):
-            if 'a' in key:
-                A = (A << 1) | (1 if value == 1 else 0)
-            elif 'b' in key:
-                B = (B << 1) | (1 if value == 1 else 0)
-        result = {}
-        result['a'] = A
-        result['b'] = B
-        #result['energy'] = datum['energy']
-        result['valid'] = (A * B == P)
-        #result['numOfOccurrences'] = datum['num_occurences']
-        output['results'].append(result)
+    if 'num_occurrences' not in response.data_vectors:
+        response.data_vectors['num_occurrences'] = [1] * len(response)
 
-    results = pd.DataFrame(output['results'])
-    results = results.groupby(results.columns.tolist()).size().to_frame('numOfOccurrences').reset_index()
-    results['percentageOfOccurances'] = results.numOfOccurrences / results.numOfOccurrences.sum() * 100
-    output['results'] = results.to_dict('records')
+    results_dict = OrderedDict()
+
+    total = sum(response.data_vectors['num_occurrences'])
+
+    for sample, num_occurrences in response.data(['sample', 'num_occurrences']):
+        a = b = 0
+
+        for lbl in reversed(a_vars):
+            a = (a << 1) | (1 if sample[lbl] > 0 else 0)
+        for lbl in reversed(b_vars):
+            b = (b << 1) | (1 if sample[lbl] > 0 else 0)
+
+        if (a, b, P) in results_dict:
+            results_dict[(a, b, P)]["numOfOccurrences"] += num_occurrences
+            results_dict[(a, b, P)]["percentageOfOccurances"] = results_dict[(a, b, P)]["numOfOccurrences"] / total
+        else:
+            results_dict[(a, b, P)] = {"a": a,
+                                       "b": b,
+                                       "valid": a * b == P,
+                                       "numOfOccurrences": num_occurrences,
+                                       "percentageOfOccurances": num_occurrences / total}
+
+    output['results'] = list(results_dict.values())
+
+    if 'timing' in response.info:
+        output['timing']['actual']['qpuProcessTime'] = response.info['timing']['run_time_chip']
 
     return output
