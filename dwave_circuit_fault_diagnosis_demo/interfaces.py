@@ -31,7 +31,7 @@ def factor(P, _qpu=True):
                #        "b": Number,
                #        "valid": Boolean,
                #        "numOfOccurrences": Number,
-               #        "percentageOfOccurances": Number
+               #        "percentageOfOccurrences": Number
                #    }
                "errors": [],
                #    {
@@ -129,13 +129,13 @@ def factor(P, _qpu=True):
 
         if (a, b, P) in results_dict:
             results_dict[(a, b, P)]["numOfOccurrences"] += num_occurrences
-            results_dict[(a, b, P)]["percentageOfOccurances"] = results_dict[(a, b, P)]["numOfOccurrences"] / total
+            results_dict[(a, b, P)]["percentageOfOccurrences"] = results_dict[(a, b, P)]["numOfOccurrences"] / total
         else:
             results_dict[(a, b, P)] = {"a": a,
                                        "b": b,
                                        "valid": a * b == P,
                                        "numOfOccurrences": num_occurrences,
-                                       "percentageOfOccurances": num_occurrences / total}
+                                       "percentageOfOccurrences": num_occurrences / total}
 
     output['results'] = list(results_dict.values())
 
