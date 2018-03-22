@@ -26,8 +26,8 @@ file used.
 
 .. code-block:: bash
 
-  pip install -r requirements_cpu.txt   # to run on CPU
-  pip install -r requirements_qpu.txt  --extra-index-url https://pypi.dwavesys.com/simple # to run on QPU
+  pip install -r requirements_cpu.txt                                                     # to run on CPU
+  pip install -r requirements_qpu.txt --extra-index-url https://pypi.dwavesys.com/simple  # to run on QPU
 
 The demo code has a dependency on `penaltymodel_maxgap`_, which requires that an SMT solver is installed. The solvers
 are accessed through the pysmt_ package. See the accompanying *pysmt* documentation for installing smt solvers.
@@ -56,21 +56,14 @@ Running on a QPU
 
 The demo constructs a binary quadratic model and minor-embeds it on the D-Wave system.
 
-Access to a D-Wave system must be configured. This requires setting up a `.dwrc`_ configuration file as
-described in the `dwave_micro_client`_ documentation. A default solver is required. For example:
-
-.. code-block::
-
-  cloud | https://cloud.dwavesys.com/sapi, token,  , DW_2000Q
-
-where :code:`token` is a valid token for a system with server URL https://cloud.dwavesys.com/sapi corresponding to the
-solver with name DW_2000Q. In this example, no proxy URL is required, so the field is left blank.
+Access to a D-Wave system must be configured, as described in the `dwave-cloud-client`_ documentation. A default solver
+is required.
 
 First, install the required files:
 
 .. code-block:: bash
 
-  pip install -r requirements_qpu.txt
+  pip install -r requirements_qpu.txt --extra-index-url https://pypi.dwavesys.com/simple
 
 Use :code:`pysmt-install` as outlined in the `pysmt installation instructions`_ to setup an smt solver.
 
@@ -138,8 +131,7 @@ Further Reading
 
 .. _`penaltymodel_maxgap`: https://github.com/dwavesystems/penaltymodel_maxgap
 .. _pysmt: https://github.com/pysmt/pysmt
-.. _`.dwrc`: http://dwave-micro-client.readthedocs.io/en/latest/#configuration
 .. _`qbsolv's`: https://github.com/dwavesystems/qbsolv
-.. _`dwave_micro_client`: http://dwave-micro-client.readthedocs.io/en/latest/#
+.. _`dwave-cloud-client`: http://dwave-cloud-client.readthedocs.io/en/latest/#module-dwave.cloud.config
 .. _z3: https://github.com/Z3Prover/z3
 .. _`pysmt installation instructions`: https://github.com/pysmt/pysmt#installation
