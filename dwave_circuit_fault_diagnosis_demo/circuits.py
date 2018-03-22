@@ -4,7 +4,7 @@ import sys
 
 import dimod
 
-from dwave_circuit_fault_diagnosis_demo.gates import fault_model, GATES
+from dwave_circuit_fault_diagnosis_demo.gates import gate_model, GATES
 
 _PY2 = sys.version_info.major == 2
 
@@ -67,23 +67,23 @@ def new_pmodel(pmodel, old_labels, new_labels):
 
     mapping = dict(zip(old_labels, new_labels))
     mapping.update({x: new_aux() for x in pmodel.graph.nodes if x not in old_labels})
-    return pmodel.relabel_variables(mapping, copy=True)
+    return pmodel.relabel_variables(mapping, inplace=False)
 new_pmodel.counter = 0
 
 
-def three_bit_multiplier():
+def three_bit_multiplier(fault=True):
     ####################################################################################################
     # get basic gate fault models
     ####################################################################################################
 
     # print("AND gate fault model")
-    pmodel_and = fault_model('AND')
+    pmodel_and = gate_model('AND', fault)
 
     # print("half adder fault model")
-    pmodel_half_add = fault_model('HALF_ADD')
+    pmodel_half_add = gate_model('HALF_ADD', fault)
 
     # print("full adder fault model")
-    pmodel_full_add = fault_model('FULL_ADD')
+    pmodel_full_add = gate_model('FULL_ADD', fault)
 
     ####################################################################################################
     # wire the whole thing up
@@ -170,16 +170,16 @@ def three_bit_multiplier():
     return (bqm, labels)
 
 
-def half_adder():
+def half_adder(fault=True):
     ####################################################################################################
     # get basic gate fault models
     ####################################################################################################
 
     # print("XOR gate fault model")
-    pmodel_xor = fault_model('XOR')
+    pmodel_xor = gate_model('XOR', fault)
 
     # print("AND gate fault model")
-    pmodel_and = fault_model('AND')
+    pmodel_and = gate_model('AND', fault)
 
     ####################################################################################################
     # wire the whole thing up
@@ -207,16 +207,16 @@ def half_adder():
     return (bqm, labels)
 
 
-def full_adder():
+def full_adder(fault=True):
     ####################################################################################################
     # get basic gate fault models
     ####################################################################################################
 
     # print("half adder fault model")
-    pmodel_half_add = fault_model('HALF_ADD')
+    pmodel_half_add = gate_model('HALF_ADD', fault)
 
     # print("OR gate fault model")
-    pmodel_or = fault_model('OR')
+    pmodel_or = gate_model('OR', fault)
 
     ####################################################################################################
     # wire the whole thing up

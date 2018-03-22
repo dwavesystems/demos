@@ -5,7 +5,8 @@ import pandas as pd
 from dwave_circuit_fault_diagnosis_demo import three_bit_multiplier, GATES
 
 try:
-    import dwave_micro_client_dimod as system
+    from dwave.system.samplers import DWaveSampler
+    from dwave.system.composites import EmbeddingComposite
     _qpu = True
 except ImportError:
     import dwave_qbsolv as qbsolv
@@ -77,7 +78,7 @@ if __name__ == '__main__':
     if _qpu:
         # find embedding and put on system
         print("Running using QPU\n")
-        sampler = system.EmbeddingComposite(system.DWaveSampler())
+        sampler = EmbeddingComposite(DWaveSampler())
         response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
     else:
         # if no qpu access, use qbsolv's tabu
@@ -90,9 +91,9 @@ if __name__ == '__main__':
     ####################################################################################################
 
     # responses are sorted in order of increasing energy, so the first energy is the minimum
-    min_energy = next(response.energies())
+    min_energy = next(response.data()).energy
 
-    best_samples = [datum['sample'] for datum in response.data() if datum['energy'] == min_energy]
+    best_samples = [dict(datum.sample) for datum in response.data() if datum.energy == min_energy]
     for sample in best_samples:
         for variable in list(sample.keys()):
             if 'aux' in variable:
