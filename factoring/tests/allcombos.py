@@ -1,5 +1,5 @@
 import dwave_micro_client_dimod as system
-from dwave_circuit_fault_diagnosis_demo import *  # TODO
+from factoring import *  # TODO
 
 import pandas as pd
 import pickle

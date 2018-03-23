@@ -1,2 +1,2 @@
-from dwave_circuit_fault_diagnosis_demo.circuits import *
-from dwave_circuit_fault_diagnosis_demo.gates import *
+from factoring.circuits import *
+from factoring.gates import *

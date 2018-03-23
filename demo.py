@@ -3,7 +3,7 @@ import re
 
 import pandas as pd
 
-from dwave_circuit_fault_diagnosis_demo import three_bit_multiplier, GATES
+from factoring import three_bit_multiplier, GATES
 
 try:
     import dwave_micro_client_dimod as system
