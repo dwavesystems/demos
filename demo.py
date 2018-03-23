@@ -1,4 +1,5 @@
 import sys
+import re
 
 import pandas as pd
 
@@ -42,7 +43,7 @@ if __name__ == '__main__':
     ####################################################################################################
     # get circuit
     ####################################################################################################
-    bqm, labels = three_bit_multiplier()
+    bqm, labels = three_bit_multiplier(False)
 
     ####################################################################################################
     # get input from user
@@ -52,27 +53,14 @@ if __name__ == '__main__':
 
     print("Enter the test conditions")
 
-    A = sanitised_input("multiplier", "A", range(2**3))
-    fixed_variables.update(zip(('a2', 'a1', 'a0'), "{:03b}".format(A)))
-
-    B = sanitised_input("multiplicand", "B", range(2**3))
-    fixed_variables.update(zip(('b2', 'b1', 'b0'), "{:03b}".format(B)))
-
     P = sanitised_input("product", "P", range(2**6))
     fixed_variables.update(zip(('p5', 'p4', 'p3', 'p2', 'p1', 'p0'), "{:06b}".format(P)))
-
-    print("\nA   =    {:03b}".format(A))
-    print("B   =    {:03b}".format(B))
-    print("A*B = {:06b}".format(A * B))
-    print("P   = {:06b}\n".format(P))
 
     fixed_variables = {var: 1 if x == '1' else -1 for (var, x) in fixed_variables.items()}
 
     # fix variables
     for var, value in fixed_variables.items():
         bqm.fix_variable(var, value)
-    # 'aux1' becomes disconnected, so needs to be fixed
-    bqm.fix_variable('aux1', 1)  # don't care value
 
     if _qpu:
         # find embedding and put on system
@@ -89,40 +77,34 @@ if __name__ == '__main__':
     # output results
     ####################################################################################################
 
-    # responses are sorted in order of increasing energy, so the first energy is the minimum
-    min_energy = next(response.energies())
-
-    best_samples = [datum['sample'] for datum in response.data() if datum['energy'] == min_energy]
-    for sample in best_samples:
+    for sample in response.samples():
         for variable in list(sample.keys()):
-            if 'aux' in variable:
+            if not (re.match('[ab]\d', variable)):
                 sample.pop(variable)
-        sample.update(fixed_variables)
 
-    best_results = []
-    for sample in best_samples:
+    results = []
+    for datum in response.data():
+        A = B = 0
+        for key, value in sorted(datum['sample'].items(), reverse=True):
+            if 'a' in key:
+                A = (A << 1) | (1 if value == 1 else 0)
+            elif 'b' in key:
+                B = (B << 1) | (1 if value == 1 else 0)
         result = {}
-        for gate_type, gates in sorted(labels.items()):
-            _, configurations = GATES[gate_type]
-            for gate_name, gate in sorted(gates.items()):
-                result[gate_name] = 'valid' if tuple(sample[var] for var in gate) in configurations else 'fault'
-        best_results.append(result)
-    best_results = pd.DataFrame(best_results)
+        result['A'] = A
+        result['B'] = B
+        result['A*B'] = A * B
+        result['P'] = P
+        result['energy'] = datum['energy']
+        result['valid'] = (A * B == P)
+        results.append(result)
 
-    # at this point, our filtered "best results" all have the same number of faults, so just grab the first one
-    num_faults = next(best_results.itertuples()).count('fault')
+    results = pd.DataFrame(results)
+    results = results.groupby(results.columns.tolist()).size().reset_index().sort_values('energy')
+    columns = results.columns.tolist()
+    columns[-1] = 'count'
+    results.columns = columns
+    results = results.sort_values('energy').set_index('count')
 
-    # num_ground_samples = len(best_results)
-    # best_results = best_results.groupby(best_results.columns.tolist(), as_index=False).size().reset_index().set_index(0)
-    best_results = best_results.drop_duplicates().reset_index(drop=True)
-    num_ground_states = len(best_results)
-
-    print("The minimum fault diagnosis found is {} faulty component(s)".format(num_faults))
-    # print("Out of {} samples, the following {} ground states were returned a total of {} times:".format(
-    #     NUM_READS, num_ground_states, num_ground_samples))
-    print("{} distinct fault state(s) with this many faults observed".format(num_ground_states))
-
-    # verbose output
-    if len(sys.argv) == 2 and sys.argv[1] == '--verbose':
-        pd.set_option('display.width', 120)
-        print(best_results)
+    pd.set_option('display.width', 120)
+    print(results)
