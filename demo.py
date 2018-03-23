@@ -1,8 +1,6 @@
 import sys
 import re
 
-import pandas as pd
-
 from factoring import three_bit_multiplier, GATES
 
 try:
