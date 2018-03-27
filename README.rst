@@ -4,13 +4,7 @@ Demo of Factoring
 Factoring is...
 
 This code demonstrates the use of the D-Wave system to solve such a problem in the case of a three-bit multiplier
-circuit. The user is prompted to enter a six-bit integer: P, which represents a product to be factored.
-
-.. code-block::
-
-  Input product        ( 0 <= P <= 63):
-
-The algorithm returns possible A and B values, which are the inputs the circuit multiplies to calculate the product, P.
+circuit.
 
 Running the Demo
 ----------------
@@ -40,6 +34,14 @@ A minimal working example using the main interface function can be seen by runni
 .. code-block:: bash
 
   python demo.py
+  
+The user is prompted to enter a six-bit integer: P, which represents a product to be factored.
+
+.. code-block::
+
+  Input product        ( 0 <= P <= 63):
+
+The algorithm returns possible A and B values, which are the inputs the circuit multiplies to calculate the product, P.
 
 License
 -------
