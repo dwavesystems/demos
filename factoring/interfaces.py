@@ -4,8 +4,6 @@ import sys
 import re
 from collections import OrderedDict
 
-import pandas as pd
-
 from factoring import three_bit_multiplier, GATES
 
 
