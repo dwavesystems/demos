@@ -121,13 +121,13 @@ def factor(P):
 
         if (a, b, P) in results_dict:
             results_dict[(a, b, P)]["numOfOccurrences"] += num_occurrences
-            results_dict[(a, b, P)]["percentageOfOccurrences"] = results_dict[(a, b, P)]["numOfOccurrences"] / total
+            results_dict[(a, b, P)]["percentageOfOccurrences"] = 100 * results_dict[(a, b, P)]["numOfOccurrences"] / total
         else:
             results_dict[(a, b, P)] = {"a": a,
                                        "b": b,
                                        "valid": a * b == P,
                                        "numOfOccurrences": num_occurrences,
-                                       "percentageOfOccurrences": num_occurrences / total}
+                                       "percentageOfOccurrences": 100 * num_occurrences / total}
 
     output['results'] = list(results_dict.values())
 
