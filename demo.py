@@ -1,14 +1,9 @@
 import sys
 import re
 
-from factoring import three_bit_multiplier, GATES
+import dwave_micro_client_dimod as system
 
-try:
-    import dwave_micro_client_dimod as system
-    _qpu = True
-except ImportError:
-    import dwave_qbsolv as qbsolv
-    _qpu = False
+from factoring import three_bit_multiplier, GATES
 
 _PY2 = sys.version_info.major == 2
 if _PY2:
@@ -60,16 +55,10 @@ if __name__ == '__main__':
     for var, value in fixed_variables.items():
         bqm.fix_variable(var, value)
 
-    if _qpu:
-        # find embedding and put on system
-        print("Running using QPU\n")
-        sampler = system.EmbeddingComposite(system.DWaveSampler())
-        response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
-    else:
-        # if no qpu access, use qbsolv's tabu
-        print("Running using qbsolv's classical tabu search\n")
-        sampler = qbsolv.QBSolv()
-        response = sampler.sample_ising(bqm.linear, bqm.quadratic)
+    # find embedding and put on system
+    print("Running using QPU\n")
+    sampler = system.EmbeddingComposite(system.DWaveSampler())
+    response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
 
     ####################################################################################################
     # output results
