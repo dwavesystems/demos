@@ -1,7 +1,5 @@
 from __future__ import division
 
-import sys
-import re
 from collections import OrderedDict
 
 from dwave.system.samplers import DWaveSampler
