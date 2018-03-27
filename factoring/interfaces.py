@@ -1,8 +1,9 @@
 from __future__ import division
 
-import sys
-import re
 from collections import OrderedDict
+
+from dwave.system.samplers import DWaveSampler
+from dwave.system.composites import EmbeddingComposite
 
 from factoring import three_bit_multiplier, GATES
 
@@ -21,32 +22,32 @@ def validate_input(ui, range_):
 NUM_READS = 1000
 
 
-def factor(P, _qpu=True):
+def factor(P):
     output = {"status": "pending",  # "pending", "in progress", "completed", "failed", or "canceled"
-               "results": [],
-               #    {
-               #        "a": Number,
-               #        "b": Number,
-               #        "valid": Boolean,
-               #        "numOfOccurrences": Number,
-               #        "percentageOfOccurrences": Number
-               #    }
-               "errors": [],
-               #    {
-               #        "exception": String,
-               #        "message": String
-               #    },
-               "timing": {
-                   "estimate": {
-                       "min": None,   # milliseconds
-                       "max": None,   # milliseconds
-                   },
-                   "actual": {
-                       "qpuProcessTime": None,  # milliseconds
-                       "queueTime": None  # milliseconds
-                   }
-               },
-               "numberOfReads": NUM_READS}
+              "results": [],
+              #    {
+              #        "a": Number,
+              #        "b": Number,
+              #        "valid": Boolean,
+              #        "numOfOccurrences": Number,
+              #        "percentageOfOccurrences": Number
+              #    }
+              "errors": [],
+              #    {
+              #        "exception": String,
+              #        "message": String
+              #    },
+              "timing": {
+                  "estimate": {
+                      "min": None,   # milliseconds
+                      "max": None,   # milliseconds
+                  },
+                  "actual": {
+                      "qpuProcessTime": None,  # milliseconds
+                      "queueTime": None  # milliseconds
+                  }
+              },
+              "numberOfReads": NUM_READS}
 
     try:
         validate_input(P, range(2 ** 6))
@@ -81,26 +82,18 @@ def factor(P, _qpu=True):
 
     output['status'] = "in progress"
 
-    if _qpu:
-        from dwave.system.samplers import DWaveSampler
-        from dwave.system.composites import EmbeddingComposite
-        # find embedding and put on system
-        sampler = EmbeddingComposite(DWaveSampler())
+    # find embedding and put on system
+    sampler = EmbeddingComposite(DWaveSampler())
 
-        kwargs = {}
-        if 'num_reads' in sampler.parameters:
-            kwargs['num_reads'] = NUM_READS
-        if 'num_spin_reversal_transforms' in sampler.parameters:
-            kwargs['num_spin_reversal_transforms'] = 1
-        if 'answer_mode' in sampler.parameters:
-            kwargs['answer_mode'] = 'histogram'
+    kwargs = {}
+    if 'num_reads' in sampler.parameters:
+        kwargs['num_reads'] = NUM_READS
+    if 'num_spin_reversal_transforms' in sampler.parameters:
+        kwargs['num_spin_reversal_transforms'] = 1
+    if 'answer_mode' in sampler.parameters:
+        kwargs['answer_mode'] = 'histogram'
 
-        response = sampler.sample_ising(bqm.linear, bqm.quadratic, **kwargs)
-    else:
-        import dwave_qbsolv as qbsolv
-        # if no qpu access, use qbsolv's tabu
-        sampler = qbsolv.QBSolv()
-        response = sampler.sample_ising(bqm.linear, bqm.quadratic)
+    response = sampler.sample_ising(bqm.linear, bqm.quadratic, **kwargs)
 
     output['status'] = "completed"
 
