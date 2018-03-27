@@ -22,7 +22,7 @@ is required.
 
 .. code-block:: bash
 
-  pip install -r requirements.txt --extra-index-url https://pypi.dwavesys.com/simple
+  pip install . --extra-index-url https://pypi.dwavesys.com/simple
   python demo.py
 
 License

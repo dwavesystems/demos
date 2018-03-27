@@ -5,7 +5,8 @@ from collections import OrderedDict
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
 
-from factoring import three_bit_multiplier, GATES
+from factoring.circuits import three_bit_multiplier
+from factoring.gates import GATES
 
 
 def validate_input(ui, range_):
