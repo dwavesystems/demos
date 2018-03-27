@@ -1,15 +1,72 @@
-import pandas as pd
+import unittest
+
+from factoring.gates import gate_model
+
 import dimod
 
 
-def verifygate(bqm, vars):
-    es = dimod.ExactSolver()
-    resp = es.sample_ising(bqm.linear, bqm.quadratic)
-    resp = resp.as_binary()
-    # Q = {(k, k): v for k, v in bqm.linear.items()}
-    # Q.update(bqm.quadratic)
-    # resp = es.sample_qubo(Q)
+class TestGates(unittest.TestCase):
 
-    df = pd.DataFrame([dict(data['sample'], **{'energy': data['energy']}) for data in resp.data()])
+    def test_and(self):
+        pm = gate_model('AND', False)
+        es = dimod.ExactSolver()
+        resp = es.sample(pm.model).change_vartype('BINARY')
 
-    return df.groupby(vars).energy.agg(min).reset_index().sort_values('energy')
+        min_energy = min(resp.data(['energy'])).energy
+        for sample, energy in resp.data(['sample', 'energy']):
+            if energy == min_energy:
+                self.assertEqual(sample['in1'] and sample['in2'], sample['out'])
+            else:
+                self.assertNotEqual(sample['in1'] and sample['in2'], sample['out'])
+
+    @unittest.skip("Penalty model not in pre-populated cache")
+    def test_or(self):
+        pm = gate_model('OR', False)
+        es = dimod.ExactSolver()
+        resp = es.sample(pm.model).change_vartype('BINARY')
+
+        min_energy = min(resp.data(['energy'])).energy
+        for sample, energy in resp.data(['sample', 'energy']):
+            if energy == min_energy:
+                self.assertEqual(sample['in1'] or sample['in2'], sample['out'])
+            else:
+                self.assertNotEqual(sample['in1'] or sample['in2'], sample['out'])
+
+    @unittest.skip("Penalty model not in pre-populated cache")
+    def test_xor(self):
+        pm = gate_model('XOR', False)
+        es = dimod.ExactSolver()
+        resp = es.sample(pm.model).change_vartype('BINARY')
+
+        min_energy = min(resp.data(['energy'])).energy
+        for sample, energy in resp.data(['sample', 'energy']):
+            if energy == min_energy:
+                self.assertEqual(sample['in1'] != sample['in2'], sample['out'])
+            else:
+                self.assertNotEqual(sample['in1'] != sample['in2'], sample['out'])
+
+    def test_half_add(self):
+        pm = gate_model('HALF_ADD', False)
+        es = dimod.ExactSolver()
+        resp = es.sample(pm.model).change_vartype('BINARY')
+
+        min_energy = min(resp.data(['energy'])).energy
+        for sample, energy in resp.data(['sample', 'energy']):
+            if energy == min_energy:
+                self.assertEqual(sample['augend'] + sample['addend'], sample['sum'] + (sample['carry_out'] << 1))
+            else:
+                self.assertNotEqual(sample['augend'] + sample['addend'], sample['sum'] + (sample['carry_out'] << 1))
+
+    def test_full_add(self):
+        pm = gate_model('FULL_ADD', False)
+        es = dimod.ExactSolver()
+        resp = es.sample(pm.model).change_vartype('BINARY')
+
+        min_energy = min(resp.data(['energy'])).energy
+        for sample, energy in resp.data(['sample', 'energy']):
+            if energy == min_energy:
+                self.assertEqual(sample['augend'] + sample['addend'] + sample['carry_in'],
+                                 sample['sum'] + (sample['carry_out'] << 1))
+            else:
+                self.assertNotEqual(sample['augend'] + sample['addend'] + sample['carry_in'],
+                                    sample['sum'] + (sample['carry_out'] << 1))

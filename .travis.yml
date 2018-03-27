@@ -47,20 +47,20 @@ matrix:
 
 install:
     - pip install -r tests/requirements.txt
-    - pip install .
+    - pip install . --extra-index-url https://pypi.dwavesys.com/simple
 
 script:
   - coverage run -m unittest discover
-  - make -C ./docs/ doctest
+  # - make -C ./docs/ doctest
 
 after_success:
   - coveralls
 
-deploy:
-  provider: pypi
-  user: "dwtools"
-  password:
-    secure: "PROJECTKEY"
-  distributions: "sdist bdist_wheel"
-  on:
-    tags: true
+# deploy:
+#   provider: pypi
+#   user: "dwtools"
+#   password:
+#     secure: "PROJECTKEY"
+#   distributions: "sdist bdist_wheel"
+#   on:
+#     tags: true
