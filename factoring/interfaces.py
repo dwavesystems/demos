@@ -65,7 +65,7 @@ def postprocess_factor_response(response, P):
                 #        "numOfOccurrences": Number,
                 #        "percentageOfOccurrences": Number
                 #    }
-                "numberOfReads": NUM_READS}
+                "numberOfReads": None}
 
     # we know that three_bit_multiplier has created variables
     a_vars = ['a0', 'a1', 'a2']
@@ -97,5 +97,6 @@ def postprocess_factor_response(response, P):
                                        "percentageOfOccurrences": 100 * num_occurrences / total}
 
     output['results'] = list(results_dict.values())
+    output['numberOfReads'] = total
 
     return output
