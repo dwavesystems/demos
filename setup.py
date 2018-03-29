@@ -22,7 +22,7 @@ else:
 install_requires = ['penaltymodel-cache==0.2.0',
                     'dimod==0.6.3',
                     'dwave-system==0.2.1',
-                    'networkx']
+                    'networkx==2.0']
 
 # Any extra requirements, to be used by pip install PACKAGENAME['keyname']
 extras_require = {}
