@@ -1,2 +1,2 @@
 -r requirements_base.txt
-dwave_sapi_dimod
+dwave-system>=0.2.4,<0.3.0
