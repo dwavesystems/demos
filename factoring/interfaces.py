@@ -1,5 +1,8 @@
 from __future__ import division
 
+import time
+import logging
+
 from collections import OrderedDict
 
 from dwave.system.samplers import DWaveSampler
@@ -7,6 +10,8 @@ from dwave.system.composites import EmbeddingComposite
 
 from factoring.circuits import three_bit_multiplier
 from factoring.gates import GATES
+
+log = logging.getLogger(__name__)
 
 
 def validate_input(ui, range_):
@@ -27,6 +32,7 @@ def get_factor_bqm(P):
     validate_input(P, range(2 ** 6))
 
     # get circuit
+    construction_start_time = time.time()
     bqm, labels = three_bit_multiplier(False)
 
     # fix product qubits
@@ -35,6 +41,7 @@ def get_factor_bqm(P):
     fixed_variables = {var: 1 if x == '1' else -1 for (var, x) in fixed_variables.items()}
     for var, value in fixed_variables.items():
         bqm.fix_variable(var, value)
+    log.debug('bqm construction time: %s', time.time() - construction_start_time)
 
     return bqm
 
@@ -51,7 +58,9 @@ def submit_factor_bqm(bqm):
     if 'answer_mode' in sampler.parameters:
         kwargs['answer_mode'] = 'histogram'
 
+    sample_time = time.time()
     response = sampler.sample(bqm, **kwargs)
+    logging.debug('embedding and sampling time: %s', time.time() - sample_time)
 
     return response
 
