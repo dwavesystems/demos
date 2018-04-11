@@ -10,7 +10,7 @@ class TestGates(unittest.TestCase):
     def test_and(self):
         pm = gate_model('AND', False)
         es = dimod.ExactSolver()
-        resp = es.sample(pm.model).change_vartype('BINARY')
+        resp = es.sample(pm.model)
 
         min_energy = min(resp.data(['energy'])).energy
         for sample, energy in resp.data(['sample', 'energy']):
@@ -23,7 +23,7 @@ class TestGates(unittest.TestCase):
     def test_or(self):
         pm = gate_model('OR', False)
         es = dimod.ExactSolver()
-        resp = es.sample(pm.model).change_vartype('BINARY')
+        resp = es.sample(pm.model)
 
         min_energy = min(resp.data(['energy'])).energy
         for sample, energy in resp.data(['sample', 'energy']):
@@ -36,7 +36,7 @@ class TestGates(unittest.TestCase):
     def test_xor(self):
         pm = gate_model('XOR', False)
         es = dimod.ExactSolver()
-        resp = es.sample(pm.model).change_vartype('BINARY')
+        resp = es.sample(pm.model)
 
         min_energy = min(resp.data(['energy'])).energy
         for sample, energy in resp.data(['sample', 'energy']):
@@ -48,7 +48,7 @@ class TestGates(unittest.TestCase):
     def test_half_add(self):
         pm = gate_model('HALF_ADD', False)
         es = dimod.ExactSolver()
-        resp = es.sample(pm.model).change_vartype('BINARY')
+        resp = es.sample(pm.model)
 
         min_energy = min(resp.data(['energy'])).energy
         for sample, energy in resp.data(['sample', 'energy']):
@@ -60,7 +60,7 @@ class TestGates(unittest.TestCase):
     def test_full_add(self):
         pm = gate_model('FULL_ADD', False)
         es = dimod.ExactSolver()
-        resp = es.sample(pm.model).change_vartype('BINARY')
+        resp = es.sample(pm.model)
 
         min_energy = min(resp.data(['energy'])).energy
         for sample, energy in resp.data(['sample', 'energy']):
