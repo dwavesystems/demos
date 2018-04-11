@@ -35,10 +35,12 @@ def get_factor_bqm(P):
     construction_start_time = time.time()
     bqm, labels = three_bit_multiplier(False)
 
+    # we know that three_bit_multiplier has created variables
+    p_vars = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']
+
     # fix product qubits
-    fixed_variables = {}
-    fixed_variables.update(zip(('p5', 'p4', 'p3', 'p2', 'p1', 'p0'), "{:06b}".format(P)))
-    fixed_variables = {var: 1 if x == '1' else -1 for (var, x) in fixed_variables.items()}
+    fixed_variables = dict(zip(reversed(p_vars), "{:06b}".format(P)))
+    fixed_variables = {var: int(x) for (var, x) in fixed_variables.items()}
     for var, value in fixed_variables.items():
         bqm.fix_variable(var, value)
     log.debug('bqm construction time: %s', time.time() - construction_start_time)
@@ -91,9 +93,9 @@ def postprocess_factor_response(response, P):
         a = b = 0
 
         for lbl in reversed(a_vars):
-            a = (a << 1) | (1 if sample[lbl] > 0 else 0)
+            a = (a << 1) | sample[lbl]
         for lbl in reversed(b_vars):
-            b = (b << 1) | (1 if sample[lbl] > 0 else 0)
+            b = (b << 1) | sample[lbl]
 
         if (a, b, P) in results_dict:
             results_dict[(a, b, P)]["numOfOccurrences"] += num_occurrences
