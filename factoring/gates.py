@@ -51,12 +51,8 @@ def gate_model(gate_type):
             pmodel = pm.get_penalty_model(spec)
             if not pmodel:
                 raise LookupError("failed to get penalty model from factory")
-            # print("penalty model fits on K{}".format(size))
             break
         except pm.ImpossiblePenaltyModel:
-            # print("penalty model does not fit on K{}".format(size))
             size += 1
 
-    # print('h: {}'.format(pmodel.model.linear))
-    # print('J: {}\n'.format(pmodel.model.quadratic))
     return pmodel
