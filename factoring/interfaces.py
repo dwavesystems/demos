@@ -1,5 +1,8 @@
 from __future__ import division
 
+import time
+import logging
+
 from collections import OrderedDict
 
 from dwave.system.samplers import DWaveSampler
@@ -7,6 +10,8 @@ from dwave.system.composites import EmbeddingComposite
 
 from factoring.circuits import three_bit_multiplier
 from factoring.gates import GATES
+
+log = logging.getLogger(__name__)
 
 
 def validate_input(ui, range_):
@@ -61,6 +66,7 @@ def factor(P):
     ####################################################################################################
     # get circuit
     ####################################################################################################
+    construction_start_time = time.time()
     bqm, labels = three_bit_multiplier(False)
     a_vars = ['a0', 'a1', 'a2']
     b_vars = ['b0', 'b1', 'b2']
@@ -76,6 +82,7 @@ def factor(P):
     # fix variables
     for var, value in fixed_variables.items():
         bqm.fix_variable(var, value)
+    log.debug('bqm construction time: %s', time.time() - construction_start_time)
 
     ####################################################################################################
     # run problem
@@ -94,7 +101,9 @@ def factor(P):
     if 'answer_mode' in sampler.parameters:
         kwargs['answer_mode'] = 'histogram'
 
+    sample_time = time.time()
     response = sampler.sample_ising(bqm.linear, bqm.quadratic, **kwargs)
+    logging.debug('embedding and sampling time: %s', time.time() - sample_time)
 
     output['status'] = "completed"
 
