@@ -36,8 +36,6 @@ def stitch(models):
 
     Similarly, the offset is summed across all models.
 
-    All constraints are converted to :class:`pm.Vartype.SPIN`.
-
     Args:
         models (list[pm.PenaltyModel]): A list of penalty models to be stiched together.
 
@@ -57,7 +55,7 @@ def stitch(models):
 
         offset += widget.model.offset
 
-    return dimod.BinaryQuadraticModel(linear, quadratic, offset, dimod.SPIN)
+    return dimod.BinaryQuadraticModel(linear, quadratic, offset, 'BINARY')
 
 
 def new_pmodel(pmodel, old_labels, new_labels):
