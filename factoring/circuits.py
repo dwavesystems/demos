@@ -69,19 +69,19 @@ def new_pmodel(pmodel, old_labels, new_labels):
 new_pmodel.counter = 0
 
 
-def three_bit_multiplier(fault=True):
+def three_bit_multiplier():
     ####################################################################################################
     # get basic gate fault models
     ####################################################################################################
 
     # print("AND gate fault model")
-    pmodel_and = gate_model('AND', fault)
+    pmodel_and = gate_model('AND')
 
     # print("half adder fault model")
-    pmodel_half_add = gate_model('HALF_ADD', fault)
+    pmodel_half_add = gate_model('HALF_ADD')
 
     # print("full adder fault model")
-    pmodel_full_add = gate_model('FULL_ADD', fault)
+    pmodel_full_add = gate_model('FULL_ADD')
 
     ####################################################################################################
     # wire the whole thing up
@@ -168,16 +168,16 @@ def three_bit_multiplier(fault=True):
     return (bqm, labels)
 
 
-def half_adder(fault=True):
+def half_adder():
     ####################################################################################################
     # get basic gate fault models
     ####################################################################################################
 
     # print("XOR gate fault model")
-    pmodel_xor = gate_model('XOR', fault)
+    pmodel_xor = gate_model('XOR')
 
     # print("AND gate fault model")
-    pmodel_and = gate_model('AND', fault)
+    pmodel_and = gate_model('AND')
 
     ####################################################################################################
     # wire the whole thing up
@@ -205,16 +205,16 @@ def half_adder(fault=True):
     return (bqm, labels)
 
 
-def full_adder(fault=True):
+def full_adder():
     ####################################################################################################
     # get basic gate fault models
     ####################################################################################################
 
     # print("half adder fault model")
-    pmodel_half_add = gate_model('HALF_ADD', fault)
+    pmodel_half_add = gate_model('HALF_ADD')
 
     # print("OR gate fault model")
-    pmodel_or = gate_model('OR', fault)
+    pmodel_or = gate_model('OR')
 
     ####################################################################################################
     # wire the whole thing up

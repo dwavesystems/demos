@@ -40,24 +40,8 @@ GATES['FULL_ADD'] = (('augend', 'addend', 'carry_in', 'sum', 'carry_out'),
                       (1, 1, 1, 1, 1): 0.})
 
 
-def fault_gate(gate, explicit_gap):
-    nV = len(next(iter(gate)))  # Assume all the same length
-    fc = {}
-    for config in itertools.product((0, 1), repeat=nV):
-        if config in gate:
-            fc[config] = 0
-        else:
-            fc[config] = explicit_gap
-    return fc
-
-
-FAULT_GAP = .5
-
-
-def gate_model(gate_type, fault=True):
+def gate_model(gate_type):
     labels, configurations = GATES[gate_type]
-    if fault:
-        configurations = fault_gate(configurations, FAULT_GAP)
     size = len(next(iter(configurations)))
     while True:
         G = nx.complete_graph(size)
