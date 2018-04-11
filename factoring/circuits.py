@@ -55,7 +55,7 @@ def stitch(models):
 
         offset += widget.model.offset
 
-    return dimod.BinaryQuadraticModel(linear, quadratic, offset, dimod.BINARY)
+    return dimod.BinaryQuadraticModel(linear, quadratic, offset, 'BINARY')
 
 
 def new_pmodel(pmodel, old_labels, new_labels):
