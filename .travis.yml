@@ -46,8 +46,8 @@ matrix:
       deploy:
 
 install:
-    - pip install -r tests/requirements.txt
     - pip install . --extra-index-url https://pypi.dwavesys.com/simple
+    - pip install -r tests/requirements.txt
 
 script:
   - coverage run -m unittest discover
