@@ -33,7 +33,7 @@ def get_factor_bqm(P):
 
     # get circuit
     construction_start_time = time.time()
-    bqm, labels = three_bit_multiplier(False)
+    bqm, labels = three_bit_multiplier()
 
     # we know that three_bit_multiplier has created variables
     p_vars = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']
