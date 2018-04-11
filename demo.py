@@ -2,7 +2,7 @@ import sys
 
 from pprint import pprint
 
-from factoring.interfaces import factor
+from factoring.interfaces import get_factor_bqm, submit_factor_bqm, postprocess_factor_response
 
 _PY2 = sys.version_info.major == 2
 if _PY2:
@@ -32,11 +32,13 @@ def sanitised_input(description, variable, range_):
 if __name__ == '__main__':
     # get input from user
     print("Enter a number to be factored:")
-    P = sanitised_input("product", "P", range(2**6))
+    P = sanitised_input("product", "P", range(2 ** 6))
+    bqm = get_factor_bqm(P)
 
     # send problem to QPU
     print("Running on QPU")
-    output = factor(P)
+    response = submit_factor_bqm(bqm)
 
     # output results
+    output = postprocess_factor_response(response, P)
     pprint(output)
