@@ -6,7 +6,8 @@ import logging
 from collections import OrderedDict
 
 from dwave.system.samplers import DWaveSampler
-from dwave.system.composites import EmbeddingComposite
+import minorminer
+import dimod
 
 from factoring.circuits import three_bit_multiplier
 from factoring.gates import GATES
@@ -23,9 +24,6 @@ def validate_input(ui, range_):
 
     if ui not in range_:
         raise ValueError("Input must be between {} and {}".format(start, stop))
-
-
-NUM_READS = 1000
 
 
 def get_factor_bqm(P):
@@ -48,20 +46,40 @@ def get_factor_bqm(P):
     return bqm
 
 
-def submit_factor_bqm(bqm):
+def submit_factor_bqm(bqm, use_saved_embedding=True):
     # find embedding and put on system
-    sampler = EmbeddingComposite(DWaveSampler())
+    sampler = DWaveSampler()
 
     kwargs = {}
     if 'num_reads' in sampler.parameters:
-        kwargs['num_reads'] = NUM_READS
+        kwargs['num_reads'] = 50
     if 'num_spin_reversal_transforms' in sampler.parameters:
         kwargs['num_spin_reversal_transforms'] = 1
     if 'answer_mode' in sampler.parameters:
         kwargs['answer_mode'] = 'histogram'
 
     sample_time = time.time()
-    response = sampler.sample(bqm, **kwargs)
+    # apply the embedding to the given problem to map it to the child sampler
+    _, target_edgelist, target_adjacency=sampler.structure
+
+    if use_saved_embedding:
+        from factoring.embedding import embedding
+    else:
+        # get the embedding
+        embedding = minorminer.find_embedding(bqm.quadratic, target_edgelist)
+
+        if bqm and not embedding:
+            raise ValueError("no embedding found")
+
+        # this should change in later versions
+        if isinstance(embedding, list):
+            embedding = dict(enumerate(embedding))
+
+    bqm_embedded = dimod.embed_bqm(bqm, embedding, target_adjacency, 3.0)
+
+    response = sampler.sample(bqm_embedded, **kwargs)
+
+    response = dimod.unembed_response(response, embedding, source_bqm=bqm)
     logging.debug('embedding and sampling time: %s', time.time() - sample_time)
 
     return response
