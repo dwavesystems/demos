@@ -53,6 +53,13 @@ The user is prompted to enter a six-bit integer: P, which represents a product t
 
 The algorithm returns possible A and B values, which are the inputs the circuit multiplies to calculate the product, P.
 
+By default, the function that sends the problem to the QPU uses a saved embedding. This can be overriden and the code to
+calculate a new embedding can be called by using:
+
+.. code-block:: python
+
+  submit_factor_bqm(bqm, use_saved_embedding=False)
+
 License
 -------
 
