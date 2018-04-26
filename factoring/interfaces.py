@@ -56,7 +56,7 @@ def factor(P, use_saved_embedding=True):
 
     sample_time = time.time()
     # apply the embedding to the given problem to map it to the child sampler
-    _, target_edgelist, target_adjacency=sampler.structure
+    _, target_edgelist, target_adjacency = sampler.structure
 
     if use_saved_embedding:
         from factoring.embedding import embedding
@@ -78,15 +78,27 @@ def factor(P, use_saved_embedding=True):
     response = dimod.unembed_response(response, embedding, source_bqm=bqm)
     logging.debug('embedding and sampling time: %s', time.time() - sample_time)
 
-    output = {"results": [],
-                #    {
-                #        "a": Number,
-                #        "b": Number,
-                #        "valid": Boolean,
-                #        "numOfOccurrences": Number,
-                #        "percentageOfOccurrences": Number
-                #    }
-                "numberOfReads": None}
+    output = {
+        "results": [],
+        #    {
+        #        "a": Number,
+        #        "b": Number,
+        #        "valid": Boolean,
+        #        "numOfOccurrences": Number,
+        #        "percentageOfOccurrences": Number
+        #    }
+        "timing": {
+            "estimate": {
+                "min": None,   # milliseconds
+                "max": None,   # milliseconds
+            },
+            "actual": {
+                "qpuProcessTime": None,  # milliseconds
+                "queueTime": None  # milliseconds
+            }
+        },
+        "numberOfReads": None
+    }
 
     # we know that three_bit_multiplier has created variables
     a_vars = ['a0', 'a1', 'a2']
@@ -109,7 +121,8 @@ def factor(P, use_saved_embedding=True):
 
         if (a, b, P) in results_dict:
             results_dict[(a, b, P)]["numOfOccurrences"] += num_occurrences
-            results_dict[(a, b, P)]["percentageOfOccurrences"] = 100 * results_dict[(a, b, P)]["numOfOccurrences"] / total
+            results_dict[(a, b, P)]["percentageOfOccurrences"] = 100 * \
+                results_dict[(a, b, P)]["numOfOccurrences"] / total
         else:
             results_dict[(a, b, P)] = {"a": a,
                                        "b": b,
@@ -119,5 +132,8 @@ def factor(P, use_saved_embedding=True):
 
     output['results'] = list(results_dict.values())
     output['numberOfReads'] = total
+
+    if 'timing' in response.info:
+        output['timing']['actual']['qpuProcessTime'] = response.info['timing']['run_time_chip']
 
     return output
