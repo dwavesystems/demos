@@ -26,7 +26,7 @@ def validate_input(ui, range_):
         raise ValueError("Input must be between {} and {}".format(start, stop))
 
 
-def get_factor_bqm(P):
+def factor(P, use_saved_embedding=True):
     validate_input(P, range(2 ** 6))
 
     # get circuit
@@ -43,10 +43,6 @@ def get_factor_bqm(P):
         bqm.fix_variable(var, value)
     log.debug('bqm construction time: %s', time.time() - construction_start_time)
 
-    return bqm
-
-
-def submit_factor_bqm(bqm, use_saved_embedding=True):
     # find embedding and put on system
     sampler = DWaveSampler()
 
@@ -82,10 +78,6 @@ def submit_factor_bqm(bqm, use_saved_embedding=True):
     response = dimod.unembed_response(response, embedding, source_bqm=bqm)
     logging.debug('embedding and sampling time: %s', time.time() - sample_time)
 
-    return response
-
-
-def postprocess_factor_response(response, P):
     output = {"results": [],
                 #    {
                 #        "a": Number,

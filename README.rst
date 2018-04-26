@@ -3,7 +3,7 @@ Demo of Factoring
 
 Integer factoring is the decomposition of an integer into factors that, when multiplied together, give the original
 number. For example, the factors of 15 are 3 and 5.
- 
+
 D-Wave quantum computers allow us to factor numbers in an entirely new way, by turning a multiplication circuit into a
 constraint satisfaction problem that allows the quantum computer to compute inputs from a predefined output.
 Essentially, this means running the multiplication circuit in reverse!
@@ -38,13 +38,13 @@ appropriate location for the given OS and virtual environment configuration. Thi
   >>> from penaltymodel_cache import cache_file
   >>> cache_file()
   '/home/bellert/git_root/factoring-demo/env/data/dwave-penaltymodel-cache/penaltymodel_cache_v0.2.0.db'
-  
+
 A minimal working example using the main interface function can be seen by running:
 
 .. code-block:: bash
 
   python demo.py
-  
+
 The user is prompted to enter a six-bit integer: P, which represents a product to be factored.
 
 .. code-block::
@@ -53,12 +53,12 @@ The user is prompted to enter a six-bit integer: P, which represents a product t
 
 The algorithm returns possible A and B values, which are the inputs the circuit multiplies to calculate the product, P.
 
-By default, the function that sends the problem to the QPU uses a saved embedding. This can be overriden and the code to
-calculate a new embedding can be called by using:
+By default, the main interface function uses a saved embedding. This can be overriden and the code to calculate a new
+embedding can be called by using:
 
 .. code-block:: python
 
-  submit_factor_bqm(bqm, use_saved_embedding=False)
+  factor(P, use_saved_embedding=False)
 
 License
 -------
