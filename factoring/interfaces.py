@@ -134,6 +134,6 @@ def factor(P, use_saved_embedding=True):
     output['numberOfReads'] = total
 
     if 'timing' in response.info:
-        output['timing']['actual']['qpuProcessTime'] = response.info['timing']['qpu_sampling_time']
+        output['timing']['actual']['qpuProcessTime'] = response.info['timing']['qpu_access_time']
 
     return output
