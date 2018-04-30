@@ -5,11 +5,10 @@ import logging
 
 from collections import OrderedDict
 
+import dwavecsp
 from dwave.system.samplers import DWaveSampler
 import minorminer
 import dimod
-
-from dwavecsp.factories import multiplication_circuit
 
 log = logging.getLogger(__name__)
 
@@ -30,7 +29,7 @@ def factor(P, use_saved_embedding=True):
 
     # get circuit
     construction_start_time = time.time()
-    csp = multiplication_circuit(3)
+    csp = dwavecsp.factories.multiplication_circuit(3)
 
     # we know that three_bit_multiplier has created variables
     p_vars = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']
@@ -40,7 +39,10 @@ def factor(P, use_saved_embedding=True):
     fixed_variables = {var: int(x) for (var, x) in fixed_variables.items()}
     for var, value in fixed_variables.items():
         csp.fix_variable(var, value)
-    log.debug('bqm construction time: %s', time.time() - construction_start_time)
+    log.debug('csp construction time: %s', time.time() - construction_start_time)
+
+    # get bqm
+    bqm = dwavecsp.stitch(csp, min_classical_gap=.1)
 
     # find embedding and put on system
     sampler = DWaveSampler()
