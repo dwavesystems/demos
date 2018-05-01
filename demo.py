@@ -5,8 +5,12 @@ import dwave_qbsolv as qbsolv
 
 import dwave_networkx as dnx
 
-import dwave.system.samplers as dwsamplers
-import dwave.system.composites as dwcomposites
+try:
+    import dwave.system.samplers as dwsamplers
+    import dwave.system.composites as dwcomposites
+    _qpu = True
+except ImportError:
+    _qpu = False
 
 import dwave_structural_imbalance_demo as sbdemo
 
@@ -84,10 +88,10 @@ if __name__ == '__main__':
     # get a sampler
     sampler = qbsolv.QBSolv()
 
-    try:
+    if _qpu:
         subsolver = dwcomposites.EmbeddingComposite(dwsamplers.DWaveSampler())
         print("Running on the QPU")
-    except Exception as e:
+    else:
         print("Running classically")
         subsolver = None
 
