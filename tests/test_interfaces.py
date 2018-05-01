@@ -19,13 +19,9 @@ class TestInterfaces(unittest.TestCase):
             self.assertIsInstance(result['numOfOccurrences'], int)
             self.assertIsInstance(result['percentageOfOccurrences'], float)
         self.assertIsInstance(output['numberOfReads'], int)
-        self.assertSetEqual(set(output['timing']), {'estimate', 'actual'})
-        self.assertSetEqual(set(output['timing']['estimate']), {'min', 'max'})
-        # self.assertIsInstance(output['timing']['estimate']['min'], int)
-        # self.assertIsInstance(output['timing']['estimate']['max'], int)
-        self.assertSetEqual(set(output['timing']['actual']), {'qpuProcessTime', 'queueTime'})
+        self.assertSetEqual(set(output['timing']), {'actual'})
+        self.assertSetEqual(set(output['timing']['actual']), {'qpuProcessTime'})
         self.assertIsInstance(output['timing']['actual']['qpuProcessTime'], int)
-        # self.assertIsInstance(output['timing']['actual']['queueTime'], int)
 
     def test_factor_invalid(self):
         for P in [-1, 64, 'a']:
