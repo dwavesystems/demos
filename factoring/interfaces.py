@@ -105,13 +105,8 @@ def factor(P, use_saved_embedding=True):
         #        "percentageOfOccurrences": Number
         #    }
         "timing": {
-            "estimate": {
-                "min": None,   # milliseconds
-                "max": None,   # milliseconds
-            },
             "actual": {
-                "qpuProcessTime": None,  # milliseconds
-                "queueTime": None  # milliseconds
+                "qpuProcessTime": None  # microseconds
             }
         },
         "numberOfReads": None
