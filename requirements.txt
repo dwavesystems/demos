@@ -1,3 +1,4 @@
+git+ssh://git@github.com/dwavesystems/dwavecsp.git
 penaltymodel-cache==0.2.0
 dimod==0.6.8
 dwave-system==0.2.5
