@@ -6,7 +6,7 @@
     "results": {
       "type": "array",
       "items": {
-        "type": "objects",
+        "type": "object",
         "properties": {
           "a": {
             "type": "number"
