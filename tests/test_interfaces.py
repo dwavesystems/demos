@@ -14,8 +14,10 @@
 
 import unittest
 from random import randint
+import jsonschema
 
 from factoring.interfaces import factor
+from factoring.json_schema import json_schema
 
 
 class TestInterfaces(unittest.TestCase):
@@ -24,18 +26,7 @@ class TestInterfaces(unittest.TestCase):
         P = randint(0, 2**6-1)
         output = factor(P)
 
-        self.assertSetEqual(set(output), {'results', 'timing', 'numberOfReads'})
-        for result in output['results']:
-            self.assertSetEqual(set(result), {'a', 'b', 'valid', 'numOfOccurrences', 'percentageOfOccurrences'})
-            self.assertIsInstance(result['a'], int)
-            self.assertIsInstance(result['b'], int)
-            self.assertIsInstance(result['valid'], bool)
-            self.assertIsInstance(result['numOfOccurrences'], int)
-            self.assertIsInstance(result['percentageOfOccurrences'], float)
-        self.assertIsInstance(output['numberOfReads'], int)
-        self.assertSetEqual(set(output['timing']), {'actual'})
-        self.assertSetEqual(set(output['timing']['actual']), {'qpuProcessTime'})
-        self.assertIsInstance(output['timing']['actual']['qpuProcessTime'], int)
+        jsonschema.validate(output, json_schema)
 
     def test_factor_invalid(self):
         for P in [-1, 64, 'a']:

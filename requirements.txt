@@ -4,3 +4,4 @@ dimod==0.6.8
 dwave-system==0.2.5
 
 networkx==2.0
+jsonschema==2.6.0
