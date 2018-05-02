@@ -16,10 +16,10 @@ input values do not need to flow through a series of gates to yield a result, as
 This code demonstrates the use of the D-Wave system to solve such a problem in the case of a three-bit multiplier
 circuit.
 
-Running the Demo
+Setting Up the Demo
 ----------------
 
-The demo constructs a binary quadratic model and minor-embeds it on the D-Wave system.
+Copy (clone) this factoring-demo repository to your local machine
 
 To set up the required dependencies, in the root directory of a copy (clone) of this repository, run the following:
 
@@ -27,17 +27,24 @@ To set up the required dependencies, in the root directory of a copy (clone) of 
 
   pip install . --extra-index-url https://pypi.dwavesys.com/simple
 
+Configuring the Demo
+----------------
+
 Access to a D-Wave system must be configured, as described in the `dwave-cloud-client`_ documentation. A default solver
 is required.
 
-The penalty model cache file (env/data/dwave-penaltymodel-cache/penaltymodel_cache_v0.2.0.db) must be placed in the
-appropriate location for the given OS and virtual environment configuration. This location can be found as follows:
+Copy the penalty model cache file  from the cloned repo’s directory,
+env/data/dwave-penaltymodel-cache/penaltymodel_cache_v0.2.0.db, to the appropriate location for your OS and virtual
+environment configuration. This location can be found from the output of the cache_file() function as follows:
 
 .. code-block:: python
 
   >>> from penaltymodel_cache import cache_file
   >>> cache_file()
-  '/home/bellert/git_root/factoring-demo/env/data/dwave-penaltymodel-cache/penaltymodel_cache_v0.2.0.db'
+  '/home/jane/git_root/factoring-demo/env/data/dwave-penaltymodel-cache/penaltymodel_cache_v0.2.0.db'
+
+Running the Demo
+----------------
 
 A minimal working example using the main interface function can be seen by running:
 
