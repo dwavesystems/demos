@@ -21,7 +21,7 @@ Running the Demo
 
 The demo constructs a binary quadratic model and minor-embeds it on the D-Wave system.
 
-To setup the required dependencies, in the root directory of a copy of this repository, run the following:
+To set up the required dependencies, in the root directory of a copy (clone) of this repository, run the following:
 
 .. code-block:: bash
 
