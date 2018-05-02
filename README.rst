@@ -17,7 +17,7 @@ This code demonstrates the use of the D-Wave system to solve such a problem in t
 circuit.
 
 Setting Up the Demo
-----------------
+-------------------
 
 Copy (clone) this factoring-demo repository to your local machine
 
@@ -28,12 +28,12 @@ To set up the required dependencies, in the root directory of a copy (clone) of 
   pip install . --extra-index-url https://pypi.dwavesys.com/simple
 
 Configuring the Demo
-----------------
+--------------------
 
 Access to a D-Wave system must be configured, as described in the `dwave-cloud-client`_ documentation. A default solver
 is required.
 
-Copy the penalty model cache file  from the cloned repo’s directory,
+Copy the penalty model cache file from the cloned repo’s directory,
 env/data/dwave-penaltymodel-cache/penaltymodel_cache_v0.2.0.db, to the appropriate location for your OS and virtual
 environment configuration. This location can be found from the output of the cache_file() function as follows:
 
