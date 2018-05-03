@@ -12,6 +12,8 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-from factoring.interfaces import *
-from factoring.embedding import *
-from factoring.json_schema import *
+from pkg_resources import resource_filename
+import json
+
+with open(resource_filename(__name__, 'json_schema.json'), 'r') as schema_file:
+    json_schema = json.load(schema_file)
