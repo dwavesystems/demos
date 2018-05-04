@@ -85,9 +85,6 @@ def factor(P, use_saved_embedding=True):
         embedding = minorminer.find_embedding(bqm.quadratic, target_edgelist)
         if bqm and not embedding:
             raise ValueError("no embedding found")
-        # this should change in later versions
-        if isinstance(embedding, list):
-            embedding = dict(enumerate(embedding))
 
     # apply the embedding to the given problem to map it to the sampler
     bqm_embedded = dimod.embed_bqm(bqm, embedding, target_adjacency, 3.0)
