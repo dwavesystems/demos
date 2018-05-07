@@ -51,6 +51,9 @@ def factor(P, use_saved_embedding=True):
     # get constraint satisfaction problem
     csp = dwavecsp.factories.multiplication_circuit(3)
 
+    # get binary quadratic model
+    bqm = dwavecsp.stitch(csp, min_classical_gap=.1)
+
     # we know that multiplication_circuit() has created these variables
     p_vars = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']
 
@@ -60,10 +63,7 @@ def factor(P, use_saved_embedding=True):
 
     # fix product qubits
     for var, value in fixed_variables.items():
-        csp.fix_variable(var, value)
-
-    # get binary quadratic model
-    bqm = dwavecsp.stitch(csp, min_classical_gap=.1)
+        bqm.fix_variable(var, value)
 
     log.debug('bqm construction time: %s', time.time() - construction_start_time)
 
