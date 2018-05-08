@@ -100,6 +100,8 @@ def factor(P, use_saved_embedding=True):
     # convert back to the original problem space
     response = dimod.unembed_response(response, embedding, source_bqm=bqm)
 
+    sampler.client.close()
+
     log.debug('embedding and sampling time: %s', time.time() - sample_time)
 
     ####################################################################################################
