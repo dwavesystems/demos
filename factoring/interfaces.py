@@ -51,6 +51,9 @@ def factor(P, use_saved_embedding=True):
     # get constraint satisfaction problem
     csp = dwavecsp.factories.multiplication_circuit(3)
 
+    # get binary quadratic model
+    bqm = dwavecsp.stitch(csp, min_classical_gap=.1)
+
     # we know that multiplication_circuit() has created these variables
     p_vars = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']
 
@@ -60,10 +63,7 @@ def factor(P, use_saved_embedding=True):
 
     # fix product qubits
     for var, value in fixed_variables.items():
-        csp.fix_variable(var, value)
-
-    # get binary quadratic model
-    bqm = dwavecsp.stitch(csp, min_classical_gap=.1)
+        bqm.fix_variable(var, value)
 
     log.debug('bqm construction time: %s', time.time() - construction_start_time)
 
@@ -85,9 +85,6 @@ def factor(P, use_saved_embedding=True):
         embedding = minorminer.find_embedding(bqm.quadratic, target_edgelist)
         if bqm and not embedding:
             raise ValueError("no embedding found")
-        # this should change in later versions
-        if isinstance(embedding, list):
-            embedding = dict(enumerate(embedding))
 
     # apply the embedding to the given problem to map it to the sampler
     bqm_embedded = dimod.embed_bqm(bqm, embedding, target_adjacency, 3.0)
@@ -102,6 +99,8 @@ def factor(P, use_saved_embedding=True):
 
     # convert back to the original problem space
     response = dimod.unembed_response(response, embedding, source_bqm=bqm)
+
+    sampler.client.close()
 
     log.debug('embedding and sampling time: %s', time.time() - sample_time)
 
