@@ -19,11 +19,11 @@ else:
 
 # These should be minimal requiments for the package to work, and avoid pinning dependencies unless required. See
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
-install_requires = ['penaltymodel-cache==0.2.0',
-                    'dimod==0.6.8',
-                    'dwave-system==0.2.5',
-                    'networkx==2.0',
-                    'jsonschema==2.6.0']
+install_requires = ['dwavebinarycsp>=0.0.2,<0.1.0',
+                    'dwave-system>=0.2.5,<0.3.0',
+                    'minorminer>=0.1.3,<0.2.0',
+                    'dimod>=0.6.8,<0.7.0',
+                    'jsonschema>=2.6.0,<3.0.0']
 
 # Any extra requirements, to be used by pip install PACKAGENAME['keyname']
 extras_require = {}
