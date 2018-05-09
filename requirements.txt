@@ -1,4 +1,4 @@
-git+ssh://git@github.com/dwavesystems/dwavecsp.git
+dwavebinarycsp==0.0.2
 penaltymodel-cache==0.2.0
 dwave-system==0.2.5
 minorminer==0.1.3
