@@ -33,16 +33,6 @@ Configuring the Demo
 Access to a D-Wave system must be configured, as described in the `dwave-cloud-client`_ documentation. A default solver
 is required.
 
-Copy the penalty model cache file from the cloned repo’s directory,
-env/data/dwave-penaltymodel-cache/penaltymodel_cache_v0.2.0.db, to the appropriate location for your OS and virtual
-environment configuration. This location can be found from the output of the cache_file() function as follows:
-
-.. code-block:: python
-
-  >>> from penaltymodel_cache import cache_file
-  >>> cache_file()
-  '/home/jane/git_root/factoring-demo/env/data/dwave-penaltymodel-cache/penaltymodel_cache_v0.2.0.db'
-
 Running the Demo
 ----------------
 

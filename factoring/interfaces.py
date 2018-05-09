@@ -19,7 +19,7 @@ import logging
 
 from collections import OrderedDict
 
-import dwavecsp
+import dwavebinarycsp as dbc
 from dwave.system.samplers import DWaveSampler
 import minorminer
 import dimod
@@ -49,10 +49,10 @@ def factor(P, use_saved_embedding=True):
     validate_input(P, range(2 ** 6))
 
     # get constraint satisfaction problem
-    csp = dwavecsp.factories.multiplication_circuit(3)
+    csp = dbc.factories.multiplication_circuit(3)
 
     # get binary quadratic model
-    bqm = dwavecsp.stitch(csp, min_classical_gap=.1)
+    bqm = dbc.stitch(csp, min_classical_gap=.1)
 
     # we know that multiplication_circuit() has created these variables
     p_vars = ['p0', 'p1', 'p2', 'p3', 'p4', 'p5']
