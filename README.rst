@@ -1,3 +1,6 @@
+.. image:: https://circleci.com/gh/dwavesystems/factoring-demo.svg?style=svg
+    :target: https://circleci.com/gh/dwavesystems/factoring-demo
+
 Demo of Factoring
 =================
 

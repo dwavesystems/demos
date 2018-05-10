@@ -31,6 +31,7 @@ class TestInterfaces(unittest.TestCase):
         for P in [-1, 64, 'a']:
             self.assertRaises(ValueError, factor, P)
 
+    @unittest.skip("Not really a unittest")
     def test_factor_validity(self):
         for P in [12, 21, 49]: # {a*b for a in range(2**3) for b in range(2**3)}:
             output = factor(P)
