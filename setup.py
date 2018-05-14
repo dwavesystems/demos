@@ -30,7 +30,7 @@ extras_require = {}
 
 # The packages in this repo that are to be installed. Either list these explictly, or use setuptools.find_packages. If
 # the latter, take care to filter unwanted packages (e.g. tests)
-packages = ['dwave_structural_imbalance_demo']
+packages = ['dwave_structural_imbalance_demo', 'dwave_structural_imbalance_demo.mmp_network']
 
 setup(
     name='structural-imbalance-demo',
@@ -43,5 +43,6 @@ setup(
     license='Apache 2.0',
     packages=packages,
     install_requires=install_requires,
-    extras_require=extras_require
+    extras_require=extras_require,
+    include_package_data=True
 )
