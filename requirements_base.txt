@@ -1,5 +1,5 @@
 networkx==2.0
-dwave_networkx>=0.6.1,<0.7.0
-dwave_qbsolv>=0.2.6,<0.3.0
+dwave_networkx==0.6.1
+dwave_qbsolv==0.2.6
 
-matplotlib
+matplotlib==2.2.2
