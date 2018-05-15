@@ -15,30 +15,6 @@ except ImportError:
 import dwave_structural_imbalance_demo as sbdemo
 
 
-def maps():
-    Global = sbdemo.global_signed_social_network()
-
-    # The Syria subregion
-    syria_groups = set()
-    for v, data in Global.nodes(data=True):
-        if 'map' not in data:
-            continue
-        if data['map'] in {'Syria', 'Aleppo'}:
-            syria_groups.add(v)
-    Syria = Global.subgraph(syria_groups)
-
-    # The Iraq subregion
-    iraq_groups = set()
-    for v, data in Global.nodes(data=True):
-        if 'map' not in data:
-            continue
-        if data['map'] == 'Iraq':
-            iraq_groups.add(v)
-    Iraq = Global.subgraph(iraq_groups)
-
-    return Global, Syria, Iraq
-
-
 def diagramDateRange(directory_name, start, end, graph, sampler, subsolver, subarea=None, subarea_name=None):
     # Create directories
     directory_path = os.path.join('Results', directory_name)
@@ -96,18 +72,18 @@ if __name__ == '__main__':
         subsolver = None
 
     # get the graphs
-    Global, Syria, Iraq = maps()
+    graphs = sbdemo.maps()
 
     # calculate the imbalance of Global
-    imbalance, bicoloring = dnx.structural_imbalance(Global, sampler, solver=subsolver)
+    imbalance, bicoloring = dnx.structural_imbalance(graphs['Global'], sampler, solver=subsolver)
 
     # draw the Global graph
-    sbdemo.draw('syria_imbalance.png', Global, imbalance, bicoloring)
+    sbdemo.draw('syria_imbalance.png', graphs['Global'], imbalance, bicoloring)
 
     # Images of the structural imbalance in the local Syrian SSN
     # for years 2010-2016 showing frustrated and unfrustrated edges.
-    diagramDateRange('Syrian Theatre', 2010, 2016 + 1, Syria, sampler, subsolver)
+    diagramDateRange('Syrian Theatre', 2010, 2016 + 1, graphs['Syria'], sampler, subsolver)
 
     # Images of the structural imbalance in the world SSN for
     # years 2007-2016 showing frustrated and unfrustrated edges.
-    diagramDateRange('World Network', 2007, 2016 + 1, Global, sampler, subsolver, Syria, 'Syria')
+    diagramDateRange('World Network', 2007, 2016 + 1, graphs['Global'], sampler, subsolver, graphs['Syria'], 'Syria')

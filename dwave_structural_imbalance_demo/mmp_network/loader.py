@@ -7,11 +7,11 @@ import networkx as nx
 
 def global_signed_social_network():
     """Return the global network for the Militant's Mapping Project.
-    
+
     Reference:
         Mapping Militant Organizations, Stanford University, last modified
         February 28, 2016, http://web.stanford.edu/group/mappingmilitants/cgi-bin/.
-    
+
     Examples:
         >>> import dwave_structural_imbalance_demo as sbdemo
         >>> Global = global_signed_social_network()
@@ -95,3 +95,28 @@ def global_signed_social_network():
                 S.nodes[group_id]['map'] = map_name
 
     return S
+
+
+def maps():
+    maps = dict()
+    maps['Global'] = global_signed_social_network()
+
+    # The Syria subregion
+    syria_groups = set()
+    for v, data in maps['Global'].nodes(data=True):
+        if 'map' not in data:
+            continue
+        if data['map'] in {'Syria', 'Aleppo'}:
+            syria_groups.add(v)
+    maps['Syria'] = maps['Global'].subgraph(syria_groups)
+
+    # The Iraq subregion
+    iraq_groups = set()
+    for v, data in maps['Global'].nodes(data=True):
+        if 'map' not in data:
+            continue
+        if data['map'] == 'Iraq':
+            iraq_groups.add(v)
+    maps['Iraq'] = maps['Global'].subgraph(iraq_groups)
+
+    return maps
