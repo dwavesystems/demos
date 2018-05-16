@@ -44,32 +44,39 @@ class GlobalSignedSocialNetwork(object):
             self.embedding_composite = dwcomposites.EmbeddingComposite(dwsamplers.DWaveSampler())
         self.exact_solver = dimod.ExactSolver()
 
-    def get_graph(self, subregion='Global', year=None):
-        graph = self.maps[subregion]
+    def _get_graph(self, subregion='Global', year=None):
+        G = self.maps[subregion]
         if year:
-            filtered_edges = ((u, v) for u, v, a in graph.edges(data=True) if a['event_date'].year <= year)
-            graph = graph.edge_subgraph(filtered_edges)
-        return graph
+            filtered_edges = ((u, v) for u, v, a in G.edges(data=True) if a['event_date'].year <= year)
+            G = G.edge_subgraph(filtered_edges)
+        return G
 
     def get_node_link_data(self, subregion='Global', year=None):
-        graph = self.get_graph(subregion, year)
-        return nx.node_link_data(graph)
+        G = self._get_graph(subregion, year)
+        return nx.node_link_data(G)
 
     def solve_structural_imbalance(self, subregion='Global', year=None):
-        graph = self.get_graph(subregion, year)
-        print(subregion, year)
+        G = self._get_graph(subregion, year)
+
         if _qpu:
             try:
-                imbalance, bicoloring = dnx.structural_imbalance(graph, self.embedding_composite)
-                print("EmbeddingComposite")
+                imbalance, bicoloring = dnx.structural_imbalance(G, self.embedding_composite)
+                print("Ran on the QPU using EmbeddingComposite")
             except ValueError:
-                imbalance, bicoloring = dnx.structural_imbalance(graph, self.qbsolv, solver=self.embedding_composite)
-                print("QBSolv w/ EmbeddingComposite")
+                imbalance, bicoloring = dnx.structural_imbalance(G, self.qbsolv, solver=self.embedding_composite)
+                print("Ran on the QPU using QBSolv w/ EmbeddingComposite")
         else:
-            if len(graph) < 20:
-                imbalance, bicoloring = dnx.structural_imbalance(graph, self.exact_solver)
-                print("ExactSolver")
+            if len(G) < 20:
+                imbalance, bicoloring = dnx.structural_imbalance(G, self.exact_solver)
+                print("Ran classically using ExactSolver")
             else:
-                imbalance, bicoloring = dnx.structural_imbalance(graph, self.qbsolv, solver='tabu')
-                print("QBSolv w/o QPU")
-        return {'imbalance': imbalance, 'bicoloring': bicoloring}
+                imbalance, bicoloring = dnx.structural_imbalance(G, self.qbsolv, solver='tabu')
+                print("Ran classically using QBSolv")
+
+        G = G.copy()
+        for edge in G.edges:
+            G.edges[edge]['frustrated'] = edge in imbalance
+        for node in G.nodes:
+            G.nodes[node]['color'] = bicoloring[node]
+
+        return nx.node_link_data(G)
