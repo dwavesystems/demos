@@ -1,8 +1,9 @@
-from dwave_structural_imbalance_demo.mmp_network import global_signed_social_network
-
-import dwave_qbsolv as qbsolv
+import networkx as nx
 
 import dwave_networkx as dnx
+import dwave_qbsolv as qbsolv
+
+from dwave_structural_imbalance_demo.mmp_network import global_signed_social_network
 
 try:
     import dwave.system.samplers as dwsamplers
@@ -50,14 +51,13 @@ class GlobalSignedSocialNetwork(object):
             graph = graph.edge_subgraph(filtered_edges)
         return graph
 
-    def get_weighted_edges(self, subregion='Global', year=None):
-        # from networkx import node_link_data
+    def get_node_link_data(self, subregion='Global', year=None):
         graph = self.get_graph(subregion, year)
-        return list(graph.edges(data='sign'))
+        return nx.node_link_data(graph)
 
     def solve_structural_imbalance(self, subregion='Global', year=None):
         graph = self.get_graph(subregion, year)
-        print(subregion,year)
+        print(subregion, year)
         if _qpu:
             try:
                 imbalance, bicoloring = dnx.structural_imbalance(graph, self.embedding_composite)
