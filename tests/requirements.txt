@@ -1,4 +1,4 @@
--r ../requirements.txt
+-r ../requirements_cpu.txt
 
 coverage
 coveralls

@@ -16,6 +16,12 @@ import unittest
 from random import randint, choice
 import jsonschema
 
+try:
+    import dwave.system
+    _qpu = True
+except ImportError:
+    _qpu = False
+
 from dwave_structural_imbalance_demo.interfaces import GlobalSignedSocialNetwork
 from dwave_structural_imbalance_demo.json_schema import json_schema
 
@@ -50,6 +56,10 @@ class TestInterfaces(unittest.TestCase):
         output = self.gssn.get_node_link_data(year=year)
         self.assertFalse(output['nodes'])
         self.assertFalse(output['links'])
+
+    @unittest.skipIf(not _qpu, "Requires access to QPU via dwave-system")
+    def test_year_zero_qpu(self):
+        year = 0
         output = self.gssn.solve_structural_imbalance(year=year)
         self.assertFalse(output['nodes'])
         self.assertFalse(output['links'])
