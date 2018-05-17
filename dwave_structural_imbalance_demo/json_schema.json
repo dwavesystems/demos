@@ -1,0 +1,77 @@
+{
+  "title": "Node Link Data",
+  "version": "1.0.0",
+  "type": "object",
+  "required": [
+    "nodes",
+    "links"
+  ],
+  "properties": {
+    "nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id"
+        ],
+        "properties": {
+          "id": {
+            "type": "number"
+          },
+          "map": {
+            "type": "string"
+          },
+          "color": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "links": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "source",
+          "target",
+          "sign"
+        ],
+        "properties": {
+          "source": {
+            "type": "number"
+          },
+          "target": {
+            "type": "number"
+          },
+          "sign": {
+            "type": "number"
+          },
+          "event_id": {
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string"
+          },
+          "event_description": {
+            "type": "string"
+          },
+          "event_date": {
+            "type": "datetime.date"
+          },
+          "frustrated": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "graph": {
+      "type": "object"
+    },
+    "directed": {
+      "type": "boolean"
+    },
+    "multigraph": {
+      "type": "boolean"
+    }
+  }
+}
