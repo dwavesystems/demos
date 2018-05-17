@@ -56,7 +56,7 @@
             "type": "string"
           },
           "event_date": {
-            "type": "datetime.date"
+            "type": "string"
           },
           "frustrated": {
             "type": "boolean"

@@ -57,7 +57,7 @@ def global_signed_social_network():
             # fill out the datafield
             data = {'event_id': id_,
                     'event_type': type_,
-                    'event_date': dateinfo,
+                    'event_date': date, # don't use datetime to conform with json
                     'event_description': description}
 
             # finally cast the different relation types to either hostile (sign=-1)
