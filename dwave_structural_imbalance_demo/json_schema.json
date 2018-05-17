@@ -1,6 +1,6 @@
 {
   "title": "Node Link Data",
-  "version": "1.0.0",
+  "description": "NetworkX graph data; returned by nx.node_link_data()",
   "type": "object",
   "required": [
     "nodes",
@@ -8,6 +8,7 @@
   ],
   "properties": {
     "nodes": {
+      "description": "vertices in graph representing groups",
       "type": "array",
       "items": {
         "type": "object",
@@ -16,18 +17,21 @@
         ],
         "properties": {
           "id": {
+            "description": "marks unique identifier of group; corresponds to source and target in links",
             "type": "number"
           },
           "map": {
             "type": "string"
           },
           "color": {
+            "description": "group bicoloring; returned by solve_structural_imbalance()",
             "type": "number"
           }
         }
       }
     },
     "links": {
+      "desciption": "edges in graph respresenting interactions between groups",
       "type": "array",
       "items": {
         "type": "object",
@@ -38,12 +42,15 @@
         ],
         "properties": {
           "source": {
+            "description": "marks one group in interaction; corresponds to id in nodes",
             "type": "number"
           },
           "target": {
+            "description": "marks one group in interaction; corresponds to id in nodes",
             "type": "number"
           },
           "sign": {
+            "description": "marks whether interaction is friendly or hostile; input to solve_structural_imbalance()",
             "type": "number"
           },
           "event_id": {
@@ -59,6 +66,7 @@
             "type": "number"
           },
           "frustrated": {
+            "description": "interactions that violate sign; returned by solve_structural_imbalance()",
             "type": "boolean"
           }
         }
