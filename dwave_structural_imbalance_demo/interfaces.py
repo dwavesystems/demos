@@ -38,15 +38,17 @@ class GlobalSignedSocialNetwork(object):
                 iraq_groups.add(v)
         maps['Iraq'] = maps['Global'].subgraph(iraq_groups)
 
-        self.maps = maps
+        self._maps = maps
         self.qbsolv = qbsolv.QBSolv()
         if _qpu:
             self.embedding_composite = dwcomposites.EmbeddingComposite(dwsamplers.DWaveSampler())
         self.exact_solver = dimod.ExactSolver()
 
     def _get_graph(self, subregion='Global', year=None):
-        G = self.maps[subregion]
-        if year:
+        G = self._maps[subregion]
+        if year is not None:
+            if not isinstance(year, int):
+                raise ValueError("year must be int")
             filtered_edges = ((u, v) for u, v, a in G.edges(data=True) if a['event_year'] <= year)
             G = G.edge_subgraph(filtered_edges)
         return G

@@ -1,0 +1,4 @@
+-r ../requirements_cpu.txt
+
+coverage
+coveralls
