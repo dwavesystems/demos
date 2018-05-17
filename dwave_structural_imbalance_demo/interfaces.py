@@ -46,7 +46,7 @@ class GlobalSignedSocialNetwork(object):
 
     def _get_graph(self, subregion='Global', year=None):
         G = self._maps[subregion]
-        if year:
+        if year is not None:
             filtered_edges = ((u, v) for u, v, a in G.edges(data=True) if a['event_year'] <= year)
             G = G.edge_subgraph(filtered_edges)
         return G
