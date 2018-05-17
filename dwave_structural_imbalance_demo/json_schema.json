@@ -55,8 +55,8 @@
           "event_description": {
             "type": "string"
           },
-          "event_date": {
-            "type": "string"
+          "event_year": {
+            "type": "number"
           },
           "frustrated": {
             "type": "boolean"
