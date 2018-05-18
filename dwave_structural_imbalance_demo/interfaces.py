@@ -23,6 +23,33 @@ class GlobalSignedSocialNetwork(object):
             Specifies whether structural imblance problems will be solved on the QPU or CPU. Defaults to True if
             dwave-system is installed, False otherwise.
 
+    Examples:
+        >>> import dwave_structural_imbalance_demo as sbdemo
+        >>> gssn = sbdemo.GlobalSignedSocialNetwork()
+        >>> nld_before = gssn.get_node_link_data('Syria', 2013)
+        >>> nld_before['nodes'][0]
+        {'id': 1, 'map': 'Aleppo'}
+        >>> nld_before['links'][0]
+        {'event_description': 'Ahrar al-Sham and the Islamic State coordinated an attack on Alawite villages in the Latakia governorate that killed 190 civilians.',
+         'event_id': '1821',
+         'event_type': 'all',
+         'event_year': 2013,
+         'sign': 1,
+         'source': 1,
+         'target': 523}
+        >>> nld_after = gssn.solve_structural_imbalance('Syria', 2013)
+        >>> nld_after['nodes'][0]
+        {'color': 0, 'id': 1, 'map': 'Aleppo'}
+        >>> nld_after['links'][0]
+        {'event_description': 'Ahrar al-Sham and the Islamic State coordinated an attack on Alawite villages in the Latakia governorate that killed 190 civilians.',
+         'event_id': '1821',
+         'event_type': 'all',
+         'event_year': 2013,
+         'frustrated': False,
+         'sign': 1,
+         'source': 1,
+         'target': 523}
+
     """
     def __init__(self, qpu=_qpu):
         maps = dict()

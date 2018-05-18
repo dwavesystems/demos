@@ -22,6 +22,17 @@ def draw(filename, node_link_data, position=None):
     Returns:
         A dictionary of positions keyed by node.
 
+    Examples:
+    >>> import dwave_structural_imbalance_demo as sbdemo
+    >>> gssn = sbdemo.GlobalSignedSocialNetwork()
+    >>> nld_before = gssn.get_node_link_data('Syria', 2013)
+    >>> nld_after = gssn.solve_structural_imbalance('Syria', 2013)
+    # draw Global graph before solving; save node layout for reuse
+    >>> position = sbdemo.draw('syria.png', nld_before)
+    # draw the Global graph; reusing the above layout, and calculating a new grouped layout
+    >>> sbdemo.draw('syria_imbalance.png', nld_after, position)
+    >>> sbdemo.draw('syria_imbalance_grouped', nld_after)
+
     """
 
     S = nx.node_link_graph(node_link_data)
