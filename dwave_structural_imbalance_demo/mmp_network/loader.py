@@ -7,11 +7,11 @@ import networkx as nx
 
 def global_signed_social_network():
     """Return the global network for the Militant's Mapping Project.
-    
+
     Reference:
         Mapping Militant Organizations, Stanford University, last modified
         February 28, 2016, http://web.stanford.edu/group/mappingmilitants/cgi-bin/.
-    
+
     Examples:
         >>> import dwave_structural_imbalance_demo as sbdemo
         >>> Global = global_signed_social_network()
@@ -57,7 +57,7 @@ def global_signed_social_network():
             # fill out the datafield
             data = {'event_id': id_,
                     'event_type': type_,
-                    'event_date': dateinfo,
+                    'event_year': int(year), # whole date isn't needed
                     'event_description': description}
 
             # finally cast the different relation types to either hostile (sign=-1)
