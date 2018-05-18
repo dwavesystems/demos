@@ -16,7 +16,7 @@ import dimod
 
 
 class GlobalSignedSocialNetwork(object):
-    def __init__(self):
+    def __init__(self, qpu=_qpu):
         maps = dict()
         maps['Global'] = global_signed_social_network()
 
@@ -39,10 +39,12 @@ class GlobalSignedSocialNetwork(object):
         maps['Iraq'] = maps['Global'].subgraph(iraq_groups)
 
         self._maps = maps
-        self.qbsolv = qbsolv.QBSolv()
-        if _qpu:
-            self.embedding_composite = dwcomposites.EmbeddingComposite(dwsamplers.DWaveSampler())
-        self.exact_solver = dimod.ExactSolver()
+        self._qpu = qpu
+        self._qbsolv = qbsolv.QBSolv()
+        if qpu:
+            self._embedding_composite = dwcomposites.EmbeddingComposite(dwsamplers.DWaveSampler())
+        else:
+            self._exact_solver = dimod.ExactSolver()
 
     def _get_graph(self, subregion='Global', year=None):
         G = self._maps[subregion]
@@ -60,19 +62,19 @@ class GlobalSignedSocialNetwork(object):
     def solve_structural_imbalance(self, subregion='Global', year=None):
         G = self._get_graph(subregion, year)
 
-        if _qpu:
+        if self._qpu:
             try:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self.embedding_composite)
+                imbalance, bicoloring = dnx.structural_imbalance(G, self._embedding_composite)
                 print("Ran on the QPU using EmbeddingComposite")
             except ValueError:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self.qbsolv, solver=self.embedding_composite)
+                imbalance, bicoloring = dnx.structural_imbalance(G, self._qbsolv, solver=self._embedding_composite)
                 print("Ran on the QPU using QBSolv w/ EmbeddingComposite")
         else:
             if len(G) < 20:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self.exact_solver)
+                imbalance, bicoloring = dnx.structural_imbalance(G, self._exact_solver)
                 print("Ran classically using ExactSolver")
             else:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self.qbsolv, solver='tabu')
+                imbalance, bicoloring = dnx.structural_imbalance(G, self._qbsolv, solver='tabu')
                 print("Ran classically using QBSolv")
 
         G = G.copy()
