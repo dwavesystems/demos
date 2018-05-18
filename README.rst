@@ -26,8 +26,9 @@ To run the demo on the QPU, extra dependencies must be installed by running the 
 
   pip install .[qpu] --extra-index-url https://pypi.dwavesys.com/simple
 
-Access to a D-Wave system must be configured, as described in the `dwave-cloud-client`_ documentation. A default solver
-is required.
+Access to a D-Wave system must be configured, as described in the `dwave-cloud-client
+<http://dwave-cloud-client.readthedocs.io/en/latest/reference/intro.html#configuration>`_ documentation. A default
+solver is required.
 
 Running the Demo
 ----------------
