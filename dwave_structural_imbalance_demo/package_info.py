@@ -12,7 +12,7 @@
 #    See the License for the specific language governing permissions and
 #    limitations under the License.
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __author__ = 'D-Wave Systems Inc.'
 __authoremail__ = 'bellert@dwavesys.com'
 __description__ = 'Demo for analyzing the structural imbalance on a signed social network.'
