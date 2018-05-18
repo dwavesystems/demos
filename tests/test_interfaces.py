@@ -58,6 +58,6 @@ class TestInterfaces(unittest.TestCase):
         self.assertFalse(output['nodes'])
         self.assertFalse(output['links'])
 
-    @unittest.skipIf(_qpu, "Can only be tested is dwave-system isn't installed")
+    @unittest.skipIf(_qpu, "Can only be tested if dwave-system isn't installed")
     def test_qpu_without_dwave_system(self):
         self.assertRaises(NameError, GlobalSignedSocialNetwork, True)
