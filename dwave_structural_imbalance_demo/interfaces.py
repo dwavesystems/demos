@@ -16,6 +16,14 @@ import dimod
 
 
 class GlobalSignedSocialNetwork(object):
+    """A class encapsulating access to graphs from the Stanford Militants Mapping Project.
+
+    Args:
+        qpu (bool, optional):
+            Specifies whether structural imblance problems will be solved on the QPU or CPU. Defaults to True if
+            dwave-system is installed, False otherwise.
+
+    """
     def __init__(self, qpu=_qpu):
         maps = dict()
         maps['Global'] = global_signed_social_network()
@@ -56,10 +64,43 @@ class GlobalSignedSocialNetwork(object):
         return G
 
     def get_node_link_data(self, subregion='Global', year=None):
+        """Accessor for Stanford Militants Mapping Project node link data.
+
+        Args:
+            subregion (str, optional):
+                Filter graph by subregion. One of ['Global', 'Syria', 'Iraq']. Defaults to 'Global' (entire network).
+            year (int, optional):
+                Filter graph by year. Returns only events in or before year. Defaults to None (no filter applied).
+
+        Returns:
+            A dictionary with node-link formatted data. Conforms to dwave_structural_imbalance_demo.json_schema.
+
+        """
+
         G = self._get_graph(subregion, year)
         return nx.node_link_data(G)
 
     def solve_structural_imbalance(self, subregion='Global', year=None):
+        """Solves specified Stanford Militants Mapping Project structural imbalance problem and returns annotated graph.
+
+        If self._qpu is True (set during object initialization), this function will first attempt to embed the entire
+        problem on the hardware graph using EmbeddingComposite. Failing this, it will fallback on QBSolv to decompose
+        the problem. If self._qpu is False, this function will use ExactSolver for problems with less than 20 nodes.
+        For problems with 20 more more nodes, it will use QBSolv to solve the problem classically.
+
+        Args:
+            subregion (str, optional):
+                Filter graph by subregion. One of ['Global', 'Syria', 'Iraq']. Defaults to 'Global' (entire network).
+            year (int, optional):
+                Filter graph by year. Returns only events in or before year. Defaults to None (no filter applied).
+
+        Returns:
+            A dictionary with node-link formatted data. Conforms to dwave_structural_imbalance_demo.json_schema.
+            Optional property 'color' is set for each item in 'nodes'. Optional property 'frustrated' is set for each
+            item in 'links'.
+
+        """
+
         G = self._get_graph(subregion, year)
 
         if self._qpu:
