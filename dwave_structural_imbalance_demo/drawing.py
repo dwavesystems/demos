@@ -9,9 +9,29 @@ def draw(filename, node_link_data, position=None):
     """Plot the given signed social network.
 
     Args:
-        filename: The name of the file to be generated.
-        node_link_data: The network represented as returned by nx.node_link_data()
-        position (optional): The position for the nodes.
+        filename (string):
+            The name of the file to be generated.
+        node_link_data (dict):
+            The network represented as returned by nx.node_link_data(). Each edge is required to have a 'sign'
+            attribute. Optionally, edges can have 'frustrated' attributes and nodes can have 'color' attributes.
+        position (dict, optional):
+            The position for the nodes. If no position is provided, a layout will be calculated. If the nodes have
+            'color' attributes, a Kamanda-Kawai layout will be used to group nodes of the same color together.
+            Otherwise, a circular layout will be used.
+
+    Returns:
+        A dictionary of positions keyed by node.
+
+    Examples:
+    >>> import dwave_structural_imbalance_demo as sbdemo
+    >>> gssn = sbdemo.GlobalSignedSocialNetwork()
+    >>> nld_before = gssn.get_node_link_data('Syria', 2013)
+    >>> nld_after = gssn.solve_structural_imbalance('Syria', 2013)
+    # draw Global graph before solving; save node layout for reuse
+    >>> position = sbdemo.draw('syria.png', nld_before)
+    # draw the Global graph; reusing the above layout, and calculating a new grouped layout
+    >>> sbdemo.draw('syria_imbalance.png', nld_after, position)
+    >>> sbdemo.draw('syria_imbalance_grouped', nld_after)
 
     """
 
