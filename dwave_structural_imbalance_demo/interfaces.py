@@ -133,17 +133,17 @@ class GlobalSignedSocialNetwork(object):
         if self._qpu:
             try:
                 imbalance, bicoloring = dnx.structural_imbalance(G, self._embedding_composite)
-                print("Ran on the QPU using EmbeddingComposite")
+                print("Ran on the QPU using dwave-system's EmbeddingComposite")
             except ValueError:
                 imbalance, bicoloring = dnx.structural_imbalance(G, self._qbsolv, solver=self._embedding_composite)
-                print("Ran on the QPU using QBSolv w/ EmbeddingComposite")
+                print("Ran on the QPU using Qbsolv and dwave-system's EmbeddingComposite")
         else:
             if len(G) < 20:
                 imbalance, bicoloring = dnx.structural_imbalance(G, self._exact_solver)
-                print("Ran classically using ExactSolver")
+                print("Ran classically using dimod's ExactSolver")
             else:
                 imbalance, bicoloring = dnx.structural_imbalance(G, self._qbsolv, solver='tabu')
-                print("Ran classically using QBSolv")
+                print("Ran classically using Qbsolv")
 
         G = G.copy()
         for edge in G.edges:

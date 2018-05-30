@@ -47,9 +47,9 @@ def diagramDateRange(gssn, graph_name, start, end, subarea_name=None):
         file_name = 'Structural Imbalance %s.png' % year
         file_path = os.path.join(directory_path, file_name)
         sbdemo.draw(file_path, nld_subrange_solved)
-        print('Output %s\n' % file_path)
+        print('Created graphic file: %s\n' % file_path)
 
-    print('Output %s' % csv_path)
+    print('Created CSV file: %s' % csv_path)
     csv.close()
 
 
@@ -60,16 +60,16 @@ if __name__ == '__main__':
     # draw Global graph before solving; save node layout for reuse
     nld_global = gssn.get_node_link_data()
     position = sbdemo.draw('global.png', nld_global)
-    print('Output %s' % 'global.png')
+    print('\nRunning demo... calculating and creating graphic files: %s' % 'global.png')
 
     # calculate the imbalance of Global
     nld_global_solved = gssn.solve_structural_imbalance()
 
     # draw the Global graph; reusing the above layout, and calculating a new grouped layout
     sbdemo.draw('global_imbalance.png', nld_global_solved, position)
-    print('Output %s' % 'global_imbalance.png')
+    print('Created graphic file: %s' % 'global_imbalance.png')
     sbdemo.draw('global_imbalance_grouped', nld_global_solved)
-    print('Output %s' % 'global_imbalance_grouped\n')
+    print('Created graphic file: %s' % 'global_imbalance_grouped\n')
 
     # Images of the structural imbalance in the local Syrian SSN
     # for years 2010-2016 showing frustrated and unfrustrated edges.
