@@ -10,8 +10,8 @@ Facebook friends form a social network with friends represented as
 nodes with connecting edges. *Signed social networks* map both friendly and
 hostile relationships by setting the values of the edges between nodes with either plus ("+")
 or minus ("-") signs. Such networks are said to be *structurally balanced* when they
-can be clearly divided into two subgraphs with positive-valued edges (friendly
-relationships) in the subgraphs, and negative-valued edges between these subgraphs.
+can be clearly divided into two, with friendly relations (represented by positive-valued
+edges) in each faction, and hostile relations (negative-valued edges) between these factions.
 
 The measure of *structural imbalance* or *frustration* for a signed social network
 is the minimum number of edges that violate this rule.
@@ -52,7 +52,8 @@ B. Install Dependencies for D-Wave System Execution
    pip install .[qpu] --extra-index-url https://pypi.dwavesys.com/simple
 
 Access to a D-Wave system must be configured, as described in the
-`dwave-cloud-client<http://dwave-cloud-client.readthedocs.io/en/latest/reference/intro.html#configuration>`_ documentation. A default solver is required.
+`dwave-cloud-client <http://dwave-cloud-client.readthedocs.io/en/latest/reference/intro.html#configuration>`_ documentation.
+A default solver is required.
 
 Running the Demo
 ----------------
