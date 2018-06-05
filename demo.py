@@ -21,8 +21,8 @@ def diagramDateRange(gssn, graph_name, start, end, subarea_name=None):
 
     for year in range(start, end):
         # Compute structural imbalance up to and including year
-        nld_subrange = gssn.get_node_link_data(graph_name, year)
-        nld_subrange_solved = gssn.solve_structural_imbalance(graph_name, year)
+        nld_subrange = gssn.get_node_link_data(graph_name, year)['results'][0]
+        nld_subrange_solved = gssn.solve_structural_imbalance(graph_name, year)['results'][0]
 
         # Write stats to .csv
         num_nodes = len(nld_subrange['nodes'])
@@ -31,7 +31,7 @@ def diagramDateRange(gssn, graph_name, start, end, subarea_name=None):
         ratio = num_imbalanced / num_edges
         csv.write('%s,%s,%s,%s,%s' % (year, num_nodes, num_edges, num_imbalanced, ratio))
         if subarea_name is not None:
-            nld_subarea = gssn.get_node_link_data(subarea_name, year)
+            nld_subarea = gssn.get_node_link_data(subarea_name, year)['results'][0]
             num_nodes = len([node for node in nld_subrange['nodes'] if node in nld_subarea['nodes']])
             event_ids = [edge['event_id'] for edge in nld_subrange['links'] if edge in nld_subarea['links']]
             num_edges = len(event_ids)
@@ -58,12 +58,12 @@ if __name__ == '__main__':
     gssn = sbdemo.GlobalSignedSocialNetwork()
 
     # draw Global graph before solving; save node layout for reuse
-    nld_global = gssn.get_node_link_data()
+    nld_global = gssn.get_node_link_data()['results'][0]
     position = sbdemo.draw('global.png', nld_global)
     print('\nRunning demo... calculating and creating graphic files: %s' % 'global.png')
 
     # calculate the imbalance of Global
-    nld_global_solved = gssn.solve_structural_imbalance()
+    nld_global_solved = gssn.solve_structural_imbalance()['results'][0]
 
     # draw the Global graph; reusing the above layout, and calculating a new grouped layout
     sbdemo.draw('global_imbalance.png', nld_global_solved, position)
