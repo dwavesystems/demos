@@ -105,7 +105,7 @@ class GlobalSignedSocialNetwork(object):
         """
 
         G = self._get_graph(subregion, year)
-        return nx.node_link_data(G)
+        return {"results": [nx.node_link_data(G)]}
 
     def solve_structural_imbalance(self, subregion='Global', year=None):
         """Solves specified Stanford Militants Mapping Project structural imbalance problem and returns annotated graph.
@@ -151,4 +151,7 @@ class GlobalSignedSocialNetwork(object):
         for node in G.nodes:
             G.nodes[node]['color'] = bicoloring[node]
 
-        return nx.node_link_data(G)
+        result = nx.node_link_data(G)
+        for node in G.nodes:
+            G.nodes[node]['color'] = 1
+        return {"results": [result, nx.node_link_data(G)], "numberOfReads": 0, "timing": {"qpuProcessTime": 0}}
