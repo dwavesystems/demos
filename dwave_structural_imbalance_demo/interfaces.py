@@ -1,3 +1,12 @@
+from collections import OrderedDict
+
+from dwave_networkx import _PY2
+# compatibility for python 2/3
+if _PY2:
+    def iteritems(d): return d.iteritems()
+else:
+    def iteritems(d): return d.items()
+
 import networkx as nx
 
 import dwave_networkx as dnx
@@ -51,6 +60,7 @@ class GlobalSignedSocialNetwork(object):
          'target': 523}
 
     """
+
     def __init__(self, qpu=_qpu):
         maps = dict()
         maps['Global'] = global_signed_social_network()
@@ -130,28 +140,79 @@ class GlobalSignedSocialNetwork(object):
 
         G = self._get_graph(subregion, year)
 
+        sampler_args = {}
+
         if self._qpu:
             try:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self._embedding_composite)
-                print("Ran on the QPU using dwave-system's EmbeddingComposite")
+                sampler = self._embedding_composite
+                if 'num_reads' in sampler.parameters:
+                    sampler_args['num_reads'] = 50
+                if 'answer_mode' in sampler.parameters:
+                    sampler_args['answer_mode'] = 'histogram'
+                if 'chain_strength' in sampler.parameters:
+                    sampler_args['chain_strength'] = 2.0
+                print("Running on the QPU using dwave-system's EmbeddingComposite")
             except ValueError:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self._qbsolv, solver=self._embedding_composite)
-                print("Ran on the QPU using Qbsolv and dwave-system's EmbeddingComposite")
+                sampler = self._qbsolv
+                sampler_args['solver'] = self._embedding_composite
+                print("Running on the QPU using Qbsolv and dwave-system's EmbeddingComposite")
         else:
             if len(G) < 20:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self._exact_solver)
-                print("Ran classically using dimod's ExactSolver")
+                sampler = self._exact_solver
+                print("Running classically using dimod's ExactSolver")
             else:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self._qbsolv, solver='tabu')
-                print("Ran classically using Qbsolv")
+                sampler = self._qbsolv
+                sampler_args['solver'] = 'tabu'
+                print("Running classically using Qbsolv")
 
-        G = G.copy()
-        for edge in G.edges:
-            G.edges[edge]['frustrated'] = edge in imbalance
-        for node in G.nodes:
-            G.nodes[node]['color'] = bicoloring[node]
+        results_dict = OrderedDict()
 
-        result = nx.node_link_data(G)
-        for node in G.nodes:
-            G.nodes[node]['color'] = 1
-        return {"results": [result, nx.node_link_data(G)], "numberOfReads": 0, "timing": {"qpuProcessTime": 0}}
+        h, J = dnx.social.structural_imbalance_ising(G)
+
+        # use the sampler to find low energy states
+        response = sampler.sample_ising(h, J, **sampler_args)
+
+        # histogram answer_mode should return counts for unique solutions
+        if 'num_occurrences' not in response.data_vectors:
+            response.data_vectors['num_occurrences'] = [1] * len(response)
+
+        # should equal num_reads
+        total = sum(response.data_vectors['num_occurrences'])
+
+        results_dict = OrderedDict()
+
+        for sample, num_occurrences in response.data(['sample', 'num_occurrences']):
+            # spins determine the color
+            colors = {v: (spin + 1) // 2 for v, spin in iteritems(sample)}
+
+            # frustrated edges are the ones that are violated
+            frustrated_edges = {}
+            for u, v, data in G.edges(data=True):
+                sign = data['sign']
+
+                if sign > 0 and colors[u] != colors[v]:
+                    frustrated_edges[(u, v)] = data
+                elif sign < 0 and colors[u] == colors[v]:
+                    frustrated_edges[(u, v)] = data
+                # else: not frustrated or sign == 0, no relation to violate
+
+            G = G.copy()
+            for edge in G.edges:
+                G.edges[edge]['frustrated'] = edge in frustrated_edges
+            for node in G.nodes:
+                G.nodes[node]['color'] = colors[node]
+
+            key = tuple(colors.values())
+            if key in results_dict:
+                results_dict[key].graph["numOfOccurrences"] += num_occurrences
+                results_dict[key].graph["percentageOfOccurrences"] = 100 * \
+                    results_dict[key].graph["numOfOccurrences"] / total
+            else:
+                G.graph['numOfOccurrences'] = num_occurrences
+                G.graph['percentageOfOccurrences'] = 100 * num_occurrences / total
+                results_dict[key] = G
+
+        output = {'results': [nx.node_link_data(result) for result in results_dict.values()], 'numberOfReads': total}
+        if 'timing' in response.info:
+            output['timing'] = {"qpuProcessTime": response.info['timing']['qpu_access_time']}
+        return output

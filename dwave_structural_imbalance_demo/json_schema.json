@@ -106,6 +106,7 @@
       "properties": {
         "actual": {
           "type": "object",
+          "required": ["qpuProcessTime"],
           "properties": {
             "qpuProcessTime": {
               "type": "number",
