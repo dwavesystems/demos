@@ -2,7 +2,6 @@ from collections import defaultdict
 from itertools import product
 
 import networkx as nx
-import matplotlib.pyplot as plt
 
 
 def draw(filename, node_link_data, position=None):
@@ -34,6 +33,8 @@ def draw(filename, node_link_data, position=None):
     >>> sbdemo.draw('syria_imbalance_grouped', nld_after)
 
     """
+
+    import matplotlib.pyplot as plt
 
     S = nx.node_link_graph(node_link_data)
 

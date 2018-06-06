@@ -20,13 +20,12 @@ else:
 # These should be minimal requiments for the package to work, and avoid pinning dependencies unless required. See
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 install_requires = ['networkx>=2.0,<3.0',
-                    'dwave_networkx>=0.6.1,<0.7.0',
-                    'dwave_qbsolv>=0.2.6,<0.3.0',
+                    'dwave_networkx>=0.6.2,<0.7.0',
                     'matplotlib>=2.2.2,<3.0.0',
                     'scipy>=1.1.0,<2.0.0']
 
 # Any extra requirements, to be used by pip install PACKAGENAME['keyname']
-extras_require = {'qpu': ['dwave-system>=0.2.6,<0.3.0']}
+extras_require = {'qpu': ['dwave-system>=0.2.6,<0.3.0'], 'cpu': ['dwave-neal>=0.3.0,<0.4.0']}
 
 # The packages in this repo that are to be installed. Either list these explictly, or use setuptools.find_packages. If
 # the latter, take care to filter unwanted packages (e.g. tests)

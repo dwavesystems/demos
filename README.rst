@@ -42,7 +42,7 @@ A. Install Dependencies for Local CPU Execution
 
 .. code-block:: bash
 
-   pip install .
+   pip install .[cpu]
 
 B. Install Dependencies for D-Wave System Execution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -58,11 +58,21 @@ A default solver is required.
 Running the Demo
 ----------------
 
-To run the demo:
+To run the demo, execture one of the following two commands:
+
+A. Local CPU Execution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
-   python demo.py
+   python demo.py cpu
+
+B. D-Wave System Execution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   python demo.py qpu
 
 The demo fetches data from the Stanford Militants Mapping Project, calculates the networks,
 and saves PNG-formatted graphic files and CSV-formatted files in the root directory of your

@@ -1,18 +1,16 @@
+from collections import OrderedDict
+
 import networkx as nx
 
 import dwave_networkx as dnx
-import dwave_qbsolv as qbsolv
 
 from dwave_structural_imbalance_demo.mmp_network import global_signed_social_network
 
-try:
-    import dwave.system.samplers as dwsamplers
-    import dwave.system.composites as dwcomposites
-    _qpu = True
-except ImportError:
-    _qpu = False
-
-import dimod
+# compatibility for python 2/3
+if dnx._PY2:
+    def iteritems(d): return d.iteritems()
+else:
+    def iteritems(d): return d.items()
 
 
 class GlobalSignedSocialNetwork(object):
@@ -51,7 +49,8 @@ class GlobalSignedSocialNetwork(object):
          'target': 523}
 
     """
-    def __init__(self, qpu=_qpu):
+
+    def __init__(self, qpu):
         maps = dict()
         maps['Global'] = global_signed_social_network()
 
@@ -74,12 +73,23 @@ class GlobalSignedSocialNetwork(object):
         maps['Iraq'] = maps['Global'].subgraph(iraq_groups)
 
         self._maps = maps
+
         self._qpu = qpu
-        self._qbsolv = qbsolv.QBSolv()
         if qpu:
-            self._embedding_composite = dwcomposites.EmbeddingComposite(dwsamplers.DWaveSampler())
+            from dwave.system.composites import EmbeddingComposite
+            from dwave.system.samplers import DWaveSampler
+            self._sampler = EmbeddingComposite(DWaveSampler())
         else:
-            self._exact_solver = dimod.ExactSolver()
+            from neal import SimulatedAnnealingSampler
+            self._sampler = SimulatedAnnealingSampler()
+
+        self._sampler_args = {}
+        if 'num_reads' in self._sampler.parameters:
+            self._sampler_args['num_reads'] = 50
+        if 'answer_mode' in self._sampler.parameters:
+            self._sampler_args['answer_mode'] = 'histogram'
+        if 'chain_strength' in self._sampler.parameters:
+            self._sampler_args['chain_strength'] = 2.0
 
     def _get_graph(self, subregion='Global', year=None):
         G = self._maps[subregion]
@@ -105,7 +115,7 @@ class GlobalSignedSocialNetwork(object):
         """
 
         G = self._get_graph(subregion, year)
-        return nx.node_link_data(G)
+        return {"results": [nx.node_link_data(G)]}
 
     def solve_structural_imbalance(self, subregion='Global', year=None):
         """Solves specified Stanford Militants Mapping Project structural imbalance problem and returns annotated graph.
@@ -129,26 +139,61 @@ class GlobalSignedSocialNetwork(object):
         """
 
         G = self._get_graph(subregion, year)
+        if len(G) == 0:
+            raise ValueError("Filtered network has no nodes to solve problem on")
 
-        if self._qpu:
+        h, J = dnx.social.structural_imbalance_ising(G)
+
+        # <10% of the time it will fail to find an embedding, so keep trying
+        while True:
             try:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self._embedding_composite)
-                print("Ran on the QPU using dwave-system's EmbeddingComposite")
+                # use the sampler to find low energy states
+                response = self._sampler.sample_ising(h, J, **self._sampler_args)
+                break
             except ValueError:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self._qbsolv, solver=self._embedding_composite)
-                print("Ran on the QPU using Qbsolv and dwave-system's EmbeddingComposite")
-        else:
-            if len(G) < 20:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self._exact_solver)
-                print("Ran classically using dimod's ExactSolver")
+                pass
+
+        # histogram answer_mode should return counts for unique solutions
+        if 'num_occurrences' not in response.data_vectors:
+            response.data_vectors['num_occurrences'] = [1] * len(response)
+
+        # should equal num_reads
+        total = sum(response.data_vectors['num_occurrences'])
+
+        results_dict = OrderedDict()
+
+        for sample, num_occurrences in response.data(['sample', 'num_occurrences']):
+            # spins determine the color
+            colors = {v: (spin + 1) // 2 for v, spin in iteritems(sample)}
+
+            # frustrated edges are the ones that are violated
+            frustrated_edges = {}
+            for u, v, data in G.edges(data=True):
+                sign = data['sign']
+
+                if sign > 0 and colors[u] != colors[v]:
+                    frustrated_edges[(u, v)] = data
+                elif sign < 0 and colors[u] == colors[v]:
+                    frustrated_edges[(u, v)] = data
+                # else: not frustrated or sign == 0, no relation to violate
+
+            G = G.copy()
+            for edge in G.edges:
+                G.edges[edge]['frustrated'] = edge in frustrated_edges
+            for node in G.nodes:
+                G.nodes[node]['color'] = colors[node]
+
+            key = tuple(colors.values())
+            if key in results_dict:
+                results_dict[key].graph["numOfOccurrences"] += num_occurrences
+                results_dict[key].graph["percentageOfOccurrences"] = 100 * \
+                    results_dict[key].graph["numOfOccurrences"] / total
             else:
-                imbalance, bicoloring = dnx.structural_imbalance(G, self._qbsolv, solver='tabu')
-                print("Ran classically using Qbsolv")
+                G.graph['numOfOccurrences'] = num_occurrences
+                G.graph['percentageOfOccurrences'] = 100 * num_occurrences / total
+                results_dict[key] = G
 
-        G = G.copy()
-        for edge in G.edges:
-            G.edges[edge]['frustrated'] = edge in imbalance
-        for node in G.nodes:
-            G.nodes[node]['color'] = bicoloring[node]
-
-        return nx.node_link_data(G)
+        output = {'results': [nx.node_link_data(result) for result in results_dict.values()], 'numberOfReads': total}
+        if 'timing' in response.info:
+            output['timing'] = {"qpuProcessTime": response.info['timing']['qpu_access_time']}
+        return output

@@ -1,1 +1,2 @@
 -r requirements_base.txt
+dwave_neal==0.3.0
