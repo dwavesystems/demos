@@ -65,7 +65,7 @@ if __name__ == '__main__':
         print("OR")
         print("python demo.py cpu")
         sys.exit(1)
-    print('Running demo on %s' % sys.argv[1])
+    print('Running demo on %s...' % sys.argv[1])
 
     # get the graphs
     gssn = sbdemo.GlobalSignedSocialNetwork(qpu)
