@@ -10,7 +10,6 @@ else:
 import networkx as nx
 
 import dwave_networkx as dnx
-import dwave_qbsolv as qbsolv
 
 from dwave_structural_imbalance_demo.mmp_network import global_signed_social_network
 
@@ -19,9 +18,10 @@ try:
     import dwave.system.composites as dwcomposites
     _qpu = True
 except ImportError:
+    import dwave_qbsolv as qbsolv
+    import dimod
     _qpu = False
 
-import dimod
 
 
 class GlobalSignedSocialNetwork(object):
@@ -85,11 +85,11 @@ class GlobalSignedSocialNetwork(object):
 
         self._maps = maps
         self._qpu = qpu
-        self._qbsolv = qbsolv.QBSolv()
         if qpu:
             self._embedding_composite = dwcomposites.EmbeddingComposite(dwsamplers.DWaveSampler())
         else:
             self._exact_solver = dimod.ExactSolver()
+            self._qbsolv = qbsolv.QBSolv()
 
     def _get_graph(self, subregion='Global', year=None):
         G = self._maps[subregion]
@@ -143,19 +143,14 @@ class GlobalSignedSocialNetwork(object):
         sampler_args = {}
 
         if self._qpu:
-            try:
-                sampler = self._embedding_composite
-                if 'num_reads' in sampler.parameters:
-                    sampler_args['num_reads'] = 50
-                if 'answer_mode' in sampler.parameters:
-                    sampler_args['answer_mode'] = 'histogram'
-                if 'chain_strength' in sampler.parameters:
-                    sampler_args['chain_strength'] = 2.0
-                print("Running on the QPU using dwave-system's EmbeddingComposite")
-            except ValueError:
-                sampler = self._qbsolv
-                sampler_args['solver'] = self._embedding_composite
-                print("Running on the QPU using Qbsolv and dwave-system's EmbeddingComposite")
+            sampler = self._embedding_composite
+            if 'num_reads' in sampler.parameters:
+                sampler_args['num_reads'] = 50
+            if 'answer_mode' in sampler.parameters:
+                sampler_args['answer_mode'] = 'histogram'
+            if 'chain_strength' in sampler.parameters:
+                sampler_args['chain_strength'] = 2.0
+            print("Running on the QPU using dwave-system's EmbeddingComposite")
         else:
             if len(G) < 20:
                 sampler = self._exact_solver
@@ -165,12 +160,16 @@ class GlobalSignedSocialNetwork(object):
                 sampler_args['solver'] = 'tabu'
                 print("Running classically using Qbsolv")
 
-        results_dict = OrderedDict()
-
         h, J = dnx.social.structural_imbalance_ising(G)
 
-        # use the sampler to find low energy states
-        response = sampler.sample_ising(h, J, **sampler_args)
+        # <10% of the time it will fail to find an embedding, so keep trying
+        while True:
+            try:
+                # use the sampler to find low energy states
+                response = sampler.sample_ising(h, J, **sampler_args)
+                break
+            except ValueError:
+                pass
 
         # histogram answer_mode should return counts for unique solutions
         if 'num_occurrences' not in response.data_vectors:

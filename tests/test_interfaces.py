@@ -35,6 +35,9 @@ class TestInterfaces(unittest.TestCase):
         output = self.gssn.solve_structural_imbalance(subgroup, year)
         jsonschema.validate(output, json_schema)
 
+    def test_whole_embedding(self):
+        self.gssn.solve_structural_imbalance()
+
     def test_invalid_subgroup(self):
         subgroup = 'unknown_subgroup'
         self.assertRaises(KeyError, self.gssn.get_node_link_data, subgroup)
