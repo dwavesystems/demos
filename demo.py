@@ -59,17 +59,20 @@ if __name__ == '__main__':
 
     # draw Global graph before solving; save node layout for reuse
     nld_global = gssn.get_node_link_data()['results'][0]
-    position = sbdemo.draw('global.png', nld_global)
-    print('\nRunning demo... calculating and creating graphic files: %s' % 'global.png')
+    file_name = 'global.png'
+    position = sbdemo.draw(file_name, nld_global)
+    print('\nRunning demo... calculating and creating graphic files: %s' % file_name)
 
     # calculate the imbalance of Global
     nld_global_solved = gssn.solve_structural_imbalance()['results'][0]
 
     # draw the Global graph; reusing the above layout, and calculating a new grouped layout
-    sbdemo.draw('global_imbalance.png', nld_global_solved, position)
-    print('Created graphic file: %s' % 'global_imbalance.png')
-    sbdemo.draw('global_imbalance_grouped', nld_global_solved)
-    print('Created graphic file: %s' % 'global_imbalance_grouped\n')
+    file_name = 'global_imbalance.png'
+    sbdemo.draw(file_name, nld_global_solved, position)
+    print('Created graphic file: %s' % file_name)
+    file_name = 'global_imbalance_grouped.png'
+    sbdemo.draw(file_name, nld_global_solved)
+    print('Created graphic file: %s\n' % file_name)
 
     # Images of the structural imbalance in the local Syrian SSN
     # for years 2010-2016 showing frustrated and unfrustrated edges.
