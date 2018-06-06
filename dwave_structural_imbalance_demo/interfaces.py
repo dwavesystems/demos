@@ -139,6 +139,8 @@ class GlobalSignedSocialNetwork(object):
         """
 
         G = self._get_graph(subregion, year)
+        if len(G) == 0:
+            raise ValueError("Filtered network has no nodes to solve problem on")
 
         sampler_args = {}
 
