@@ -1,27 +1,16 @@
 from collections import OrderedDict
 
-from dwave_networkx import _PY2
-# compatibility for python 2/3
-if _PY2:
-    def iteritems(d): return d.iteritems()
-else:
-    def iteritems(d): return d.items()
-
 import networkx as nx
 
 import dwave_networkx as dnx
 
 from dwave_structural_imbalance_demo.mmp_network import global_signed_social_network
 
-try:
-    import dwave.system.samplers as dwsamplers
-    import dwave.system.composites as dwcomposites
-    _qpu = True
-except ImportError:
-    import dwave_qbsolv as qbsolv
-    import dimod
-    _qpu = False
-
+# compatibility for python 2/3
+if dnx._PY2:
+    def iteritems(d): return d.iteritems()
+else:
+    def iteritems(d): return d.items()
 
 
 class GlobalSignedSocialNetwork(object):
@@ -61,7 +50,7 @@ class GlobalSignedSocialNetwork(object):
 
     """
 
-    def __init__(self, qpu=_qpu):
+    def __init__(self, qpu):
         maps = dict()
         maps['Global'] = global_signed_social_network()
 
@@ -84,12 +73,23 @@ class GlobalSignedSocialNetwork(object):
         maps['Iraq'] = maps['Global'].subgraph(iraq_groups)
 
         self._maps = maps
+
         self._qpu = qpu
         if qpu:
-            self._embedding_composite = dwcomposites.EmbeddingComposite(dwsamplers.DWaveSampler())
+            from dwave.system.composites import EmbeddingComposite
+            from dwave.system.samplers import DWaveSampler
+            self._sampler = EmbeddingComposite(DWaveSampler())
         else:
-            self._exact_solver = dimod.ExactSolver()
-            self._qbsolv = qbsolv.QBSolv()
+            from neal import SimulatedAnnealingSampler
+            self._sampler = SimulatedAnnealingSampler()
+
+        self._sampler_args = {}
+        if 'num_reads' in self._sampler.parameters:
+            self._sampler_args['num_reads'] = 50
+        if 'answer_mode' in self._sampler.parameters:
+            self._sampler_args['answer_mode'] = 'histogram'
+        if 'chain_strength' in self._sampler.parameters:
+            self._sampler_args['chain_strength'] = 2.0
 
     def _get_graph(self, subregion='Global', year=None):
         G = self._maps[subregion]
@@ -142,33 +142,13 @@ class GlobalSignedSocialNetwork(object):
         if len(G) == 0:
             raise ValueError("Filtered network has no nodes to solve problem on")
 
-        sampler_args = {}
-
-        if self._qpu:
-            sampler = self._embedding_composite
-            if 'num_reads' in sampler.parameters:
-                sampler_args['num_reads'] = 50
-            if 'answer_mode' in sampler.parameters:
-                sampler_args['answer_mode'] = 'histogram'
-            if 'chain_strength' in sampler.parameters:
-                sampler_args['chain_strength'] = 2.0
-            print("Running on the QPU using dwave-system's EmbeddingComposite")
-        else:
-            if len(G) < 20:
-                sampler = self._exact_solver
-                print("Running classically using dimod's ExactSolver")
-            else:
-                sampler = self._qbsolv
-                sampler_args['solver'] = 'tabu'
-                print("Running classically using Qbsolv")
-
         h, J = dnx.social.structural_imbalance_ising(G)
 
         # <10% of the time it will fail to find an embedding, so keep trying
         while True:
             try:
                 # use the sampler to find low energy states
-                response = sampler.sample_ising(h, J, **sampler_args)
+                response = self._sampler.sample_ising(h, J, **self._sampler_args)
                 break
             except ValueError:
                 pass

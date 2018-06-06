@@ -16,46 +16,46 @@ import unittest
 from random import randint, choice
 import jsonschema
 
-from dwave_structural_imbalance_demo.interfaces import GlobalSignedSocialNetwork, _qpu
+from dwave_structural_imbalance_demo.interfaces import GlobalSignedSocialNetwork
 from dwave_structural_imbalance_demo.json_schema import json_schema
 
 
 class TestInterfaces(unittest.TestCase):
-    gssn = GlobalSignedSocialNetwork()
+    gssn_qpu = GlobalSignedSocialNetwork(True)
+    gssn_cpu = GlobalSignedSocialNetwork(False)
 
     def test_get_node_link_data_output(self):
         subgroup = choice(['Global', 'Syria', 'Iraq'])
-        year = randint(2007, 2016)
-        output = self.gssn.get_node_link_data(subgroup, year)
+        year = randint(2009, 2016)
+        output = self.gssn_qpu.get_node_link_data(subgroup, year)
         jsonschema.validate(output, json_schema)
 
     def test_solve_structural_imbalance_output(self):
         subgroup = 'Syria'
         year = 2013
-        output = self.gssn.solve_structural_imbalance(subgroup, year)
+        output = self.gssn_qpu.solve_structural_imbalance(subgroup, year)
+        jsonschema.validate(output, json_schema)
+        output = self.gssn_cpu.solve_structural_imbalance(subgroup, year)
         jsonschema.validate(output, json_schema)
 
     def test_whole_embedding(self):
-        self.gssn.solve_structural_imbalance()
+        self.gssn_qpu.solve_structural_imbalance()
+        self.gssn_cpu.solve_structural_imbalance()
 
     def test_invalid_subgroup(self):
         subgroup = 'unknown_subgroup'
-        self.assertRaises(KeyError, self.gssn.get_node_link_data, subgroup)
-        self.assertRaises(KeyError, self.gssn.solve_structural_imbalance, subgroup)
+        self.assertRaises(KeyError, self.gssn_qpu.get_node_link_data, subgroup)
+        self.assertRaises(KeyError, self.gssn_qpu.solve_structural_imbalance, subgroup)
 
     def test_invalid_year(self):
         year = 'not_an_integer'
-        self.assertRaises(ValueError, self.gssn.get_node_link_data, year=year)
-        self.assertRaises(ValueError, self.gssn.solve_structural_imbalance, year=year)
+        self.assertRaises(ValueError, self.gssn_qpu.get_node_link_data, year=year)
+        self.assertRaises(ValueError, self.gssn_qpu.solve_structural_imbalance, year=year)
 
     def test_year_zero(self):
         year = 0
-        output = self.gssn.get_node_link_data(year=year)
+        output = self.gssn_qpu.get_node_link_data(year=year)
         for result in output['results']:
             self.assertFalse(result['nodes'])
             self.assertFalse(result['links'])
-        self.assertRaises(ValueError, self.gssn.solve_structural_imbalance, year=year)
-
-    @unittest.skipIf(_qpu, "Can only be tested if dwave-system isn't installed")
-    def test_qpu_without_dwave_system(self):
-        self.assertRaises(NameError, GlobalSignedSocialNetwork, True)
+        self.assertRaises(ValueError, self.gssn_qpu.solve_structural_imbalance, year=year)
