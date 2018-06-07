@@ -103,6 +103,7 @@
     },
     "timing": {
       "type": "object",
+      "required": ["actual"],
       "properties": {
         "actual": {
           "type": "object",

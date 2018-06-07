@@ -195,5 +195,5 @@ class GlobalSignedSocialNetwork(object):
 
         output = {'results': [nx.node_link_data(result) for result in results_dict.values()], 'numberOfReads': total}
         if 'timing' in response.info:
-            output['timing'] = {"qpuProcessTime": response.info['timing']['qpu_access_time']}
+            output['timing'] = {"actual": {"qpuProcessTime": response.info['timing']['qpu_access_time']}}
         return output
