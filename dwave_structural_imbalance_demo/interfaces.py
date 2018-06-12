@@ -138,11 +138,11 @@ class GlobalSignedSocialNetwork(object):
 
         """
 
-        G = self._get_graph(subregion, year)
-        if len(G) == 0:
+        G_in = self._get_graph(subregion, year)
+        if len(G_in) == 0:
             raise ValueError("Filtered network has no nodes to solve problem on")
 
-        h, J = dnx.social.structural_imbalance_ising(G)
+        h, J = dnx.social.structural_imbalance_ising(G_in)
 
         # <10% of the time it will fail to find an embedding, so keep trying
         while True:
@@ -166,29 +166,26 @@ class GlobalSignedSocialNetwork(object):
             # spins determine the color
             colors = {v: (spin + 1) // 2 for v, spin in iteritems(sample)}
 
-            # frustrated edges are the ones that are violated
-            frustrated_edges = {}
-            for u, v, data in G.edges(data=True):
-                sign = data['sign']
-
-                if sign > 0 and colors[u] != colors[v]:
-                    frustrated_edges[(u, v)] = data
-                elif sign < 0 and colors[u] == colors[v]:
-                    frustrated_edges[(u, v)] = data
-                # else: not frustrated or sign == 0, no relation to violate
-
-            G = G.copy()
-            for edge in G.edges:
-                G.edges[edge]['frustrated'] = edge in frustrated_edges
-            for node in G.nodes:
-                G.nodes[node]['color'] = colors[node]
-
             key = tuple(colors.values())
             if key in results_dict:
                 results_dict[key].graph["numOfOccurrences"] += num_occurrences
                 results_dict[key].graph["percentageOfOccurrences"] = 100 * \
                     results_dict[key].graph["numOfOccurrences"] / total
             else:
+                G = G_in.copy()
+                # frustrated edges are the ones that are violated
+                frustrated_edges = {}
+                for u, v, data in G.edges(data=True):
+                    sign = data['sign']
+                    if sign > 0 and colors[u] != colors[v]:
+                        frustrated_edges[(u, v)] = data
+                    elif sign < 0 and colors[u] == colors[v]:
+                        frustrated_edges[(u, v)] = data
+                    # else: not frustrated or sign == 0, no relation to violate
+                for edge in G.edges:
+                    G.edges[edge]['frustrated'] = edge in frustrated_edges
+                for node in G.nodes:
+                    G.nodes[node]['color'] = colors[node]
                 G.graph['numOfOccurrences'] = num_occurrences
                 G.graph['percentageOfOccurrences'] = 100 * num_occurrences / total
                 results_dict[key] = G
