@@ -43,5 +43,6 @@ setup(
     license='Apache 2.0',
     packages=packages,
     install_requires=install_requires,
-    extras_require=extras_require
+    extras_require=extras_require,
+    include_package_data=True
 )
