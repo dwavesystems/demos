@@ -13,14 +13,18 @@
 #    limitations under the License.
 
 
-from __future__ import print_function
+from __future__ import print_function, division
+
 import numpy as np
 import os
-from sklearn import preprocessing, metrics
 import matplotlib.pyplot as plt
+
+from sklearn import preprocessing, metrics
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.datasets.mldata import fetch_mldata
-import dwave_micro_client_dimod as micro
+from dwave.system.samplers import DWaveSampler
+from dwave.system.composites import EmbeddingComposite
+
 from qboost import WeakClassifiers, QBoostClassifier, QboostPlus
 
 
@@ -40,19 +44,15 @@ def train_model(X_train, y_train, X_test, y_test, lmd):
     :param lmd: lmbda to control regularization term
     :return:
     """
-
-    url = 'https://cloud.dwavesys.com/sapi'
-    token = 'fill_in_your_token'
-    solver_name = 'fill_in_your_solver_name'
     NUM_READS = 3000
     NUM_WEAK_CLASSIFIERS = 35
     # lmd = 0.5
     TREE_DEPTH = 3
 
     # define sampler
-    dwave_sampler = micro.DWaveSampler(solver_name, url, token)
+    dwave_sampler = DWaveSampler()
     # sa_sampler = micro.dimod.SimulatedAnnealingSampler()
-    emb_sampler = micro.EmbeddingComposite(dwave_sampler)
+    emb_sampler = EmbeddingComposite(dwave_sampler)
 
     N_train = len(X_train)
     N_test = len(X_test)
@@ -183,8 +183,8 @@ if __name__ == '__main__':
     idx_01 = np.where(mnist.target <=10)[0]
     np.random.shuffle(idx_01)
     idx_01 = idx_01[:5000]
-    idx_train = idx_01[:2*len(idx_01)/3]
-    idx_test = idx_01[2*len(idx_01)/3:]
+    idx_train = idx_01[:2*len(idx_01)//3]
+    idx_test = idx_01[2*len(idx_01)//3:]
 
     X_train = mnist.data[idx_train]
     X_test = mnist.data[idx_test]

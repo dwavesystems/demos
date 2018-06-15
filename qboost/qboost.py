@@ -121,7 +121,7 @@ class QBoostClassifier(WeakClassifiers):
 
         # step 3: optimize QUBO
         res = sampler.sample_qubo(Q, **kwargs)
-        samples = np.array([[samp[k] for k in range(self.n_estimators)] for samp in res.data(['sample'])])
+        samples = np.array([[samp[k] for k in range(self.n_estimators)] for samp in res])
 
         # take the optimal solution as estimator weights
         # self.estimator_weights = np.mean(samples, axis=0)
@@ -182,7 +182,7 @@ class QboostPlus(object):
 
         # step 3: optimize QUBO
         res = sampler.sample_qubo(Q, **kwargs)
-        samples = np.array([[samp[k] for k in range(self.n_estimators)] for samp in res.data(['sample'])])
+        samples = np.array([[samp[k] for k in range(self.n_estimators)] for samp in res])
 
         # take the optimal solution as estimator weights
         self.estimator_weights = samples[0]

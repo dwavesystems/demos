@@ -28,7 +28,6 @@ Configuring the Demo
 Access to a D-Wave system must be configured, as described in the `dwave-cloud-client`_ documentation. A default solver
 is required.
 
-In `demo.py`, you need to fill in your `token` and `solver_name`
 
 Running the Demo
 ----------------
