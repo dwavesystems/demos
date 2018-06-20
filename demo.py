@@ -193,9 +193,7 @@ if __name__ == '__main__':
         y_train = 2*(mnist.target[idx_train] <= 4) - 1
         y_test = 2*(mnist.target[idx_test] <= 4) - 1
 
-        print(y_train)
-
-        # clfs = train_model(X_train, y_train, X_test, y_test, 1.0)
+        clfs = train_model(X_train, y_train, X_test, y_test, 1.0)
 
     if '--wisc' in sys.argv:
 
