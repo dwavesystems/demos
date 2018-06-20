@@ -46,7 +46,7 @@ A minimal working example using the main interface function can be seen by runni
 
 .. code-block:: bash
 
-  python demo.py
+  python demo.py  --wisc --mnist
 
 License
 -------

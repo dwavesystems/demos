@@ -23,7 +23,7 @@ class TestDemo(unittest.TestCase):
         demo_file = os.path.join(project_dir, 'demo.py')
 
         # assume qboost is on the path
-        exit_status = os.system('python {}'.format(demo_file))
+        exit_status = os.system('python {} --mnist --wisc'.format(demo_file))
 
         assert isinstance(exit_status, int)
         self.assertFalse(exit_status, "running demo.py returned an exit status != 0")

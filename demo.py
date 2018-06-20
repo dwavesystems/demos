@@ -15,13 +15,16 @@
 
 from __future__ import print_function, division
 
-import numpy as np
 import os
+import sys
+
+import numpy as np
 import matplotlib.pyplot as plt
 
 from sklearn import preprocessing, metrics
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
 from sklearn.datasets.mldata import fetch_mldata
+from sklearn.datasets import load_breast_cancer
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
 
@@ -173,38 +176,42 @@ def train_model(X_train, y_train, X_test, y_test, lmd):
 
 if __name__ == '__main__':
 
-    ## MNIST
+    if '--mnist' in sys.argv:
 
-    if not os.path.exists('data/mldata/mnist-original.mat'):
-        print('download mnist data...')
+        mnist = fetch_mldata('MNIST original', data_home='data')
 
-    mnist = fetch_mldata('MNIST original', data_home='data')
+        idx_01 = np.where(mnist.target <= 10)[0]
 
-    idx_01 = np.where(mnist.target <=10)[0]
-    np.random.shuffle(idx_01)
-    idx_01 = idx_01[:5000]
-    idx_train = idx_01[:2*len(idx_01)//3]
-    idx_test = idx_01[2*len(idx_01)//3:]
+        np.random.shuffle(idx_01)
+        idx_01 = idx_01[:5000]
+        idx_train = idx_01[:2*len(idx_01)//3]
+        idx_test = idx_01[2*len(idx_01)//3:]
 
-    X_train = mnist.data[idx_train]
-    X_test = mnist.data[idx_test]
+        X_train = mnist.data[idx_train]
+        X_test = mnist.data[idx_test]
 
-    y_train = 2*(mnist.target[idx_train] <=4) - 1
-    y_test = 2*(mnist.target[idx_test] <=4) - 1
+        y_train = 2*(mnist.target[idx_train] <= 4) - 1
+        y_test = 2*(mnist.target[idx_test] <= 4) - 1
 
-    ## Visualize MNIST images
-    # idx = np.random.choice(idx_train, 16)
-    # for i in range(16):
-    #     plt.subplot(4,4, i+1)
-    #     plt.imshow(X_train[i].reshape(28,28))
-    #     plt.title(y_train[i])
-    #
-    # plt.show() # idx = np.random.choice(idx_train, 16)
-    # for i in range(16):
-    #     plt.subplot(4,4, i+1)
-    #     plt.imshow(X_train[i].reshape(28,28))
-    #     plt.title(y_train[i])
-    #
-    # plt.show()
+        print(y_train)
 
-    train_model(X_train, y_train, X_test, y_test, 10.0)
+        # clfs = train_model(X_train, y_train, X_test, y_test, 1.0)
+
+    if '--wisc' in sys.argv:
+
+        wisc = load_breast_cancer()
+
+        idx = np.arange(len(wisc.target))
+        np.random.shuffle(idx)
+
+        # train on a random 2/3 and test on the remaining 1/3
+        idx_train = idx[:2*len(idx)//3]
+        idx_test = idx[2*len(idx)//3:]
+
+        X_train = wisc.data[idx_train]
+        X_test = wisc.data[idx_test]
+
+        y_train = 2 * wisc.target[idx_train] - 1  # binary -> spin
+        y_test = 2 * wisc.target[idx_test] - 1
+
+        clfs = train_model(X_train, y_train, X_test, y_test, 1.0)
