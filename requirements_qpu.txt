@@ -1,2 +1,2 @@
 -r requirements_base.txt
-dwave-system==0.2.6
+dwave-system==0.3.2

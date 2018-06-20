@@ -49,7 +49,7 @@ B. Install Dependencies for D-Wave System Execution
 
 .. code-block:: bash
 
-   pip install .[qpu] --extra-index-url https://pypi.dwavesys.com/simple
+   pip install .[qpu]
 
 Access to a D-Wave system must be configured, as described in the
 `dwave-cloud-client <http://dwave-cloud-client.readthedocs.io/en/latest/reference/intro.html#configuration>`_ documentation.
