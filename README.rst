@@ -28,7 +28,7 @@ To set up the required dependencies, in the root directory of a copy (clone) of 
 
 .. code-block:: bash
 
-  pip install . --extra-index-url https://pypi.dwavesys.com/simple
+  pip install .
 
 Configuring the Demo
 --------------------

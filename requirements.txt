@@ -1,5 +1,5 @@
 dwavebinarycsp==0.0.2
-dwave-system==0.2.5
+dwave-system==0.3.2
 minorminer==0.1.3
 dimod==0.6.8
 
