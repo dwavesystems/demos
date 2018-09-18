@@ -161,6 +161,8 @@ class GlobalSignedSocialNetwork(object):
             except ValueError:
                 pass
             except SolverOfflineError:
+                # if solver goes offline while sampling (or while in queue),
+                # retry with another (online) solver
                 self._init_sampler()
 
         # histogram answer_mode should return counts for unique solutions

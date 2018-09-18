@@ -53,12 +53,12 @@ B. Install Dependencies for D-Wave System Execution
 
 Access to a D-Wave system must be configured, as described in the
 `dwave-cloud-client <http://dwave-cloud-client.readthedocs.io/en/latest/reference/intro.html#configuration>`_ documentation.
-A default solver is required.
+Only API endpoint and API token are required. The first available DW_2000Q solver will be used by default.
 
 Running the Demo
 ----------------
 
-To run the demo, execture one of the following two commands:
+To run the demo, execute one of the following two commands:
 
 A. Local CPU Execution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
