@@ -25,7 +25,7 @@ install_requires = ['networkx>=2.0,<3.0',
                     'scipy>=1.1.0,<2.0.0']
 
 # Any extra requirements, to be used by pip install PACKAGENAME['keyname']
-extras_require = {'qpu': ['dwave-system>=0.3.2,<0.4.0'], 'cpu': ['dwave-neal>=0.3.0,<0.4.0']}
+extras_require = {'qpu': ['dwave-system>=0.5.2,<0.6.0'], 'cpu': ['dwave-neal>=0.4.0,<0.5.0']}
 
 # The packages in this repo that are to be installed. Either list these explictly, or use setuptools.find_packages. If
 # the latter, take care to filter unwanted packages (e.g. tests)

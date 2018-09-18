@@ -73,12 +73,19 @@ class GlobalSignedSocialNetwork(object):
         maps['Iraq'] = maps['Global'].subgraph(iraq_groups)
 
         self._maps = maps
-
         self._qpu = qpu
-        if qpu:
+        self._init_sampler()
+
+    def _init_sampler(self):
+        """Allows for re-init in case a solver goes offline."""
+
+        if self._qpu:
             from dwave.system.composites import EmbeddingComposite
             from dwave.system.samplers import DWaveSampler
-            self._sampler = EmbeddingComposite(DWaveSampler())
+
+            # select the first available sampler in the `DW_2000Q` class
+            self._sampler = EmbeddingComposite(DWaveSampler(
+                solver_features=dict(online=True, name='DW_2000Q.*')))
         else:
             from neal import SimulatedAnnealingSampler
             self._sampler = SimulatedAnnealingSampler()
@@ -137,6 +144,7 @@ class GlobalSignedSocialNetwork(object):
             item in 'links'.
 
         """
+        from dwave.cloud.exceptions import SolverOfflineError
 
         G_in = self._get_graph(subregion, year)
         if len(G_in) == 0:
@@ -152,6 +160,8 @@ class GlobalSignedSocialNetwork(object):
                 break
             except ValueError:
                 pass
+            except SolverOfflineError:
+                self._init_sampler()
 
         # histogram answer_mode should return counts for unique solutions
         if 'num_occurrences' not in response.data_vectors:
