@@ -37,38 +37,30 @@ Copy (clone) this structural-imbalance-demo repository to your local machine.
 
 In the root directory of your copy of this repository, execute one of the following two commands:
 
-A. Install Dependencies for Local CPU Execution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Install dependencies:
 
 .. code-block:: bash
 
-   pip install .[cpu]
+   pip install .
 
-B. Install Dependencies for D-Wave System Execution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   pip install .[qpu]
-
-Access to a D-Wave system must be configured, as described in the
+Note: access to a D-Wave system must be configured, as described in the
 `dwave-cloud-client <http://dwave-cloud-client.readthedocs.io/en/latest/reference/intro.html#configuration>`_ documentation.
-A default solver is required.
+Only API endpoint and API token are required. The first available DW_2000Q solver will be used by default.
 
 Running the Demo
 ----------------
 
-To run the demo, execture one of the following two commands:
+To run the demo, execute one of the following two commands:
 
 A. Local CPU Execution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
    python demo.py cpu
 
 B. D-Wave System Execution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
