@@ -16,15 +16,32 @@ from __future__ import division
 
 import time
 import logging
-
+import functools
 from collections import OrderedDict
 
 import dwavebinarycsp as dbc
 from dwave.system.samplers import DWaveSampler
+from dwave.cloud.exceptions import SolverOfflineError
 import minorminer
 import dimod
 
 log = logging.getLogger(__name__)
+
+
+def qpu_ha(f):
+    """High-availability QPU wrapper: retry (with next solver) if active solver
+    goes offline.
+    """
+
+    @functools.wraps(f)
+    def wrapper(*args, **kwargs):
+        while True:
+            try:
+                return f(*args, **kwargs)
+            except SolverOfflineError:
+                pass
+
+    return wrapper
 
 
 def validate_input(ui, range_):
@@ -38,6 +55,7 @@ def validate_input(ui, range_):
         raise ValueError("Input must be between {} and {}".format(start, stop))
 
 
+@qpu_ha
 def factor(P, use_saved_embedding=True):
 
     ####################################################################################################
@@ -74,7 +92,7 @@ def factor(P, use_saved_embedding=True):
     sample_time = time.time()
 
     # get QPU sampler
-    sampler = DWaveSampler()
+    sampler = DWaveSampler(solver_features=dict(online=True, name='DW_2000Q.*'))
     _, target_edgelist, target_adjacency = sampler.structure
 
     if use_saved_embedding:
