@@ -4,6 +4,11 @@ import networkx as nx
 
 import dwave_networkx as dnx
 
+from neal import SimulatedAnnealingSampler
+from dwave.system.composites import EmbeddingComposite
+from dwave.system.samplers import DWaveSampler
+import dwave.cloud.exceptions
+
 from dwave_structural_imbalance_demo.mmp_network import global_signed_social_network
 
 # compatibility for python 2/3
@@ -80,14 +85,10 @@ class GlobalSignedSocialNetwork(object):
         """Allows for re-init in case a solver goes offline."""
 
         if self._qpu:
-            from dwave.system.composites import EmbeddingComposite
-            from dwave.system.samplers import DWaveSampler
-
             # select the first available sampler in the `DW_2000Q` class
             self._sampler = EmbeddingComposite(DWaveSampler(
                 solver_features=dict(online=True, name='DW_2000Q.*')))
         else:
-            from neal import SimulatedAnnealingSampler
             self._sampler = SimulatedAnnealingSampler()
 
         self._sampler_args = {}
@@ -144,7 +145,6 @@ class GlobalSignedSocialNetwork(object):
             item in 'links'.
 
         """
-        from dwave.cloud.exceptions import SolverOfflineError
 
         G_in = self._get_graph(subregion, year)
         if len(G_in) == 0:
@@ -160,7 +160,7 @@ class GlobalSignedSocialNetwork(object):
                 break
             except ValueError:
                 pass
-            except SolverOfflineError:
+            except dwave.cloud.exceptions.SolverOfflineError:
                 # if solver goes offline while sampling (or while in queue),
                 # retry with another (online) solver
                 self._init_sampler()

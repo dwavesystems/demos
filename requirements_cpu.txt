@@ -1,2 +1,0 @@
--r requirements_base.txt
-dwave-neal==0.4.1

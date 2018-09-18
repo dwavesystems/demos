@@ -17,15 +17,14 @@ if _PY2:
 else:
     exec(open(path_to_package_info).read())
 
-# These should be minimal requiments for the package to work, and avoid pinning dependencies unless required. See
+# These should be minimal requirements for the package to work, and avoid pinning dependencies unless required. See
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 install_requires = ['networkx>=2.0,<3.0',
                     'dwave_networkx>=0.6.2,<0.7.0',
                     'matplotlib>=2.2.2,<3.0.0',
-                    'scipy>=1.1.0,<2.0.0']
-
-# Any extra requirements, to be used by pip install PACKAGENAME['keyname']
-extras_require = {'qpu': ['dwave-system>=0.5.2,<0.6.0'], 'cpu': ['dwave-neal>=0.4.0,<0.5.0']}
+                    'scipy>=1.1.0,<2.0.0',
+                    'dwave-system>=0.5.2,<0.6.0',
+                    'dwave-neal>=0.4.0,<0.5.0']
 
 # The packages in this repo that are to be installed. Either list these explictly, or use setuptools.find_packages. If
 # the latter, take care to filter unwanted packages (e.g. tests)
@@ -42,6 +41,5 @@ setup(
     license='Apache 2.0',
     packages=packages,
     install_requires=install_requires,
-    extras_require=extras_require,
     include_package_data=True
 )
