@@ -1,9 +1,10 @@
 from bisect import bisect_right
 from itertools import islice
 
-import dwavebinarycsp as dbc
+from dimod import ExactSolver
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
+import dwavebinarycsp as dbc
 from neal import SimulatedAnnealingSampler
 
 def sumToOne(*args):
@@ -154,8 +155,11 @@ class JobShopScheduler():
 				label = self._getLabel(task, (self.maxTime-1) - t) # -1 for zero-indexed time
 				self.csp.fix_variable(label, 0)			
 
-	def solve(self):
-		""" Returns a response to the Job Shop Scheduling problem.
+	def solve(self, sampler=None):
+		""" Returns a response to the Job Shop Scheduling problem. Default
+		sampler is simulated annealing.
+		args:
+			sampler: String. {"qpu", "exact", "sa"}
 		"""
 		# Apply constraints to self.csp
 		self._addOneStartConstraint()
@@ -167,9 +171,18 @@ class JobShopScheduler():
 		bqm = dbc.stitch(self.csp)
 	
 		# Sample
-		sampler = EmbeddingComposite(DWaveSampler())
-		#sampler = SimulatedAnnealingSampler()
-		response = sampler.sample(bqm, num_reads=1000)
+		if sampler == "qpu":
+			samp = EmbeddingComposite(DWaveSampler())
+			response = samp.sample(bqm, num_reads=1000)
+
+		elif sampler == "exact":
+			samp = ExactSolver()
+			response = samp.sample(bqm)
+
+		else:
+			samp = SimulatedAnnealingSampler()
+			response = samp.sample(bqm, num_reads=100)
+
 		return response, self.csp
 
 

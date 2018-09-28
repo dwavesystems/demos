@@ -1,11 +1,12 @@
+from itertools import islice
 import unittest
 from jobShopScheduler import JobShopScheduler
 
 def fillWithZeros(myDict, jobDict, maxTime):
 	""" Fills the 'missing' myDict keys with a value of 0.
 	args:
-		myDict: a dictionary.  {jobName: [(machineVal, taskTimeSpan),..]}
-		keyTuples: list of tuples.  [(jobName, numberOfTasksInJob),..]
+		myDict: a dictionary.  {taskName: taskValue, ..}
+		jobDict: a dictionary. {jobName: [(machineVal, taskTimeSpan), ..], ..}
 		maxTime: integer. Max time for the schedule
 	"""
 	for job, tasks in jobDict.items():
@@ -18,7 +19,6 @@ def fillWithZeros(myDict, jobDict, maxTime):
 				if key not in myDict:
 					myDict[key] = 0
 	
-
 class TestIndividualJSSConstraints(unittest.TestCase):
 	def test_oneStartConstraint(self):
 		jobs = {"car":[("key",2),("gas",1)],
@@ -141,8 +141,25 @@ class TestCombinedJSSConstraints(unittest.TestCase):
 		self.assertTrue(jss.csp.check(goodSoln))
 		self.assertFalse(jss.csp.check(badOrderSoln))
 
-from itertools import islice
 class TestJSSResponse(unittest.TestCase):
+	def compare(self, response, expected):
+		""" Comparing response to expected results
+		"""
+		for sample in islice(response.samples(), 1):
+			# Comparing variables found in sample and expected
+			expectedKeys = set(expected.keys())
+			sampleKeys = set(sample.keys())
+			commonKeys = expectedKeys & sampleKeys
+			diffKeys = expectedKeys - sampleKeys	# expectedKeys is a superset
+
+			# Check that common variables match
+			for key in commonKeys:
+				self.assertEqual(sample[key], expected[key])
+
+			# Check that non-existent 'sample' variables are 0
+			for key in diffKeys:
+				self.assertEqual(expected[key], 0)
+
 	def test_tinySchedule(self):
 		jobs = {"a": [(1,1),(2,1)],
 				"b": [(2,1)]}
@@ -150,12 +167,29 @@ class TestJSSResponse(unittest.TestCase):
 		jss = JobShopScheduler(jobs, maxTime)
 		response, csp = jss.solve("exact")
 
-		# Check solution
+		# Create expected solution
 		expected = {"a_0,0":1, "a_1,1":1, "b_0,0":1}
 		fillWithZeros(expected, jobs, maxTime)
 
-		#for sample in islice(response.samples(), 1):
-		#	self.assertT
+		# Compare variable values
+		self.compare(response, expected)
+
+	def test_largerSchedule(self):
+		jobs = {0: [("walk",1),("run",1)],
+				1: [("run",2)],
+				2: [("walk",2)]}
+		maxTime = 3
+		jss = JobShopScheduler(jobs, maxTime)
+		response, csp = jss.solve("exact")
+
+		# Create expected solution
+		expected = {"0_0,0":1, "0_1,2":1,
+					"1_0,0":1,
+					"2_0,1":1}
+		fillWithZeros(expected, jobs, maxTime)
+
+		# Compare variable values
+		self.compare(response, expected)
 
 if __name__ == "__main__":
 	unittest.main()
