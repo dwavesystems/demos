@@ -1,15 +1,15 @@
 import unittest
 from jobShopScheduler import JobShopScheduler
 
-def fillWithZeros(myDict, keyTuples, maxTime):
+def fillWithZeros(myDict, jobDict, maxTime):
 	""" Fills the 'missing' myDict keys with a value of 0.
 	args:
 		myDict: a dictionary.  {jobName: [(machineVal, taskTimeSpan),..]}
 		keyTuples: list of tuples.  [(jobName, numberOfTasksInJob),..]
 		maxTime: integer. Max time for the schedule
 	"""
-	for job, nTasks in keyTuples:
-		for pos in xrange(nTasks):
+	for job, tasks in jobDict.items():
+		for pos in xrange(len(tasks)):
 			prefix = str(job) + "_" + str(pos)
 
 			for t in xrange(maxTime):
@@ -47,19 +47,19 @@ class TestIndividualJSSConstraints(unittest.TestCase):
 
 		# Task 0_0 starts after task 0_1
 		backwardSoln = {"0_0,3":1, "0_1,0":1}	
-		fillWithZeros(backwardSoln, [("0",2)], maxTime)
+		fillWithZeros(backwardSoln, jobs, maxTime)
 
 		# Tasks start at the same time
 		sameStartSoln = {"0_0,1":1, "0_1,1":1}
-		fillWithZeros(sameStartSoln, [("0",2)], maxTime)
+		fillWithZeros(sameStartSoln, jobs, maxTime)
 
 		# Task 0_1 starts before 0_0 has completed
 		overlapSoln = {"0_0,1":1, "0_1,2":1}
-		fillWithZeros(overlapSoln, [("0",2)], maxTime)
+		fillWithZeros(overlapSoln, jobs, maxTime)
 
 		# Tasks follows correct order and respects task duration	
 		orderedSoln = {"0_0,0":1, "0_1,2":1}
-		fillWithZeros(orderedSoln, [("0",2)], maxTime)
+		fillWithZeros(orderedSoln, jobs, maxTime)
 
 		self.assertFalse(jss.csp.check(backwardSoln))
 		self.assertFalse(jss.csp.check(sameStartSoln))
@@ -78,15 +78,13 @@ class TestIndividualJSSConstraints(unittest.TestCase):
 		sameStartSoln = {"movie_0,0":1, "movie_1,1":1,
 						 "tv_0,1":1, 
 						 "netflix_0,1":1}
-		fillWithZeros(sameStartSoln, [("movie",2), ("tv",1), ("netflix",1)],\
-			maxTime)
+		fillWithZeros(sameStartSoln, jobs, maxTime)
 
 		# 'movie' does not obey precedence, but respects machine sharing
 		badOrderShareSoln = {"movie_0,4":1, "movie_1,0":1,
 							 "tv_0,3":1,
 							 "netflix_0,4":1}
-		fillWithZeros(badOrderShareSoln,\
-			[("movie",2), ("tv",1), ("netflix",1)], maxTime)
+		fillWithZeros(badOrderShareSoln, jobs, maxTime)
 
 		self.assertFalse(jss.csp.check(sameStartSoln))
 		self.assertTrue(jss.csp.check(badOrderShareSoln))
@@ -112,13 +110,13 @@ class TestCombinedJSSConstraints(unittest.TestCase):
 		goodSoln = {"a_0,0":1, "a_1,2":1, "a_2,4":1,
 					"b_0,0":1, "b_1,4":1, "b_2,5":1,
 					"c_0,0":1, "c_1,2":1, "c_2,5":1}
-		fillWithZeros(goodSoln, [("a",3),("b",3),("c",3)], maxTime)
+		fillWithZeros(goodSoln, jobs, maxTime)
 
 		# Tasks a_1 and b_1 overlap in time on machine 2
 		overlapSoln = {"a_0,0":1, "a_1,2":1, "a_2,4":1,
 					   "b_0,0":1, "b_1,3":1, "b_2,5":1,
 					   "c_0,0":1, "c_1,2":1, "c_2,5":1}
-		fillWithZeros(overlapSoln, [("a",3),("b",3),("c",3)], maxTime)
+		fillWithZeros(overlapSoln, jobs, maxTime)
 
 		self.assertTrue(jss.csp.check(goodSoln))
 		self.assertFalse(jss.csp.check(overlapSoln))
@@ -133,15 +131,31 @@ class TestCombinedJSSConstraints(unittest.TestCase):
 		# Solution obeys all constraints
 		goodSoln = {"breakfast_0,0":1, "breakfast_1,4":1,
 					"music_0,3": 1}
-		fillWithZeros(goodSoln, [("breakfast",2),("music",1)], maxTime)
+		fillWithZeros(goodSoln, jobs, maxTime)
 
 		# 'breakfast' tasks are out of order
 		badOrderSoln = {"breakfast_0,1":1, "breakfast_1,0":1,
 						"music_0,0":1}
-		fillWithZeros(badOrderSoln, [("breakfast",2),("music",1)], maxTime)
+		fillWithZeros(badOrderSoln, jobs, maxTime)
 
 		self.assertTrue(jss.csp.check(goodSoln))
 		self.assertFalse(jss.csp.check(badOrderSoln))
+
+from itertools import islice
+class TestJSSResponse(unittest.TestCase):
+	def test_tinySchedule(self):
+		jobs = {"a": [(1,1),(2,1)],
+				"b": [(2,1)]}
+		maxTime = 2
+		jss = JobShopScheduler(jobs, maxTime)
+		response, csp = jss.solve("exact")
+
+		# Check solution
+		expected = {"a_0,0":1, "a_1,1":1, "b_0,0":1}
+		fillWithZeros(expected, jobs, maxTime)
+
+		#for sample in islice(response.samples(), 1):
+		#	self.assertT
 
 if __name__ == "__main__":
 	unittest.main()
