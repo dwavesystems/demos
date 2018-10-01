@@ -156,15 +156,19 @@ class JobShopScheduler():
 				self.csp.fix_variable(label, 0)
 	
 	def _getBQM(self):
-		bqm = dbc.stitch(self.csp)
 		#TODO: this could be optimized
 		#TODO: need to scale the biases
 		#TODO: rather than iterate through tasks, I could iterate through bqm keys
+		bqm = dbc.stitch(self.csp)
+	
+		# Edit BQM
+		"""
 		for task in self.tasks:
 			for t in xrange(1, self.maxTime):
 				label = self._getLabel(task, t)
 				bias = t**2 / 100
 				bqm.add_variable(label, bias)
+		"""
 		return bqm
 
 	def solve(self, sampler=None):
