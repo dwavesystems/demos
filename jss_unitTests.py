@@ -138,7 +138,7 @@ class TestCombinedJSSConstraints(unittest.TestCase):
 		# 'breakfast' tasks are out of order
 		badOrderSoln = {"breakfast_0,1":1, "breakfast_1,0":1,
 						"music_0,0":1}
-		fillWithZeros(goodSoln, [("breakfast",2),("music",1)], maxTime)
+		fillWithZeros(badOrderSoln, [("breakfast",2),("music",1)], maxTime)
 
 		self.assertTrue(jss.csp.check(goodSoln))
 		self.assertFalse(jss.csp.check(badOrderSoln))
