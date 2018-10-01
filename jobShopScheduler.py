@@ -153,7 +153,19 @@ class JobShopScheduler():
 			# Times that are too late for task to complete
 			for t in xrange(task.span - 1):	# -1 to ignore span==1
 				label = self._getLabel(task, (self.maxTime-1) - t) # -1 for zero-indexed time
-				self.csp.fix_variable(label, 0)			
+				self.csp.fix_variable(label, 0)
+	
+	def _getBQM(self):
+		bqm = dbc.stitch(self.csp)
+		#TODO: this could be optimized
+		#TODO: need to scale the biases
+		#TODO: rather than iterate through tasks, I could iterate through bqm keys
+		for task in self.tasks:
+			for t in xrange(1, self.maxTime):
+				label = self._getLabel(task, t)
+				bias = t**2 / 100
+				bqm.add_variable(label, bias)
+		return bqm
 
 	def solve(self, sampler=None):
 		""" Returns a response to the Job Shop Scheduling problem. Default
@@ -168,7 +180,7 @@ class JobShopScheduler():
 		self._removeAbsurdTimes()
 	
 		# Get BQM
-		bqm = dbc.stitch(self.csp)
+		bqm = self._getBQM()
 	
 		# Sample
 		if sampler == "qpu":
