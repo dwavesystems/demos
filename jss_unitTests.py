@@ -10,10 +10,10 @@ def fillWithZeros(myDict, jobDict, maxTime):
 		maxTime: integer. Max time for the schedule
 	"""
 	for job, tasks in jobDict.items():
-		for pos in xrange(len(tasks)):
+		for pos in range(len(tasks)):
 			prefix = str(job) + "_" + str(pos)
 
-			for t in xrange(maxTime):
+			for t in range(maxTime):
 				key = prefix + "," + str(t)
 
 				if key not in myDict:

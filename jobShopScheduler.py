@@ -84,7 +84,7 @@ class JobShopScheduler():
 		""" self.csp gets the constraint: A task can start once and only once
 		"""
 		for task in self.tasks:
-			taskTimes = {self._getLabel(task, t) for t in xrange(self.maxTime)}
+			taskTimes = {self._getLabel(task, t) for t in range(self.maxTime)}
 			self.csp.add_constraint(sumToOne, taskTimes)
 
 	def _addPrecedenceConstraint(self):
@@ -99,10 +99,10 @@ class JobShopScheduler():
 				continue
 	
 			# Forming constraints with the relevant times of the next task
-			for t in xrange(self.maxTime):
+			for t in range(self.maxTime):
 				cLabel = self._getLabel(cTask, t)
 	
-				for tt in xrange(min(t+cTask.span, self.maxTime)):
+				for tt in range(min(t+cTask.span, self.maxTime)):
 					nLabel = self._getLabel(nTask, tt)
 					self.csp.add_constraint(validEdges, {cLabel, nLabel})
 
@@ -133,10 +133,10 @@ class JobShopScheduler():
 					if task.job == otherTask.job and task.pos == otherTask.pos:
 						continue
 	
-					for t in xrange(self.maxTime):
+					for t in range(self.maxTime):
 						currLabel = self._getLabel(task, t)
 	
-						for tt in xrange(t, min(t+task.span, self.maxTime)):
+						for tt in range(t, min(t+task.span, self.maxTime)):
 							self.csp.add_constraint(validValues,\
 								{currLabel, self._getLabel(otherTask, tt)})
 
@@ -146,12 +146,12 @@ class JobShopScheduler():
 		#TODO: deal with overlaps in time
 		for task in self.tasks:
 			# Times that are too early for task
-			for t in xrange(task.pos):
+			for t in range(task.pos):
 				label = self._getLabel(task, t)
 				self.csp.fix_variable(label, 0)
 	
 			# Times that are too late for task to complete
-			for t in xrange(task.span - 1):	# -1 to ignore span==1
+			for t in range(task.span - 1):	# -1 to ignore span==1
 				label = self._getLabel(task, (self.maxTime-1) - t) # -1 for zero-indexed time
 				self.csp.fix_variable(label, 0)
 	
@@ -160,12 +160,13 @@ class JobShopScheduler():
 		#TODO: need to scale the biases
 		#TODO: rather than iterate through tasks, I could iterate through bqm keys
 		bqm = dbc.stitch(self.csp)
+		print(bqm)
 	
 		# Edit BQM
 		for task in self.tasks:
-			for t in xrange(1, self.maxTime):
+			for t in range(1, self.maxTime):
 				label = self._getLabel(task, t)
-				bias = t**2 / 100.
+				bias = t/2.
 				bqm.add_variable(label, bias)
 		return bqm
 
@@ -214,12 +215,35 @@ def demo():
 
 	# Print response
 	for sample, energy, nOccurences in islice(response.data(), nSamples):
-		print "energy: ", energy     
-		print "check: ", csp.check(sample)
+		print("energy: ", energy)
+		print("check: ", csp.check(sample))
 
 		for key in sorted(sample.keys()):
-			print key, ": ", sample[key]
-		print ""
+			print(key, ": ", sample[key])
+		print("")
+
+def demo2():
+	# Solve JSS
+	# Assumes that there are no tasks with non-positive processing times.
+	jobs = {"j0":[(0,1),(3,1)],
+			"j1":[(1,1)],
+			"j2":[(2,1)],
+			"j3":[(3,1)],
+			"j4":[(4,1)]}
+	nSamples = 1
+	maxTime = 6
+
+	scheduler = JobShopScheduler(jobs, maxTime)
+	response, csp = scheduler.solve()
+
+	# Print response
+	for sample, energy, nOccurences in islice(response.data(), nSamples):
+		print("energy: ", energy)
+		print("check: ", csp.check(sample))
+
+		for key in sorted(sample.keys()):
+			print(key, ": ", sample[key])
+		print("")
 
 if __name__ == "__main__":
 	demo()
