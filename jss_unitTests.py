@@ -175,17 +175,17 @@ class TestJSSResponse(unittest.TestCase):
 		self.compare(response, expected)
 
 	def test_largerSchedule(self):
-		jobs = {0: [("walk",1),("run",1)],
-				1: [("run",2)],
-				2: [("walk",2)]}
+		jobs = {'small1': [(1,1)],
+				'small2': [(2,2)],
+				'longJob': [(0,1),(1,1),(2,1)]}
 		maxTime = 3
 		jss = JobShopScheduler(jobs, maxTime)
 		response, csp = jss.solve("exact")
 
 		# Create expected solution
-		expected = {"0_0,0":1, "0_1,2":1,
-					"1_0,0":1,
-					"2_0,1":1}
+		expected = {"small1_0,0":1,
+					"small2_0,0":1,
+					"longJob_0,0":1, "longJob_1,1":1, "longJob_2,2":1}
 		fillWithZeros(expected, jobs, maxTime)
 
 		# Compare variable values

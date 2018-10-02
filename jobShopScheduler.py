@@ -162,13 +162,11 @@ class JobShopScheduler():
 		bqm = dbc.stitch(self.csp)
 	
 		# Edit BQM
-		"""
 		for task in self.tasks:
 			for t in xrange(1, self.maxTime):
 				label = self._getLabel(task, t)
-				bias = t**2 / 100
+				bias = t**2 / 100.
 				bqm.add_variable(label, bias)
-		"""
 		return bqm
 
 	def solve(self, sampler=None):
