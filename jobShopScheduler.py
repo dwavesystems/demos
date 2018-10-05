@@ -132,15 +132,15 @@ class JobShopScheduler():
 
             # Apply constraint between all tasks for each unit of time
             for task in same_machine_tasks:
-                for otherTask in same_machine_tasks:
-                    if task.job == otherTask.job and task.position == otherTask.position:
+                for other_task in same_machine_tasks:
+                    if task.job == other_task.job and task.position == other_task.position:
                         continue
 
                     for t in range(self.max_time):
-                        currLabel = self._get_label(task, t)
+                        current_label = self._get_label(task, t)
 
                         for tt in range(t, min(t + task.duration, self.max_time)):
-                            self.csp.add_constraint(valid_values, {currLabel, self._get_label(otherTask, tt)})
+                            self.csp.add_constraint(valid_values, {current_label, self._get_label(other_task, tt)})
 
     def _remove_absurd_times(self):
         """ Sets impossible task times in self.csp to 0.
