@@ -28,11 +28,9 @@ class Task():
 		return "{" + taskStr + "}"
 
 class KeyList():
-	""" A wrapper to an array. Used for passing the key of a custom object
-	to the bisect function.
+	""" A wrapper to an array. Used for passing the key of a custom object to the bisect function.
 
-	Note: bisect function does not let you choose an artbitrary key, hence
-	this class was created.
+	Note: bisect function does not let you choose an artbitrary key, hence this class was created.
 	"""
 	def __init__(self, array, keyFn):
 		self.array = array	# An iterable
@@ -57,8 +55,7 @@ class JobShopScheduler():
 		self._processData(jobDict)
 		
 	def _processData(self, jobs):
-		""" Process user input into a format that is more convenient for
-		JobShopScheduler functions.
+		""" Process user input into a format that is more convenient for JobShopScheduler functions.
 		"""
 		# Create and concatenate Task objects
 		tasks = []
@@ -74,8 +71,7 @@ class JobShopScheduler():
 			self.maxTime = totalTime
 
 	def _getLabel(self, task, time):
-		""" Creates a standardized name for variables in the constraint
-		satisfaction problem, self.csp.
+		""" Creates a standardized name for variables in the constraint satisfaction problem, self.csp.
 		"""
 		name = str(task.job) + "_" + str(task.pos)
 		return name + "," + str(time)
@@ -88,8 +84,8 @@ class JobShopScheduler():
 			self.csp.add_constraint(sumToOne, taskTimes)
 
 	def _addPrecedenceConstraint(self):
-		""" self.csp gets the constraint: Task must follow a particular order
-		Note: assumes self.tasks are sorted by jobs and then by position
+		""" self.csp gets the constraint: Task must follow a particular order.
+		 Note: assumes self.tasks are sorted by jobs and then by position
 		"""
 		validEdges = {(0,0),(1,0),(0,1)}
 		for i, cTask in enumerate(self.tasks[:-1]):
@@ -137,8 +133,7 @@ class JobShopScheduler():
 						currLabel = self._getLabel(task, t)
 	
 						for tt in range(t, min(t+task.span, self.maxTime)):
-							self.csp.add_constraint(validValues,\
-								{currLabel, self._getLabel(otherTask, tt)})
+							self.csp.add_constraint(validValues, {currLabel, self._getLabel(otherTask, tt)})
 
 	def _removeAbsurdTimes(self):
 		""" Sets impossible task times in self.csp to 0.
@@ -171,8 +166,7 @@ class JobShopScheduler():
 		return bqm
 
 	def solve(self, sampler=None):
-		""" Returns a response to the Job Shop Scheduling problem. Default
-		sampler is simulated annealing.
+		""" Returns a response to the Job Shop Scheduling problem. Default sampler is simulated annealing.
 		args:
 			sampler: String. {"qpu", "exact", "sa"}
 		"""
@@ -246,4 +240,4 @@ def demo2():
 		print("")
 
 if __name__ == "__main__":
-	demo()
+	demo2()
