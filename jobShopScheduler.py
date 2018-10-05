@@ -10,7 +10,7 @@ import dwavebinarycsp as dbc
 from neal import SimulatedAnnealingSampler
 
 
-def sumToOne(*args):
+def sum_to_one(*args):
     return sum(args) == 1
 
 
@@ -27,9 +27,9 @@ class Task():
         position = "position: " + str(self.position)
         machine = "machine: " + str(self.machine)
         duration = "duration: " + str(self.duration)
-        taskStr = ", ".join([job, position, machine, duration])
+        task_str = ", ".join([job, position, machine, duration])
 
-        return "{" + taskStr + "}"
+        return "{" + task_str + "}"
 
 
 class KeyList():
@@ -38,123 +38,123 @@ class KeyList():
     Note: bisect function does not let you choose an artbitrary key, hence this class was created.
     """
 
-    def __init__(self, array, keyFn):
+    def __init__(self, array, key_function):
         self.array = array  # An iterable
-        self.keyFn = keyFn  # Function for grabbing the key of a given item
+        self.key_function = key_function  # Function for grabbing the key of a given item
 
     def __len__(self):
         return len(self.array)
 
     def __getitem__(self, index):
         item = self.array[index]
-        key = self.keyFn(item)
+        key = self.key_function(item)
         return key
 
 
 # TODO: put asserts to validate jobs
 class JobShopScheduler():
-    def __init__(self, jobDict, maxTime=None):
+    def __init__(self, job_dict, max_time=None):
         self.tasks = []
-        self.maxTime = maxTime
+        self.max_time = max_time
         self.csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
 
-        # Populates self.tasks and self.maxTime
-        self._processData(jobDict)
+        # Populates self.tasks and self.max_time
+        self._process_data(job_dict)
 
-    def _processData(self, jobs):
+    def _process_data(self, jobs):
         """ Process user input into a format that is more convenient for JobShopScheduler functions.
         """
         # Create and concatenate Task objects
         tasks = []
-        totalTime = 0  # total time of all jobs
-        for jName, jTasks in jobs.items():
-            for i, (machine, timeSpan) in enumerate(jTasks):
-                tasks.append(Task(jName, i, machine, timeSpan))
-                totalTime += timeSpan
+        total_time = 0  # total time of all jobs
+        for job_name, job_tasks in jobs.items():
+            for i, (machine, time_span) in enumerate(job_tasks):
+                tasks.append(Task(job_name, i, machine, time_span))
+                total_time += time_span
 
         # Update values
         self.tasks = tasks
-        if self.maxTime is None:
-            self.maxTime = totalTime
+        if self.max_time is None:
+            self.max_time = total_time
 
-    def _getLabel(self, task, time):
+    def _get_label(self, task, time):
         """ Creates a standardized name for variables in the constraint satisfaction problem, self.csp.
         """
         name = str(task.job) + "_" + str(task.position)
         return name + "," + str(time)
 
-    def _addOneStartConstraint(self):
+    def _add_one_start_constraint(self):
         """ self.csp gets the constraint: A task can start once and only once
         """
         for task in self.tasks:
-            taskTimes = {self._getLabel(task, t) for t in range(self.maxTime)}
-            self.csp.add_constraint(sumToOne, taskTimes)
+            task_times = {self._get_label(task, t) for t in range(self.max_time)}
+            self.csp.add_constraint(sum_to_one, task_times)
 
-    def _addPrecedenceConstraint(self):
+    def _add_precedence_constraint(self):
         """ self.csp gets the constraint: Task must follow a particular order.
          Note: assumes self.tasks are sorted by jobs and then by position
         """
-        validEdges = {(0, 0), (1, 0), (0, 1)}
-        for i, cTask in enumerate(self.tasks[:-1]):
-            nTask = self.tasks[i + 1]
+        valid_edges = {(0, 0), (1, 0), (0, 1)}
+        for i, current_task in enumerate(self.tasks[:-1]):
+            next_task = self.tasks[i + 1]
 
-            if cTask.job != nTask.job:
+            if current_task.job != next_task.job:
                 continue
 
             # Forming constraints with the relevant times of the next task
-            for t in range(self.maxTime):
-                cLabel = self._getLabel(cTask, t)
+            for t in range(self.max_time):
+                current_label = self._get_label(current_task, t)
 
-                for tt in range(min(t + cTask.duration, self.maxTime)):
-                    nLabel = self._getLabel(nTask, tt)
-                    self.csp.add_constraint(validEdges, {cLabel, nLabel})
+                for tt in range(min(t + current_task.duration, self.max_time)):
+                    next_label = self._get_label(next_task, tt)
+                    self.csp.add_constraint(valid_edges, {current_label, next_label})
 
-    def _addShareMachineConstraint(self):
+    def _add_share_machine_constraint(self):
         """ self.csp gets the constraint: At most one task per machine per time
         """
-        sortedTasks = sorted(self.tasks, key=lambda x: x.machine)
-        wrappedTasks = KeyList(sortedTasks, lambda x: x.machine)  # Key wrapper
+        sorted_tasks = sorted(self.tasks, key=lambda x: x.machine)
+        wrapped_tasks = KeyList(sorted_tasks, lambda x: x.machine)  # Key wrapper
 
         head = 0
-        validValues = {(0, 0), (1, 0), (0, 1)}
-        while head < len(sortedTasks):
+        valid_values = {(0, 0), (1, 0), (0, 1)}
+        while head < len(sorted_tasks):
 
             # Find tasks that share a machine
-            tail = bisect_right(wrappedTasks, sortedTasks[head].machine)
-            sameMachTasks = sortedTasks[head:tail]
+            tail = bisect_right(wrapped_tasks, sorted_tasks[head].machine)
+            same_machine_tasks = sorted_tasks[head:tail]
 
             # Update
             head = tail
 
             # No need to build coupling for a single task
-            if len(sameMachTasks) < 2:
+            if len(same_machine_tasks) < 2:
                 continue
 
             # Apply constraint between all tasks for each unit of time
-            for task in sameMachTasks:
-                for otherTask in sameMachTasks:
+            for task in same_machine_tasks:
+                for otherTask in same_machine_tasks:
                     if task.job == otherTask.job and task.position == otherTask.position:
                         continue
 
-                    for t in range(self.maxTime):
-                        currLabel = self._getLabel(task, t)
+                    for t in range(self.max_time):
+                        currLabel = self._get_label(task, t)
 
-                        for tt in range(t, min(t + task.duration, self.maxTime)):
-                            self.csp.add_constraint(validValues, {currLabel, self._getLabel(otherTask, tt)})
+                        for tt in range(t, min(t + task.duration, self.max_time)):
+                            self.csp.add_constraint(valid_values, {currLabel, self._get_label(otherTask, tt)})
 
-    def _removeAbsurdTimes(self):
+    def _remove_absurd_times(self):
         """ Sets impossible task times in self.csp to 0.
         """
         # TODO: deal with overlaps in time
         for task in self.tasks:
             # Times that are too early for task
             for t in range(task.position):
-                label = self._getLabel(task, t)
+                label = self._get_label(task, t)
                 self.csp.fix_variable(label, 0)
 
             # Times that are too late for task to complete
             for t in range(task.duration - 1):  # -1 to ignore duration==1
-                label = self._getLabel(task, (self.maxTime - 1) - t)  # -1 for zero-indexed time
+                label = self._get_label(task, (self.max_time - 1) - t)  # -1 for zero-indexed time
                 self.csp.fix_variable(label, 0)
 
     def _getBQM(self):
@@ -166,8 +166,8 @@ class JobShopScheduler():
 
         # Edit BQM
         for task in self.tasks:
-            for t in range(1, self.maxTime):
-                label = self._getLabel(task, t)
+            for t in range(1, self.max_time):
+                label = self._get_label(task, t)
                 bias = t / 2.
                 bqm.add_variable(label, bias)
         return bqm
@@ -178,10 +178,10 @@ class JobShopScheduler():
             sampler: String. {"qpu", "exact", "sa"}
         """
         # Apply constraints to self.csp
-        self._addOneStartConstraint()
-        self._addPrecedenceConstraint()
-        self._addShareMachineConstraint()
-        self._removeAbsurdTimes()
+        self._add_one_start_constraint()
+        self._add_precedence_constraint()
+        self._add_share_machine_constraint()
+        self._remove_absurd_times()
 
         # Get BQM
         bqm = self._getBQM()
@@ -208,14 +208,14 @@ def demo():
     jobs = {"j0": [(1, 2), (2, 2), (3, 2)],
             "j1": [(3, 3), (2, 1), (1, 1)],
             "j2": [(2, 2), (1, 3), (2, 1)]}
-    nSamples = 1
-    maxTime = 6
+    n_samples = 1
+    max_time = 6
 
-    scheduler = JobShopScheduler(jobs, maxTime)
+    scheduler = JobShopScheduler(jobs, max_time)
     response, csp = scheduler.solve()
 
     # Print response
-    for sample, energy, nOccurences in islice(response.data(), nSamples):
+    for sample, energy, n_occurences in islice(response.data(), n_samples):
         print("energy: ", energy)
         print("check: ", csp.check(sample))
 
@@ -232,14 +232,14 @@ def demo2():
             "j2": [(2, 1)],
             "j3": [(3, 1)],
             "j4": [(4, 1)]}
-    nSamples = 1
-    maxTime = 6
+    n_samples = 1
+    max_time = 6
 
-    scheduler = JobShopScheduler(jobs, maxTime)
+    scheduler = JobShopScheduler(jobs, max_time)
     response, csp = scheduler.solve()
 
     # Print response
-    for sample, energy, nOccurences in islice(response.data(), nSamples):
+    for sample, energy, n_occurences in islice(response.data(), n_samples):
         print("energy: ", energy)
         print("check: ", csp.check(sample))
 

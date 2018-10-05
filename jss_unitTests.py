@@ -26,7 +26,7 @@ class TestIndividualJSSConstraints(unittest.TestCase):
         jobs = {"car": [("key", 2), ("gas", 1)],
                 "stove": [("gas", 4)]}
         jss = JobShopScheduler(jobs, 3)
-        jss._addOneStartConstraint()
+        jss._add_one_start_constraint()
 
         # Tasks only start once
         oneStartSoln = {"car_0,0": 1, "car_0,1": 0, "car_0,2": 0,
@@ -45,7 +45,7 @@ class TestIndividualJSSConstraints(unittest.TestCase):
         jobs = {0: [("m1", 2), ("m2", 1)]}
         maxTime = 4
         jss = JobShopScheduler(jobs, maxTime)
-        jss._addPrecedenceConstraint()
+        jss._add_precedence_constraint()
 
         # Task 0_0 starts after task 0_1
         backwardSoln = {"0_0,3": 1, "0_1,0": 1}
@@ -74,7 +74,7 @@ class TestIndividualJSSConstraints(unittest.TestCase):
                 "netflix": [("watch", 3)]}
         maxTime = 7
         jss = JobShopScheduler(jobs, maxTime)
-        jss._addShareMachineConstraint()
+        jss._add_share_machine_constraint()
 
         # All jobs 'watch' at the same time
         sameStartSoln = {"movie_0,0": 1, "movie_1,1": 1,
