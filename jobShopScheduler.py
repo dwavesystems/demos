@@ -11,19 +11,19 @@ def sumToOne(*args):
 	return sum(args) == 1	
 
 class Task():
-	def __init__(self, job, position, machine, timeSpan):
+	def __init__(self, job, position, machine, duration):
 		self.job = job
-		self.pos = position
-		self.mach = machine
-		self.span = timeSpan
+		self.position = position
+		self.machine = machine
+		self.duration = duration
 	
 	def __str__(self):
 		#TODO: could do better a differentiating strings and numbers
 		job = "job: " + str(self.job)
-		pos = "pos: " + str(self.pos)
-		mach = "mach: " + str(self.mach)
-		span = "span: " + str(self.span)
-		taskStr = ", ".join([job, pos, mach, span])
+		position = "position: " + str(self.position)
+		machine = "machine: " + str(self.machine)
+		duration = "duration: " + str(self.duration)
+		taskStr = ", ".join([job, position, machine, duration])
 
 		return "{" + taskStr + "}"
 
@@ -73,7 +73,7 @@ class JobShopScheduler():
 	def _getLabel(self, task, time):
 		""" Creates a standardized name for variables in the constraint satisfaction problem, self.csp.
 		"""
-		name = str(task.job) + "_" + str(task.pos)
+		name = str(task.job) + "_" + str(task.position)
 		return name + "," + str(time)
 
 	def _addOneStartConstraint(self):
@@ -98,22 +98,22 @@ class JobShopScheduler():
 			for t in range(self.maxTime):
 				cLabel = self._getLabel(cTask, t)
 	
-				for tt in range(min(t+cTask.span, self.maxTime)):
+				for tt in range(min(t+cTask.duration, self.maxTime)):
 					nLabel = self._getLabel(nTask, tt)
 					self.csp.add_constraint(validEdges, {cLabel, nLabel})
 
 	def _addShareMachineConstraint(self):
 		""" self.csp gets the constraint: At most one task per machine per time
 		"""
-		sortedTasks = sorted(self.tasks, key=lambda x: x.mach)
-		wrappedTasks = KeyList(sortedTasks, lambda x: x.mach) # Key wrapper
+		sortedTasks = sorted(self.tasks, key=lambda x: x.machine)
+		wrappedTasks = KeyList(sortedTasks, lambda x: x.machine) # Key wrapper
 	
 		head = 0
 		validValues = {(0,0),(1,0),(0,1)}
 		while head < len(sortedTasks):
 	
 			# Find tasks that share a machine
-			tail = bisect_right(wrappedTasks, sortedTasks[head].mach)
+			tail = bisect_right(wrappedTasks, sortedTasks[head].machine)
 			sameMachTasks = sortedTasks[head:tail]
 	
 			# Update
@@ -126,13 +126,13 @@ class JobShopScheduler():
 			# Apply constraint between all tasks for each unit of time
 			for task in sameMachTasks:
 				for otherTask in sameMachTasks:
-					if task.job == otherTask.job and task.pos == otherTask.pos:
+					if task.job == otherTask.job and task.position == otherTask.position:
 						continue
 	
 					for t in range(self.maxTime):
 						currLabel = self._getLabel(task, t)
 	
-						for tt in range(t, min(t+task.span, self.maxTime)):
+						for tt in range(t, min(t+task.duration, self.maxTime)):
 							self.csp.add_constraint(validValues, {currLabel, self._getLabel(otherTask, tt)})
 
 	def _removeAbsurdTimes(self):
@@ -141,12 +141,12 @@ class JobShopScheduler():
 		#TODO: deal with overlaps in time
 		for task in self.tasks:
 			# Times that are too early for task
-			for t in range(task.pos):
+			for t in range(task.position):
 				label = self._getLabel(task, t)
 				self.csp.fix_variable(label, 0)
 	
 			# Times that are too late for task to complete
-			for t in range(task.span - 1):	# -1 to ignore span==1
+			for t in range(task.duration - 1):	# -1 to ignore duration==1
 				label = self._getLabel(task, (self.maxTime-1) - t) # -1 for zero-indexed time
 				self.csp.fix_variable(label, 0)
 	
