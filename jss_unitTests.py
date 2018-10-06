@@ -1,24 +1,25 @@
 from itertools import islice
 import unittest
+
 from jobShopScheduler import JobShopScheduler
 
 
-def fill_with_zeros(myDict, jobDict, max_time):
-    """ Fills the 'missing' myDict keys with a value of 0.
+def fill_with_zeros(expected_solution_dict, job_dict, max_time):
+    """ Fills the 'missing' expected_solution_dict keys with a value of 0.
     args:
-        myDict: a dictionary.  {taskName: taskValue, ..}
-        jobDict: a dictionary. {jobName: [(machineVal, taskTimeSpan), ..], ..}
+        expected_solution_dict: a dictionary.  {taskName: taskValue, ..}
+        job_dict: a dictionary. {jobName: [(machineVal, taskTimeSpan), ..], ..}
         max_time: integer. Max time for the schedule
     """
-    for job, tasks in jobDict.items():
+    for job, tasks in job_dict.items():
         for pos in range(len(tasks)):
             prefix = str(job) + "_" + str(pos)
 
             for t in range(max_time):
                 key = prefix + "," + str(t)
 
-                if key not in myDict:
-                    myDict[key] = 0
+                if key not in expected_solution_dict:
+                    expected_solution_dict[key] = 0
 
 
 class TestIndividualJSSConstraints(unittest.TestCase):
@@ -60,13 +61,13 @@ class TestIndividualJSSConstraints(unittest.TestCase):
         fill_with_zeros(overlap_solution, jobs, max_time)
 
         # Tasks follows correct order and respects task duration
-        orderedSoln = {"0_0,0": 1, "0_1,2": 1}
-        fill_with_zeros(orderedSoln, jobs, max_time)
+        ordered_solution = {"0_0,0": 1, "0_1,2": 1}
+        fill_with_zeros(ordered_solution, jobs, max_time)
 
         self.assertFalse(jss.csp.check(backward_solution))
         self.assertFalse(jss.csp.check(same_start_solution))
         self.assertFalse(jss.csp.check(overlap_solution))
-        self.assertTrue(jss.csp.check(orderedSoln))
+        self.assertTrue(jss.csp.check(ordered_solution))
 
     def test_shareMachineConstraint(self):
         jobs = {"movie": [("pay", 1), ("watch", 3)],
@@ -83,13 +84,13 @@ class TestIndividualJSSConstraints(unittest.TestCase):
         fill_with_zeros(same_start_solution, jobs, max_time)
 
         # 'movie' does not obey precedence, but respects machine sharing
-        badOrderShareSoln = {"movie_0,4": 1, "movie_1,0": 1,
-                             "tv_0,3": 1,
-                             "netflix_0,4": 1}
-        fill_with_zeros(badOrderShareSoln, jobs, max_time)
+        bad_order_share_solution = {"movie_0,4": 1, "movie_1,0": 1,
+                                    "tv_0,3": 1,
+                                    "netflix_0,4": 1}
+        fill_with_zeros(bad_order_share_solution, jobs, max_time)
 
         self.assertFalse(jss.csp.check(same_start_solution))
-        self.assertTrue(jss.csp.check(badOrderShareSoln))
+        self.assertTrue(jss.csp.check(bad_order_share_solution))
 
     def test_absurdTimesAreRemoved(self):
         pass
