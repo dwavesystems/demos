@@ -1,13 +1,15 @@
+from __future__ import print_function
+
 import dwavebinarycsp as dbc
 from dimod.reference.samplers import ExactSolver
 from dwave.system.samplers import DWaveSampler 
-from dwave.system.composites import EmbeddingComposite 
+from dwave.system.composites import EmbeddingComposite
 
 def getGrid(nRows, nCols):
 	positions = []		# Positions in the maze
 	directions = []		# Edge nodes; the four directions of each position
-	for i in xrange(nRows):
-		for j in xrange(nCols):
+	for i in range(nRows):
+		for j in range(nCols):
 			curr = str(i) + "," + str(j)
 			positions.append(curr)
 	return positions
@@ -28,14 +30,14 @@ def mazeBQM(nRows, nCols, start, end, walls):
 
 	# Constraint: Enforce North/South, East/West rule
 	# (ie Row above's south is row below's north. Likewise with east and west)
-	for i in xrange(0, nRows-1):
-		for j in xrange(nCols):
+	for i in range(0, nRows-1):
+		for j in range(nCols):
 			aboveNode = str(i) + "," + str(j) + "s"
 			belowNode = str(i+1) + "," + str(j) + "n"
 			csp.add_constraint(equal, [aboveNode, belowNode])
 
-	for i in xrange(nRows):
-		for j in xrange(0, nCols-1):
+	for i in range(nRows):
+		for j in range(0, nCols-1):
 			leftNode = str(i) + "," + str(j) + "e"		
 			rightNode = str(i) + "," + str(j+1) + "w"		
 			csp.add_constraint(equal, [leftNode, rightNode])
@@ -51,7 +53,7 @@ def mazeBQM(nRows, nCols, start, end, walls):
 	csp.fix_variable(end, 1)		# end location
 	
 	# Constraint: No walking through boarders of the maze
-	for j in xrange(nCols):
+	for j in range(nCols):
 		topBoarder = "0," + str(j) + "n"
 		bottomBoarder = str(nRows-1) + "," + str(j) + "s"
 
@@ -67,7 +69,7 @@ def mazeBQM(nRows, nCols, start, end, walls):
 			if not bottomBoarder in [start, end]:
 				raise ValueError
 
-	for i in xrange(nRows):
+	for i in range(nRows):
 		leftBoarder = str(i) + ",0" + "w"
 		rightBoarder = str(i) + "," + str(nCols-1) + "e"
 
@@ -88,7 +90,7 @@ def mazeBQM(nRows, nCols, start, end, walls):
 		csp.fix_variable(wall, 0)
 
 	bqm = dbc.stitch(csp)
-	print bqm
+	print(bqm)
 
 	# Sample
 	sampler = EmbeddingComposite(DWaveSampler())
@@ -99,13 +101,13 @@ def mazeBQM(nRows, nCols, start, end, walls):
 		if i==3:
 			break
 
-		print "Energy: " + str(energy)
+		print("Energy: ", str(energy))
 
 		keys = sample.keys()
 		for key in sorted(keys):
-			print key + ": " + str(sample[key])
+			print(key, ": ", str(sample[key]))
 
-		print ""
+		print("")
 
 
 def smallMaze():
