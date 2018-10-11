@@ -3,18 +3,16 @@ from __future__ import print_function
 import dwavebinarycsp as dbc
 
 
-def equal(a, b):
-    return a == b
+def get_label(row, col, direction):
+    return "".join([str(row), ",", str(col), direction])
 
 
 def sum_to_two_or_zero(*args):
     sum_value = sum(args)
     return sum_value in [0, 2]
 
-def get_label(row, col, direction):
-    return "".join([str(row), ",", str(col), direction])
 
-def maze_bqm(n_rows, n_cols, start, end, walls):
+def maze_bqm(n_rows, n_cols, start, end, walls, verbose=False):
     # Make constraints
     csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
 
@@ -67,6 +65,10 @@ def maze_bqm(n_rows, n_cols, start, end, walls):
         csp.fix_variable(wall, 0)
 
     bqm = dbc.stitch(csp)
+
+    if verbose:
+        return bqm, csp
+
     return bqm
 
 

@@ -5,11 +5,11 @@ from dimod.reference.samplers import ExactSolver
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
 from maze_solver import maze_bqm
+from neal import SimulatedAnnealingSampler
 
 #TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
-
 def compare(self, response, expected):
-    """ Comparing response to expected results
+    """Comparing response to expected results
     """
     for sample in islice(response.samples(), 1):
         # Comparing variables found in sample and expected
@@ -27,34 +27,28 @@ def compare(self, response, expected):
             self.assertEqual(expected[key], 0)
 
 
-#class test_maze_solutions(unittest.TestCase):
-def test_small_maze():
-    # Create maze
-    n_rows = 3
-    n_cols = 3
-    start = "0,0n"
-    end = "3,2n"
-    walls = ["1,0n", "0,2w", "2,1n", "2,2n"]
-    bqm = maze_bqm(n_rows, n_cols, start, end, walls)
+class TestMazeSolverConstraints(unittest.TestCase):
+    def test_sum_to_zero_or_two_constraint(self):
+        pass
 
-    # Sample
-    sampler = EmbeddingComposite(DWaveSampler())
-    response = sampler.sample(bqm, num_reads=10000)
-    # sampler = ExactSolver()
-    # response = sampler.sample(bqm)
-    for i, (sample, energy, n_occurences, chain_break_fraction) in enumerate(response.data()):
-        if i == 3:
-            break
+    def test_boarders_constraint(self):
+        pass
 
-        print("Energy: ", str(energy))
+class TestMazeSolverResponse(unittest.TestCase):
+    #TODO: compare response with expected solution
+    def test_small_maze(self):
+        # Create maze
+        n_rows = 3
+        n_cols = 3
+        start = "0,0n"
+        end = "3,2n"
+        walls = ["1,0n", "0,2w", "2,1n", "2,2n"]
+        bqm = maze_bqm(n_rows, n_cols, start, end, walls)
 
-        keys = sample.keys()
-        for key in sorted(keys):
-            print(key, ": ", str(sample[key]))
-
-        print("")
-
-test_small_maze()
+        # Sample
+        sampler = SimulatedAnnealingSampler()
+        response = sampler.sample(bqm)
+        self.assertGreaterEqual(len(response), 1)
 
 """
 def medium_maze():
@@ -79,3 +73,6 @@ def large_maze():
              "5,2n", "5,2e", "5,4n"]
     maze_bqm(n_rows, n_cols, start, end, walls)
 """
+
+if __name__ == "__main__":
+    unittest.main()
