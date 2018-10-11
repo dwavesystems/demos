@@ -1,9 +1,7 @@
 from __future__ import print_function
 
 import dwavebinarycsp as dbc
-from dimod.reference.samplers import ExactSolver
-from dwave.system.samplers import DWaveSampler
-from dwave.system.composites import EmbeddingComposite
+
 
 
 def get_grid(n_rows, n_cols):
@@ -93,22 +91,7 @@ def maze_bqm(n_rows, n_cols, start, end, walls):
         csp.fix_variable(wall, 0)
 
     bqm = dbc.stitch(csp)
-    print(bqm)
+    return bqm
 
-    # Sample
-    sampler = EmbeddingComposite(DWaveSampler())
-    response = sampler.sample(bqm, num_reads=10000)
-    # sampler = ExactSolver()
-    # response = sampler.sample(bqm)
-    for i, (sample, energy, n_occurences, chain_break_fraction) in enumerate(response.data()):
-        if i == 3:
-            break
 
-        print("Energy: ", str(energy))
-
-        keys = sample.keys()
-        for key in sorted(keys):
-            print(key, ": ", str(sample[key]))
-
-        print("")
 

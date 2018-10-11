@@ -1,15 +1,62 @@
+from itertools import islice
 import unittest
-from maze-solver import maze_bqm
 
-def small_maze():
+from dimod.reference.samplers import ExactSolver
+from dwave.system.samplers import DWaveSampler
+from dwave.system.composites import EmbeddingComposite
+from maze_solver import maze_bqm
+
+#TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
+
+def compare(self, response, expected):
+    """ Comparing response to expected results
+    """
+    for sample in islice(response.samples(), 1):
+        # Comparing variables found in sample and expected
+        expected_keys = set(expected.keys())
+        sample_keys = set(sample.keys())
+        common_keys = expected_keys & sample_keys
+        different_keys = expected_keys - sample_keys  # expected_keys is a superset
+
+        # Check that common variables match
+        for key in common_keys:
+            self.assertEqual(sample[key], expected[key])
+
+        # Check that non-existent 'sample' variables are 0
+        for key in different_keys:
+            self.assertEqual(expected[key], 0)
+
+
+#class test_maze_solutions(unittest.TestCase):
+def test_small_maze():
+    # Create maze
     n_rows = 3
     n_cols = 3
     start = "0,0n"
     end = "2,2s"
     walls = ["0,0s", "0,1e", "1,1s", "1,2s"]
-    maze_bqm(n_rows, n_cols, start, end, walls)
+    bqm = maze_bqm(n_rows, n_cols, start, end, walls)
 
+    # Sample
+    sampler = EmbeddingComposite(DWaveSampler())
+    response = sampler.sample(bqm, num_reads=10000)
+    # sampler = ExactSolver()
+    # response = sampler.sample(bqm)
+    for i, (sample, energy, n_occurences, chain_break_fraction) in enumerate(response.data()):
+        if i == 3:
+            break
 
+        print("Energy: ", str(energy))
+
+        keys = sample.keys()
+        for key in sorted(keys):
+            print(key, ": ", str(sample[key]))
+
+        print("")
+
+test_small_maze()
+
+"""
 def medium_maze():
     n_rows = 4
     n_cols = 4
@@ -31,5 +78,4 @@ def large_maze():
              "2,3e", "2,4s", "3,1w", "3,1e", "3,2e", "3,2s", "3,3s", "4,1w", "5,1n",
              "5,2n", "5,2e", "5,4n"]
     maze_bqm(n_rows, n_cols, start, end, walls)
-
-small_maze()
+"""
