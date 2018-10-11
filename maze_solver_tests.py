@@ -33,8 +33,8 @@ def test_small_maze():
     n_rows = 3
     n_cols = 3
     start = "0,0n"
-    end = "2,2s"
-    walls = ["0,0s", "0,1e", "1,1s", "1,2s"]
+    end = "3,2n"
+    walls = ["1,0n", "0,2w", "2,1n", "2,2n"]
     bqm = maze_bqm(n_rows, n_cols, start, end, walls)
 
     # Sample
