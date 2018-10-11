@@ -97,7 +97,7 @@ def mazeBQM(nRows, nCols, start, end, walls):
 	response = sampler.sample(bqm, num_reads=10000)
 	#sampler = ExactSolver()
 	#response = sampler.sample(bqm)
-	for i, (sample, energy, nOccurences) in enumerate(response.data()):
+	for i, (sample, energy, nOccurences, chainBreakFraction) in enumerate(response.data()):
 		if i==3:
 			break
 
