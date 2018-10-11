@@ -5,11 +5,11 @@ from dimod.reference.samplers import ExactSolver
 from dwave.system.samplers import DWaveSampler 
 from dwave.system.composites import EmbeddingComposite
 
-def getGrid(nRows, nCols):
+def get_grid(n_rows, n_cols):
 	positions = []		# Positions in the maze
 	directions = []		# Edge nodes; the four directions of each position
-	for i in range(nRows):
-		for j in range(nCols):
+	for i in range(n_rows):
+		for j in range(n_cols):
 			curr = str(i) + "," + str(j)
 			positions.append(curr)
 	return positions
@@ -17,35 +17,35 @@ def getGrid(nRows, nCols):
 def equal(a, b):
 	return a==b
 
-def sumToTwoOrZero(*args):
-	sumValue = sum(args)
-	return sumValue in [0, 2]
+def sum_to_two_or_zero(*args):
+	sum_value = sum(args)
+	return sum_value in [0, 2]
 	
 
-def mazeBQM(nRows, nCols, start, end, walls):
-	positions = getGrid(nRows, nCols)
+def maze_bqm(n_rows, n_cols, start, end, walls):
+	positions = get_grid(n_rows, n_cols)
 
 	# Make constraints
 	csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
 
 	# Constraint: Enforce North/South, East/West rule
 	# (ie Row above's south is row below's north. Likewise with east and west)
-	for i in range(0, nRows-1):
-		for j in range(nCols):
-			aboveNode = str(i) + "," + str(j) + "s"
-			belowNode = str(i+1) + "," + str(j) + "n"
-			csp.add_constraint(equal, [aboveNode, belowNode])
+	for i in range(0, n_rows-1):
+		for j in range(n_cols):
+			above_node = str(i) + "," + str(j) + "s"
+			below_node = str(i+1) + "," + str(j) + "n"
+			csp.add_constraint(equal, [above_node, below_node])
 
-	for i in range(nRows):
-		for j in range(0, nCols-1):
-			leftNode = str(i) + "," + str(j) + "e"		
-			rightNode = str(i) + "," + str(j+1) + "w"		
-			csp.add_constraint(equal, [leftNode, rightNode])
+	for i in range(n_rows):
+		for j in range(0, n_cols-1):
+			left_node = str(i) + "," + str(j) + "e"
+			right_node = str(i) + "," + str(j+1) + "w"
+			csp.add_constraint(equal, [left_node, right_node])
 	
 	# Constraint: Each eNode's N,S,E,W must sum to zero or two
 	for pos in positions:
 		directions = {pos+"n", pos+"s", pos+"e", pos+"w"}
-		csp.add_constraint(sumToTwoOrZero, directions)	
+		csp.add_constraint(sum_to_two_or_zero, directions)
 
 	#TODO: Have a way for user to easily set up walls, start and end
 	# Constraint: Start and end locations
@@ -53,36 +53,36 @@ def mazeBQM(nRows, nCols, start, end, walls):
 	csp.fix_variable(end, 1)		# end location
 	
 	# Constraint: No walking through boarders of the maze
-	for j in range(nCols):
-		topBoarder = "0," + str(j) + "n"
-		bottomBoarder = str(nRows-1) + "," + str(j) + "s"
+	for j in range(n_cols):
+		top_boarder = "0," + str(j) + "n"
+		bottom_boarder = str(n_rows-1) + "," + str(j) + "s"
 
 		try:
-			csp.fix_variable(topBoarder,0)	
+			csp.fix_variable(top_boarder,0)
 		except ValueError:
-			if not topBoarder in [start, end]:
+			if not top_boarder in [start, end]:
 				raise ValueError
 
 		try:
-			csp.fix_variable(bottomBoarder,0)	
+			csp.fix_variable(bottom_boarder,0)
 		except ValueError:
-			if not bottomBoarder in [start, end]:
+			if not bottom_boarder in [start, end]:
 				raise ValueError
 
-	for i in range(nRows):
-		leftBoarder = str(i) + ",0" + "w"
-		rightBoarder = str(i) + "," + str(nCols-1) + "e"
+	for i in range(n_rows):
+		left_boarder = str(i) + ",0" + "w"
+		right_boarder = str(i) + "," + str(n_cols-1) + "e"
 
 		try:
-			csp.fix_variable(leftBoarder, 0)	
+			csp.fix_variable(left_boarder, 0)
 		except ValueError:
-			if not leftBoarder in [start, end]:
+			if not left_boarder in [start, end]:
 				raise ValueError
 
 		try:
-			csp.fix_variable(rightBoarder,0)	
+			csp.fix_variable(right_boarder,0)
 		except ValueError:
-			if not rightBoarder in [start, end]:
+			if not right_boarder in [start, end]:
 				raise ValueError
 
 	# Constraint: Inner walls of the maze
@@ -97,7 +97,7 @@ def mazeBQM(nRows, nCols, start, end, walls):
 	response = sampler.sample(bqm, num_reads=10000)
 	#sampler = ExactSolver()
 	#response = sampler.sample(bqm)
-	for i, (sample, energy, nOccurences, chainBreakFraction) in enumerate(response.data()):
+	for i, (sample, energy, n_occurences, chain_break_fraction) in enumerate(response.data()):
 		if i==3:
 			break
 
@@ -110,33 +110,33 @@ def mazeBQM(nRows, nCols, start, end, walls):
 		print("")
 
 
-def smallMaze():
-	nRows = 3
-	nCols = 3
+def small_maze():
+	n_rows = 3
+	n_cols = 3
 	start = "0,0n"
 	end = "2,2s"
 	walls = ["0,0s", "0,1e", "1,1s", "1,2s"]
-	mazeBQM(nRows, nCols, start, end, walls)
+	maze_bqm(n_rows, n_cols, start, end, walls)
 
-def mediumMaze():
-	nRows = 4
-	nCols = 4
+def medium_maze():
+	n_rows = 4
+	n_cols = 4
 	start = "3,1s"
 	end = "1,3e"
 	walls = ["0,1s","0,2s","1,2e","1,3s","2,0n","2,1n","2,2w","3,1n","3,3n"]
-	mazeBQM(nRows, nCols, start, end, walls)
+	maze_bqm(n_rows, n_cols, start, end, walls)
 
-def largeMaze():
+def large_maze():
 	# Maze is probably too large. Got error "ValueError: no embedding found"
 	# On top of 4 directions for the 5*6 maze positions, there were 30+
 	# auxiliary variables.
-	nRows = 6
-	nCols = 5
+	n_rows = 6
+	n_cols = 5
 	start = "5,1s"
 	end = "2,4e"
 	walls = ["0,0s", "0,2s", "0,3s", "1,0e", "1,3e","2,1n","2,2n","2,2e",
 			"2,3e","2,4s","3,1w","3,1e","3,2e", "3,2s","3,3s","4,1w","5,1n",
 			"5,2n","5,2e","5,4n"]
-	mazeBQM(nRows, nCols, start, end, walls)
+	maze_bqm(n_rows, n_cols, start, end, walls)
 
-smallMaze()
+small_maze()
