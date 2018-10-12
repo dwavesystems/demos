@@ -4,37 +4,58 @@ import unittest
 from maze import Maze, get_label
 from neal import SimulatedAnnealingSampler
 
-#TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
 
-def fill_with_zeros(myDict, n_rows, n_cols):
+# TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
+#TODO: Leave solution_dict.keys() as an iterator. get rid of list casting
+def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
+    keys = solution_dict.keys() if ignore_list is None else list(solution_dict.keys()) + ignore_list
+
     # Setting west direction to zero
     for i in range(n_rows):
         for j in range(n_cols + 1):
             west = get_label(i, j, 'w')
 
-            if west not in myDict.keys():
-                myDict[west] = 0
+            if west not in keys:
+                solution_dict[west] = 0
 
     # Setting north direction to zero
     for i in range(n_rows + 1):
         for j in range(n_cols):
             north = get_label(i, j, 'n')
 
-            if north not in myDict.keys():
-                myDict[north] = 0
+            if north not in keys:
+                solution_dict[north] = 0
 
 
 class TestMazeSolverConstraints(unittest.TestCase):
     def test_valid_move_constraint(self):
         n_rows = 2
         n_cols = 3
-        maze = Maze(n_rows, n_cols, '0,1n', '0,3w', ['1,2n', '1,2w'])
+        start = '0,1n'
+        end = '0,3w'
+        maze = Maze(n_rows, n_cols, start, end, ['1,2n', '1,2w'])
         maze._apply_valid_move_constraint()
+        maze._set_start_and_end()
 
+        # No path at all, other than the fixed edge to start and to end
         no_path_solution = {}
-        fill_with_zeros(no_path_solution, n_rows, n_cols)
-        self.assertTrue(maze.csp.check(no_path_solution))
+        fill_with_zeros(no_path_solution, n_rows, n_cols, [start, end])
+        self.assertFalse(maze.csp.check(no_path_solution))
 
+        # Broken path
+        broken_path_solution = {'1,0n': 1, '1,1w': 1}
+        fill_with_zeros(broken_path_solution, n_rows, n_cols, [start, end])
+        self.assertFalse(maze.csp.check(broken_path_solution))
+
+        # Revisiting a tile 0,1
+        revisit_tile_solution = {'0,1w': 1, '1,0n': 1, '1,1w': 1, '1,1n': 1, '0,2w': 1}
+        fill_with_zeros(revisit_tile_solution, n_rows, n_cols, [start, end])
+        self.assertFalse(maze.csp.check(revisit_tile_solution))
+
+        # Good path
+        good_path_solution = {'0,2w': 1}
+        fill_with_zeros(good_path_solution, n_rows, n_cols, [start, end])
+        self.assertTrue(good_path_solution)
 
     def test_boarders_constraint(self):
         pass
@@ -59,8 +80,8 @@ class TestMazeSolverResponse(unittest.TestCase):
             for key in different_keys:
                 self.assertEqual(expected[key], 0)
 
+        # TODO: compare response with expected solution
 
-        #TODO: compare response with expected solution
     def test_small_maze(self):
         # Create maze
         walls = ['1,0n', '0,2w', '2,1n', '2,2n']
@@ -71,6 +92,7 @@ class TestMazeSolverResponse(unittest.TestCase):
         sampler = SimulatedAnnealingSampler()
         response = sampler.sample(bqm)
         self.assertGreaterEqual(len(response), 1)
+
 
 """
 def medium_maze():
