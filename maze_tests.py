@@ -1,10 +1,7 @@
 from itertools import islice
 import unittest
 
-from dimod.reference.samplers import ExactSolver
-from dwave.system.samplers import DWaveSampler
-from dwave.system.composites import EmbeddingComposite
-from maze_solver import maze_bqm
+from maze_solver import get_maze_bqm
 from neal import SimulatedAnnealingSampler
 
 #TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
@@ -28,7 +25,7 @@ def compare(self, response, expected):
 
 
 class TestMazeSolverConstraints(unittest.TestCase):
-    def test_sum_to_zero_or_two_constraint(self):
+    def test_valid_move_constraint(self):
         pass
 
     def test_boarders_constraint(self):
@@ -43,9 +40,9 @@ class TestMazeSolverResponse(unittest.TestCase):
         start = "0,0n"
         end = "3,2n"
         walls = ["1,0n", "0,2w", "2,1n", "2,2n"]
-        bqm = maze_bqm(n_rows, n_cols, start, end, walls)
+        bqm = get_maze_bqm(n_rows, n_cols, start, end, walls)
 
-        # Sample
+        # Sample and test response
         sampler = SimulatedAnnealingSampler()
         response = sampler.sample(bqm)
         self.assertGreaterEqual(len(response), 1)

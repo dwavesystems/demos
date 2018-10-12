@@ -77,7 +77,7 @@ class Maze():
         self._set_start_and_end()
         self._set_boarders()
         self._set_inner_walls()
-        
+
         bqm = dbc.stitch(self.csp)
         return bqm
 
