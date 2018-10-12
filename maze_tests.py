@@ -1,7 +1,7 @@
 from itertools import islice
 import unittest
 
-from maze_solver import get_maze_bqm
+from maze import Maze
 from neal import SimulatedAnnealingSampler
 
 #TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
@@ -35,12 +35,9 @@ class TestMazeSolverResponse(unittest.TestCase):
     #TODO: compare response with expected solution
     def test_small_maze(self):
         # Create maze
-        n_rows = 3
-        n_cols = 3
-        start = "0,0n"
-        end = "3,2n"
-        walls = ["1,0n", "0,2w", "2,1n", "2,2n"]
-        bqm = get_maze_bqm(n_rows, n_cols, start, end, walls)
+        walls = ['1,0n', '0,2w', '2,1n', '2,2n']
+        maze = Maze(3, 3, '0,0n', '3,2n', walls)
+        bqm = maze.get_bqm()
 
         # Sample and test response
         sampler = SimulatedAnnealingSampler()
