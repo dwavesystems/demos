@@ -27,6 +27,8 @@ class Maze():
         walls: List of Strings. The list of inner wall locations. Locations follow the format of get_label(..).
     """
     #TODO: test for valid start and end; do they HAVE to be on the boarder? no
+    #TODO: prevent invalid inputs (ex. floats, negative values etc)
+    #TODO: start and end cannot be the same
     def __init__(self, n_rows, n_cols, start, end, walls):
         self.n_rows = n_rows
         self.n_cols = n_cols
