@@ -17,6 +17,15 @@ def sum_to_two_or_zero(*args):
 
 
 class Maze():
+    """An object that stores all the attributes necessary to represent a maze as a constraint satisfaction problem.
+
+    Args:
+        n_rows: Integer. The number of rows in the maze.
+        n_cols: Integer. The number of cols in the maze.
+        start: String. The location of the starting point of the maze. String follows the format of get_label(..).
+        end: String. The location of the end point of the maze. String follows the format of get_label(..).
+        walls: List of Strings. The list of inner wall locations. Locations follow the format of get_label(..).
+    """
     #TODO: test for valid start and end; do they HAVE to be on the boarder? no
     def __init__(self, n_rows, n_cols, start, end, walls):
         self.n_rows = n_rows
