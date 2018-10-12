@@ -4,10 +4,14 @@ import dwavebinarycsp as dbc
 
 
 def get_label(row, col, direction):
+    """Provides a string that follows a standard format.
+    """
     return "".join([str(row), ",", str(col), direction])
 
 
 def sum_to_two_or_zero(*args):
+    """Checks to see if the args sum to either 0 or 2.
+    """
     sum_value = sum(args)
     return sum_value in [0, 2]
 
@@ -23,18 +27,24 @@ class Maze():
         self.csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
 
     def _apply_valid_move_constraint(self):
+        """Applies a sum to either 0 or 2 constraint on each tile of the maze.
+
+        Note: This constraint ensures that a tile is either not entered at all (0), or is entered and exited (2).
+        """
         for i in range(self.n_rows):
             for j in range(self.n_cols):
                 directions = {get_label(i, j, 'n'), get_label(i, j, 'w'), get_label(i+1, j, 'n'), get_label(i, j+1, 'w')}
                 self.csp.add_constraint(sum_to_two_or_zero, directions)
 
     def _set_start_and_end(self):
-        # Constraint: Start and end locations
+        """Sets the values of the start and end locations of the maze.
+        """
         self.csp.fix_variable(self.start, 1)  # start location
         self.csp.fix_variable(self.end, 1)  # end location
 
     def _set_boarders(self):
-        # Constraint: No walking through boarders of the maze
+        """Sets the values of the outer boarder of the maze; prevents a path from forming over the boarder.
+        """
         for j in range(self.n_cols):
             top_boarder = get_label(0, j, 'n')
             bottom_boarder = get_label(self.n_rows, j, 'n')
@@ -68,11 +78,18 @@ class Maze():
                     raise ValueError
 
     def _set_inner_walls(self):
-        # Constraint: Inner self.walls of the maze
+        """Sets the values of the inner walls of the maze; prevents a path from forming over an inner wall.
+        """
         for wall in self.walls:
             self.csp.fix_variable(wall, 0)
 
     def get_bqm(self):
+        """Applies the constraints necessary to form a maze and returns a BQM that would correspond to a valid path
+        through said maze.
+
+        Returns:
+            A dimod.BinaryQuadraticModel
+        """
         self._apply_valid_move_constraint()
         self._set_start_and_end()
         self._set_boarders()
