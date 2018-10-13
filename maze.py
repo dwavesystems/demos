@@ -26,7 +26,7 @@ class Maze():
         end: String. The location of the end point of the maze. String follows the format of get_label(..).
         walls: List of Strings. The list of inner wall locations. Locations follow the format of get_label(..).
     """
-    #TODO: test for valid start and end; do they HAVE to be on the boarder? no
+    #TODO: test for valid start and end; do they HAVE to be on the border? I think we should conform to real mazes. So yes.
     #TODO: prevent invalid inputs (ex. floats, negative values etc)
     #TODO: start and end cannot be the same
     def __init__(self, n_rows, n_cols, start, end, walls):
@@ -53,39 +53,39 @@ class Maze():
         self.csp.fix_variable(self.start, 1)  # start location
         self.csp.fix_variable(self.end, 1)  # end location
 
-    def _set_boarders(self):
-        """Sets the values of the outer boarder of the maze; prevents a path from forming over the boarder.
+    def _set_borders(self):
+        """Sets the values of the outer border of the maze; prevents a path from forming over the border.
         """
         for j in range(self.n_cols):
-            top_boarder = get_label(0, j, 'n')
-            bottom_boarder = get_label(self.n_rows, j, 'n')
+            top_border = get_label(0, j, 'n')
+            bottom_border = get_label(self.n_rows, j, 'n')
 
             try:
-                self.csp.fix_variable(top_boarder, 0)
+                self.csp.fix_variable(top_border, 0)
             except ValueError:
-                if not top_boarder in [self.start, self.end]:
+                if not top_border in [self.start, self.end]:
                     raise ValueError
 
             try:
-                self.csp.fix_variable(bottom_boarder, 0)
+                self.csp.fix_variable(bottom_border, 0)
             except ValueError:
-                if not bottom_boarder in [self.start, self.end]:
+                if not bottom_border in [self.start, self.end]:
                     raise ValueError
 
         for i in range(self.n_rows):
-            left_boarder = get_label(i, 0, 'w')
-            right_boarder = get_label(i, self.n_cols, 'w')
+            left_border = get_label(i, 0, 'w')
+            right_border = get_label(i, self.n_cols, 'w')
 
             try:
-                self.csp.fix_variable(left_boarder, 0)
+                self.csp.fix_variable(left_border, 0)
             except ValueError:
-                if not left_boarder in [self.start, self.end]:
+                if not left_border in [self.start, self.end]:
                     raise ValueError
 
             try:
-                self.csp.fix_variable(right_boarder, 0)
+                self.csp.fix_variable(right_border, 0)
             except ValueError:
-                if not right_boarder in [self.start, self.end]:
+                if not right_border in [self.start, self.end]:
                     raise ValueError
 
     def _set_inner_walls(self):
@@ -103,7 +103,7 @@ class Maze():
         """
         self._apply_valid_move_constraint()
         self._set_start_and_end()
-        self._set_boarders()
+        self._set_borders()
         self._set_inner_walls()
 
         bqm = dbc.stitch(self.csp)
