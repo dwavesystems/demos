@@ -35,29 +35,58 @@ class TestMazeSolverConstraints(unittest.TestCase):
         end = '0,3w'
         maze = Maze(n_rows, n_cols, start, end, ['1,2n', '1,2w'])
         maze._apply_valid_move_constraint()
-        maze._set_start_and_end()
 
-        # No path at all, other than the fixed edge to start and to end
+        # No path at all, not even at start or end locations
+        no_path_solution = {}
+        fill_with_zeros(no_path_solution, n_rows, n_cols)
+        self.assertTrue(maze.csp.check(no_path_solution))
+
+        # Broken path
+        broken_path_solution = {'1,0n': 1, '1,1w': 1}
+        fill_with_zeros(broken_path_solution, n_rows, n_cols)
+        self.assertFalse(maze.csp.check(broken_path_solution))
+
+        # Revisiting a tile 0,1
+        revisit_tile_solution = {'0,1w': 1, '1,0n': 1, '1,1w': 1, '1,1n': 1, '0,2w': 1, start: 1, end: 1}
+        fill_with_zeros(revisit_tile_solution, n_rows, n_cols)
+        self.assertFalse(maze.csp.check(revisit_tile_solution))
+
+        # Good path
+        good_path_solution = {'0,2w': 1, start: 1, end: 1}
+        fill_with_zeros(good_path_solution, n_rows, n_cols)
+        self.assertTrue(good_path_solution)
+
+
+    def test_set_start_and_end(self):
+        # Create maze
+        n_rows = 5
+        n_cols = 3
+        start = '4,3w'
+        edend = '0,2n'
+        maze = Maze(n_rows, n_cols, start, end, [])
+        maze._apply_valid_move_constraint()     # Apply constraint to populate csp variables
+
+        # Check to see that start and end in variables
+        self.assertTrue(start in maze.csp.variables)
+        self.assertTrue(end in maze.csp.variables)
+
+        # Check to see that start and end have been fixed
+        maze._set_start_and_end()
+        self.assertFalse(start in maze.csp.variables)
+        self.assertFalse(end in maze.csp.variables)
+
+        # Check that start and end are fixed to 1.
+        # If start and end were fixed to 0, valid_move_constraint would be satisfied with the no_path_solution.
         no_path_solution = {}
         fill_with_zeros(no_path_solution, n_rows, n_cols, [start, end])
         self.assertFalse(maze.csp.check(no_path_solution))
 
-        # Broken path
-        broken_path_solution = {'1,0n': 1, '1,1w': 1}
-        fill_with_zeros(broken_path_solution, n_rows, n_cols, [start, end])
-        self.assertFalse(maze.csp.check(broken_path_solution))
-
-        # Revisiting a tile 0,1
-        revisit_tile_solution = {'0,1w': 1, '1,0n': 1, '1,1w': 1, '1,1n': 1, '0,2w': 1}
-        fill_with_zeros(revisit_tile_solution, n_rows, n_cols, [start, end])
-        self.assertFalse(maze.csp.check(revisit_tile_solution))
-
-        # Good path
-        good_path_solution = {'0,2w': 1}
-        fill_with_zeros(good_path_solution, n_rows, n_cols, [start, end])
-        self.assertTrue(good_path_solution)
 
     def test_boarders_constraint(self):
+        n_rows = 1
+        n_cols = 1
+        start = '0,1n'
+        end = '0,3w'
         pass
 
 
