@@ -56,13 +56,12 @@ class TestMazeSolverConstraints(unittest.TestCase):
         fill_with_zeros(good_path_solution, n_rows, n_cols)
         self.assertTrue(good_path_solution)
 
-
     def test_set_start_and_end(self):
         # Create maze
         n_rows = 5
         n_cols = 3
         start = '4,3w'
-        edend = '0,2n'
+        end = '0,2n'
         maze = Maze(n_rows, n_cols, start, end, [])
         maze._apply_valid_move_constraint()     # Apply constraint to populate csp variables
 
@@ -81,13 +80,39 @@ class TestMazeSolverConstraints(unittest.TestCase):
         fill_with_zeros(no_path_solution, n_rows, n_cols, [start, end])
         self.assertFalse(maze.csp.check(no_path_solution))
 
-
-    def test_boarders_constraint(self):
-        n_rows = 1
-        n_cols = 1
+    def test_borders_constraint(self):
+        # Create maze
+        n_rows = 3
+        n_cols = 3
         start = '0,1n'
         end = '0,3w'
-        pass
+        maze = Maze(n_rows, n_cols, start, end, ['1,1w', '2,1n'])
+        maze._apply_valid_move_constraint()     # Apply constraint to populate csp variables
+        maze._set_start_and_end()       # Start and end locations should not be considered as borders
+
+        # Grab border variables
+        borders = {get_label(i, 0, 'w') for i in range(n_rows)}                 # West border
+        borders.update({get_label(i, n_cols, 'w') for i in range(n_rows)})    # East border
+        borders.update({get_label(0, j, 'n') for j in range(n_cols)})           # North border
+        borders.update({get_label(n_rows, j, 'n') for j in range(n_cols)})  # South border
+        borders.remove(start)
+        borders.remove(end)
+
+        for border in borders:
+            self.assertTrue(border in maze.csp.variables)
+
+        # Fix borders
+        maze._set_borders()
+
+        # Check to see that borders are fixed
+        for border in borders:
+            self.assertFalse(border in maze.csp.variables)
+
+        # Verify that borders are fixed to 0.
+        # If borders were fixed to 1, this good_path_solution would cause the valid_move_constraint to fail.
+        good_path_solution = {'0,2w': 1}
+        fill_with_zeros(good_path_solution, n_rows, n_cols, [start, end])
+        self.assertTrue(maze.csp.check(good_path_solution))
 
 
 class TestMazeSolverResponse(unittest.TestCase):
