@@ -144,6 +144,7 @@ class TestMazeSolverConstraints(unittest.TestCase):
         fill_with_zeros(circle_solution, n_rows, n_cols)    # No ignore_list because we didn't fix start and end
         self.assertTrue(maze.csp.check(circle_solution))
 
+
 class TestMazeSolverResponse(unittest.TestCase):
     def compare(self, response, expected):
         """Comparing response to expected results
@@ -162,8 +163,6 @@ class TestMazeSolverResponse(unittest.TestCase):
             # Check that non-existent 'sample' variables are 0
             for key in different_keys:
                 self.assertEqual(expected[key], 0)
-
-        # TODO: compare response with expected solution
 
     def test_small_maze(self):
         # Create maze
@@ -185,7 +184,6 @@ class TestMazeSolverResponse(unittest.TestCase):
         fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
         self.compare(response, expected_solution)
 
-
     def test_medium_maze(self):
         # Create maze
         n_rows = 4
@@ -206,21 +204,6 @@ class TestMazeSolverResponse(unittest.TestCase):
                              '0,3w': 1, '1,3n': 1}
         fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
         self.compare(response, expected_solution)
-
-"""
-def large_maze():
-    # Maze is probably too large. Got error "ValueError: no embedding found"
-    # On top of 4 directions for the 5*6 maze positions, there were 30+
-    # auxiliary variables.
-    n_rows = 6
-    n_cols = 5
-    start = "5,1s"
-    end = "2,4e"
-    walls = ["0,0s", "0,2s", "0,3s", "1,0e", "1,3e", "2,1n", "2,2n", "2,2e",
-             "2,3e", "2,4s", "3,1w", "3,1e", "3,2e", "3,2s", "3,3s", "4,1w", "5,1n",
-             "5,2n", "5,2e", "5,4n"]
-    maze_bqm(n_rows, n_cols, start, end, walls)
-"""
 
 if __name__ == "__main__":
     unittest.main()
