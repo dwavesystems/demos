@@ -26,10 +26,17 @@ class Maze():
         end: String. The location of the end point of the maze. String follows the format of get_label(..).
         walls: List of Strings. The list of inner wall locations. Locations follow the format of get_label(..).
     """
-    #TODO: test for valid start and end; do they HAVE to be on the border? I think we should conform to real mazes. So yes.
-    #TODO: prevent invalid inputs (ex. floats, negative values etc)
-    #TODO: start and end cannot be the same
+    #TODO: test for valid labels in start, end, and walls
     def __init__(self, n_rows, n_cols, start, end, walls):
+        assert isinstance(n_rows, int) and n_rows > 0, "'n_rows' is not a positive integer".format(n_rows)
+        assert isinstance(n_cols, int) and n_cols > 0, "'n_cols' is not a positive integer".format(n_cols)
+
+        # Check start and end
+        start_row, start_col = map(int, start[:-1].split(','))
+        end_row, end_col = map(int, end[:-1].split(','))
+        assert not(start_row == end_row and start_col == end_col), "'start' cannot be the same as 'end'"
+
+        # Instantiate
         self.n_rows = n_rows
         self.n_cols = n_cols
         self.start = start

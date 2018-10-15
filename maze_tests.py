@@ -7,6 +7,7 @@ from neal import SimulatedAnnealingSampler
 
 # TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
 #TODO: Leave solution_dict.keys() as an iterator. get rid of list casting
+#TODO: test asserts from maze.__init__(..)
 def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
     keys = solution_dict.keys() if ignore_list is None else list(solution_dict.keys()) + ignore_list
 
