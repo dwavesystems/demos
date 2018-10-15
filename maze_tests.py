@@ -65,7 +65,7 @@ class TestMazeSolverConstraints(unittest.TestCase):
         maze = Maze(n_rows, n_cols, start, end, [])
         maze._apply_valid_move_constraint()     # Apply constraint to populate csp variables
 
-        # Check to see that start and end in variables
+        # Check to see that start and end are in csp.variables
         self.assertTrue(start in maze.csp.variables)
         self.assertTrue(end in maze.csp.variables)
 
@@ -98,13 +98,14 @@ class TestMazeSolverConstraints(unittest.TestCase):
         borders.remove(start)
         borders.remove(end)
 
+        # Check to see that border appears as a variable in maze.csp
         for border in borders:
             self.assertTrue(border in maze.csp.variables)
 
         # Fix borders
         maze._set_borders()
 
-        # Check to see that borders are fixed
+        # Check to see that borders are fixed; they would no longer appear as variables
         for border in borders:
             self.assertFalse(border in maze.csp.variables)
 
@@ -114,6 +115,34 @@ class TestMazeSolverConstraints(unittest.TestCase):
         fill_with_zeros(good_path_solution, n_rows, n_cols, [start, end])
         self.assertTrue(maze.csp.check(good_path_solution))
 
+    def test_inner_walls(self):
+        # Create maze
+        n_rows = 4
+        n_cols = 7
+        start = '2,0w'
+        end = '0,3n'
+        walls = ['2,3w', '2,4w', '2,5w']
+        maze = Maze(n_rows, n_cols, start, end, walls)
+        maze._apply_valid_move_constraint()     # Apply constraint to populate csp variables
+
+        # Check to see that walls appear as variables in maze.csp
+        for wall in walls:
+            self.assertTrue(wall in maze.csp.variables)
+
+        # Fix wall values
+        maze._set_inner_walls()
+
+        # Check to see that walls are fixed; they would no longer appear as variables
+        for wall in walls:
+            self.assertFalse(wall in maze.csp.variables)
+
+        # Verify that walls are fixed to 0
+        # circle_solution surrounds the inner walls, if walls are fixed to 1, solution will fail valid_move_constraint.
+        # Since start and end locations have not been fixed, a circle is valid path
+        circle_solution = {'2,2n': 1, '3,2n': 1, '3,3w': 1, '3,4w': 1, '3,5w': 1, '3,5n': 1, '2,5n': 1, '1,5w': 1,
+                           '1,4w': 1, '1,3w': 1}
+        fill_with_zeros(circle_solution, n_rows, n_cols, [])    # Empty ignore list because we didn't fix start and end
+        self.assertTrue(maze.csp.check(circle_solution))
 
 class TestMazeSolverResponse(unittest.TestCase):
     def compare(self, response, expected):

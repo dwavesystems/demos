@@ -56,6 +56,7 @@ class Maze():
     def _set_borders(self):
         """Sets the values of the outer border of the maze; prevents a path from forming over the border.
         """
+        #TODO: change the way borders are implemented. Make it more compact
         for j in range(self.n_cols):
             top_border = get_label(0, j, 'n')
             bottom_border = get_label(self.n_rows, j, 'n')
