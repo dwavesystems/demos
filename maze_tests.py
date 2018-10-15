@@ -92,9 +92,9 @@ class TestMazeSolverConstraints(unittest.TestCase):
 
         # Grab border variables
         borders = {get_label(i, 0, 'w') for i in range(n_rows)}                 # West border
-        borders.update({get_label(i, n_cols, 'w') for i in range(n_rows)})    # East border
+        borders.update({get_label(i, n_cols, 'w') for i in range(n_rows)})      # East border
         borders.update({get_label(0, j, 'n') for j in range(n_cols)})           # North border
-        borders.update({get_label(n_rows, j, 'n') for j in range(n_cols)})  # South border
+        borders.update({get_label(n_rows, j, 'n') for j in range(n_cols)})      # South border
         borders.remove(start)
         borders.remove(end)
 
@@ -141,7 +141,7 @@ class TestMazeSolverConstraints(unittest.TestCase):
         # Since start and end locations have not been fixed, a circle is valid path
         circle_solution = {'2,2n': 1, '3,2n': 1, '3,3w': 1, '3,4w': 1, '3,5w': 1, '3,5n': 1, '2,5n': 1, '1,5w': 1,
                            '1,4w': 1, '1,3w': 1}
-        fill_with_zeros(circle_solution, n_rows, n_cols, [])    # Empty ignore list because we didn't fix start and end
+        fill_with_zeros(circle_solution, n_rows, n_cols)    # No ignore_list because we didn't fix start and end
         self.assertTrue(maze.csp.check(circle_solution))
 
 class TestMazeSolverResponse(unittest.TestCase):
@@ -167,26 +167,47 @@ class TestMazeSolverResponse(unittest.TestCase):
 
     def test_small_maze(self):
         # Create maze
+        n_rows = 3
+        n_cols = 3
+        start = '0,0n'
+        end = '3,2n'
         walls = ['1,0n', '0,2w', '2,1n', '2,2n']
-        maze = Maze(3, 3, '0,0n', '3,2n', walls)
+        maze = Maze(n_rows, n_cols, start, end, walls)
         bqm = maze.get_bqm()
 
-        # Sample and test response
+        # Sample and test that a response is given
         sampler = SimulatedAnnealingSampler()
         response = sampler.sample(bqm)
         self.assertGreaterEqual(len(response), 1)
 
+        # Test heuristic response
+        expected_solution = {'0,1w': 1, '1,1n': 1, '1,1w': 1, '2,0n': 1, '2,1w': 1, '2,2w': 1}
+        fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
+        self.compare(response, expected_solution)
+
+
+    def test_medium_maze(self):
+        # Create maze
+        n_rows = 4
+        n_cols = 4
+        start = "4,1n"
+        end = "1,4w"
+        walls = ["1,1n", "1,2n", "1,3w", "2,3n", "2,0n", "2,1n", "2,2w", "3,1n", "3,3n"]
+        maze = Maze(n_rows, n_cols, start, end, walls)
+        bqm = maze.get_bqm()
+
+        # Sample and test that a response is given
+        sampler = SimulatedAnnealingSampler()
+        response = sampler.sample(bqm)
+        self.assertGreaterEqual(len(response), 1)
+
+        # Test heuristic response
+        expected_solution = {'3,2w': 1, '3,2n': 1, '2,2n': 1, '1,2w': 1, '1,1w': 1, '1,0n': 1, '0,1w': 1, '0,2w': 1,
+                             '0,3w': 1, '1,3n': 1}
+        fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
+        self.compare(response, expected_solution)
 
 """
-def medium_maze():
-    n_rows = 4
-    n_cols = 4
-    start = "3,1s"
-    end = "1,3e"
-    walls = ["0,1s", "0,2s", "1,2e", "1,3s", "2,0n", "2,1n", "2,2w", "3,1n", "3,3n"]
-    maze_bqm(n_rows, n_cols, start, end, walls)
-
-
 def large_maze():
     # Maze is probably too large. Got error "ValueError: no embedding found"
     # On top of 4 directions for the 5*6 maze positions, there were 30+
