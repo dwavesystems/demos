@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import dwavebinarycsp as dbc
+import re
 
 
 def get_label(row, col, direction):
@@ -108,12 +109,24 @@ class Maze():
         Returns:
             A dimod.BinaryQuadraticModel
         """
+        # Apply constraints onto self.csp
         self._apply_valid_move_constraint()
         self._set_start_and_end()
         self._set_borders()
         self._set_inner_walls()
 
+        # Grab bqm constrained for valid solutions
         bqm = dbc.stitch(self.csp)
+
+        # Edit bqm to favour optimal solutions
+        for v in bqm.variables:
+            # Ignore auxiliary variables
+            if isinstance(v, str) and re.match("aux\d+$", v):
+                continue
+
+            # Add a penalty to every tile of the path
+            bqm.add_variable(v, 1, dbc.BINARY)
+
         return bqm
 
 
