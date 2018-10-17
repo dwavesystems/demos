@@ -3,11 +3,8 @@ from __future__ import print_function
 from bisect import bisect_right
 from itertools import islice
 
-from dimod import ExactSolver
-from dwave.system.samplers import DWaveSampler
-from dwave.system.composites import EmbeddingComposite
-import dwavebinarycsp as dbc
 from neal import SimulatedAnnealingSampler
+import dwavebinarycsp as dbc
 
 
 def sum_to_one(*args):
@@ -33,9 +30,9 @@ class Task():
 
 
 class KeyList():
-    """ A wrapper to an array. Used for passing the key of a custom object to the bisect function.
+    """A wrapper to an array. Used for passing the key of a custom object to the bisect function.
 
-    Note: bisect function does not let you choose an artbitrary key, hence this class was created.
+    Note: bisect function does not let you choose an arbitrary key, hence this class was created.
     """
 
     def __init__(self, array, key_function):
@@ -62,7 +59,7 @@ class JobShopScheduler():
         self._process_data(job_dict)
 
     def _process_data(self, jobs):
-        """ Process user input into a format that is more convenient for JobShopScheduler functions.
+        """Process user input into a format that is more convenient for JobShopScheduler functions.
         """
         # Create and concatenate Task objects
         tasks = []
@@ -78,20 +75,20 @@ class JobShopScheduler():
             self.max_time = total_time
 
     def _get_label(self, task, time):
-        """ Creates a standardized name for variables in the constraint satisfaction problem, self.csp.
+        """Creates a standardized name for variables in the constraint satisfaction problem, self.csp.
         """
         name = str(task.job) + "_" + str(task.position)
         return name + "," + str(time)
 
     def _add_one_start_constraint(self):
-        """ self.csp gets the constraint: A task can start once and only once
+        """self.csp gets the constraint: A task can start once and only once
         """
         for task in self.tasks:
             task_times = {self._get_label(task, t) for t in range(self.max_time)}
             self.csp.add_constraint(sum_to_one, task_times)
 
     def _add_precedence_constraint(self):
-        """ self.csp gets the constraint: Task must follow a particular order.
+        """self.csp gets the constraint: Task must follow a particular order.
          Note: assumes self.tasks are sorted by jobs and then by position
         """
         valid_edges = {(0, 0), (1, 0), (0, 1)}
@@ -110,7 +107,7 @@ class JobShopScheduler():
                     self.csp.add_constraint(valid_edges, {current_label, next_label})
 
     def _add_share_machine_constraint(self):
-        """ self.csp gets the constraint: At most one task per machine per time
+        """self.csp gets the constraint: At most one task per machine per time
         """
         sorted_tasks = sorted(self.tasks, key=lambda x: x.machine)
         wrapped_tasks = KeyList(sorted_tasks, lambda x: x.machine)  # Key wrapper
@@ -143,7 +140,7 @@ class JobShopScheduler():
                             self.csp.add_constraint(valid_values, {current_label, self._get_label(other_task, tt)})
 
     def _remove_absurd_times(self):
-        """ Sets impossible task times in self.csp to 0.
+        """Sets impossible task times in self.csp to 0.
         """
         # TODO: deal with overlaps in time
         for task in self.tasks:
@@ -157,23 +154,9 @@ class JobShopScheduler():
                 label = self._get_label(task, (self.max_time - 1) - t)  # -1 for zero-indexed time
                 self.csp.fix_variable(label, 0)
 
-    def _getBQM(self):
-        # TODO: this could be optimized
-        # TODO: need to scale the biases
-        # TODO: rather than iterate through tasks, I could iterate through bqm keys
-        bqm = dbc.stitch(self.csp)
-        print(bqm)
 
-        # Edit BQM
-        for task in self.tasks:
-            for t in range(1, self.max_time):
-                label = self._get_label(task, t)
-                bias = t / 2.
-                bqm.add_variable(label, bias)
-        return bqm
-
-    def solve(self, sampler=None):
-        """ Returns a response to the Job Shop Scheduling problem. Default sampler is simulated annealing.
+    def get_bqm(self, sampler=None):
+        """Returns a response to the Job Shop Scheduling problem. Default sampler is simulated annealing.
         args:
             sampler: String. {"qpu", "exact", "sa"}
         """
@@ -184,22 +167,17 @@ class JobShopScheduler():
         self._remove_absurd_times()
 
         # Get BQM
-        bqm = self._getBQM()
+        bqm = dbc.stitch(self.csp)
 
-        # Sample
-        if sampler == "qpu":
-            samp = EmbeddingComposite(DWaveSampler())
-            response = samp.sample(bqm, num_reads=1000)
-
-        elif sampler == "exact":
-            samp = ExactSolver()
-            response = samp.sample(bqm)
-
-        else:
-            samp = SimulatedAnnealingSampler()
-            response = samp.sample(bqm, num_reads=100)
-
-        return response, self.csp
+        # Edit BQM
+        """
+        for task in self.tasks:
+            for t in range(1, self.max_time):
+                label = self._get_label(task, t)
+                bias = t / 2.
+                bqm.add_variable(label, bias)
+        """
+        return bqm
 
 
 def demo():
@@ -211,13 +189,15 @@ def demo():
     n_samples = 1
     max_time = 6
 
+    # Sample for a JSS solution
     scheduler = JobShopScheduler(jobs, max_time)
-    response, csp = scheduler.solve()
+    bqm = scheduler.get_bqm()
+    response = SimulatedAnnealingSampler().sample(bqm, num_reads=200)
 
     # Print response
     for sample, energy, n_occurences in islice(response.data(), n_samples):
         print("energy: ", energy)
-        print("check: ", csp.check(sample))
+        print("check: ", scheduler.csp.check(sample))
 
         for key in sorted(sample.keys()):
             print(key, ": ", sample[key])
@@ -235,13 +215,15 @@ def demo2():
     n_samples = 1
     max_time = 6
 
+    # Sample for a JSS solution
     scheduler = JobShopScheduler(jobs, max_time)
-    response, csp = scheduler.solve()
+    bqm = scheduler.get_bqm()
+    response = SimulatedAnnealingSampler().sample(bqm, num_reads=200)
 
     # Print response
     for sample, energy, n_occurences in islice(response.data(), n_samples):
         print("energy: ", energy)
-        print("check: ", csp.check(sample))
+        print("check: ", scheduler.csp.check(sample))
 
         for key in sorted(sample.keys()):
             print(key, ": ", sample[key])

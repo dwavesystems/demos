@@ -2,10 +2,10 @@ from itertools import islice
 import unittest
 
 from jobShopScheduler import JobShopScheduler
-
+from dimod import ExactSolver
 
 def fill_with_zeros(expected_solution_dict, job_dict, max_time):
-    """ Fills the 'missing' expected_solution_dict keys with a value of 0.
+    """Fills the 'missing' expected_solution_dict keys with a value of 0.
     args:
         expected_solution_dict: a dictionary.  {taskName: taskValue, ..}
         job_dict: a dictionary. {jobName: [(machineVal, taskTimeSpan), ..], ..}
@@ -107,7 +107,7 @@ class TestCombinedJSSConstraints(unittest.TestCase):
                 "c": [(2, 2), (1, 3), (2, 1)]}
         max_time = 6
         jss = JobShopScheduler(jobs, max_time)
-        jss.solve()
+        jss.get_bqm()   # Run job shop scheduling constraints
 
         # Solution that obeys all constraints
         good_solution = {"a_0,0": 1, "a_1,2": 1, "a_2,4": 1,
@@ -129,7 +129,7 @@ class TestCombinedJSSConstraints(unittest.TestCase):
                 "music": [("play", 2)]}
         max_time = 7
         jss = JobShopScheduler(jobs, max_time)
-        jss.solve()
+        jss.get_bqm()   # Run job shop scheduling constraints
 
         # Solution obeys all constraints
         good_solution = {"breakfast_0,0": 1, "breakfast_1,4": 1,
@@ -147,7 +147,7 @@ class TestCombinedJSSConstraints(unittest.TestCase):
 
 class TestJSSResponse(unittest.TestCase):
     def compare(self, response, expected):
-        """ Comparing response to expected results
+        """Comparing response to expected results
         """
         for sample in islice(response.samples(), 1):
             # Comparing variables found in sample and expected
@@ -168,8 +168,11 @@ class TestJSSResponse(unittest.TestCase):
         jobs = {"a": [(1, 1), (2, 1)],
                 "b": [(2, 1)]}
         max_time = 2
+
+        # Get exact sample from Job Shop Scheduler BQM
         jss = JobShopScheduler(jobs, max_time)
-        response, csp = jss.solve("exact")
+        bqm = jss.get_bqm()
+        response = ExactSolver().sample(bqm)
 
         # Create expected solution
         expected = {"a_0,0": 1, "a_1,1": 1, "b_0,0": 1}
@@ -183,8 +186,11 @@ class TestJSSResponse(unittest.TestCase):
                 'small2': [(2, 2)],
                 'longJob': [(0, 1), (1, 1), (2, 1)]}
         max_time = 3
+
+        # Get exact sample from Job Shop Scheduler BQM
         jss = JobShopScheduler(jobs, max_time)
-        response, csp = jss.solve("exact")
+        bqm = jss.get_bqm()
+        response = ExactSolver().sample(bqm)
 
         # Create expected solution
         expected = {"small1_0,0": 1,
