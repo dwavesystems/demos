@@ -1,7 +1,7 @@
 from __future__ import print_function
 
 import dwavebinarycsp as dbc
-import re
+from re import match
 
 
 def get_label(row, col, direction):
@@ -121,7 +121,7 @@ class Maze():
         # Edit bqm to favour optimal solutions
         for v in bqm.variables:
             # Ignore auxiliary variables
-            if isinstance(v, str) and re.match("aux\d+$", v):
+            if isinstance(v, str) and match("aux\d+$", v):
                 continue
 
             # Add a penalty to every tile of the path

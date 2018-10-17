@@ -1,4 +1,5 @@
-from itertools import islice
+from itertools import islice, product
+from re import match
 import unittest
 
 from maze import Maze, get_label
@@ -27,6 +28,21 @@ def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
             if north not in keys:
                 solution_dict[north] = 0
 
+def get_energy(solution_dict, bqm):
+    min_energy = float('inf')
+    aux_variables = [v for v in bqm.variables if match("aux\d+$", v)]
+
+    # Try all possible values of auxiliary variables
+    for aux_values in product([0, 1], repeat=len(aux_variables)):
+        for variable, value in zip(aux_variables, aux_values):
+            solution_dict[variable] = value
+
+        temp_energy = bqm.energy(solution_dict)
+
+        if temp_energy < min_energy:
+            min_energy = temp_energy
+
+    return min_energy
 
 class TestMazeSolverConstraints(unittest.TestCase):
     def test_valid_move_constraint(self):
@@ -164,6 +180,43 @@ class TestMazeSolverResponse(unittest.TestCase):
     #        # Check that non-existent 'sample' variables are 0
     #        for key in different_keys:
     #            self.assertEqual(expected[key], 0)
+
+
+    def test_energy_level_one_optimal_path(self):
+        pass
+
+    def test_energy_level_multiple_optimal_paths(self):
+        # Create maze
+        n_rows = 3
+        n_cols = 4
+        start = '0,0w'
+        end = '1,4w'
+        walls = ['1,1w']
+        maze = Maze(n_rows, n_cols, start, end, walls)
+        bqm = maze.get_bqm()
+
+        # Shortest paths through maze; should share same energy level
+        shortest_path0 = {'0,1w': 1, '1,1n': 1, '1,2w': 1, '1,3w': 1}
+        shortest_path1 = {'0,1w': 1, '0,2w': 1, '1,2n': 1, '1,3w': 1}
+        shortest_path2 = {'0,1w': 1, '0,2w': 1, '0,3w': 1, '1,3n': 1}
+
+        fill_with_zeros(shortest_path0, n_rows, n_cols, [start, end])
+        fill_with_zeros(shortest_path1, n_rows, n_cols, [start, end])
+        fill_with_zeros(shortest_path2, n_rows, n_cols, [start, end])
+
+        energy_shortest_path0 = get_energy(shortest_path0, bqm)
+        energy_shortest_path1 = get_energy(shortest_path1, bqm)
+        energy_shortest_path2 = get_energy(shortest_path2, bqm)
+
+        self.assertEqual(energy_shortest_path0, energy_shortest_path1)
+        self.assertEqual(energy_shortest_path0, energy_shortest_path2)
+
+        # Compare energy level of longer path with shortest path
+        longer_path = {'0,1w': 1, '1,1n': 1, '2,1n': 1, '2,2w': 1, '2,2n': 1, '1,3w': 1}
+        fill_with_zeros(longer_path, n_rows, n_cols, [start, end])
+        energy_longer_path = get_energy(longer_path, bqm)
+
+        self.assertGreater(energy_longer_path, energy_shortest_path0)
 
     def test_maze(self):
         # Create maze
