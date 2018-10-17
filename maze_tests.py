@@ -183,7 +183,32 @@ class TestMazeSolverResponse(unittest.TestCase):
 
 
     def test_energy_level_one_optimal_path(self):
-        pass
+        # Create maze
+        n_rows = 2
+        n_cols = 4
+        start = '1,4w'
+        end = '2,2n'
+        walls = []
+        maze = Maze(n_rows, n_cols, start, end, walls)
+        bqm = maze.get_bqm()
+
+        # Grab energy levels of different paths
+        shortest_path = {'1,3w': 1}
+        longer_path0 = {'1,2n': 1, '0,3w': 1, '1,3n': 1}
+        longer_path1 = {'1,2w': 1, '1,1n': 1, '0,2w': 1, '0,3w': 1, '1,3n': 1}
+
+        fill_with_zeros(shortest_path, n_rows, n_cols, [start, end])
+        fill_with_zeros(longer_path0, n_rows, n_cols, [start, end])
+        fill_with_zeros(longer_path1, n_rows, n_cols, [start, end])
+
+        energy_shortest_path = get_energy(shortest_path, bqm)
+        energy_longer_path0 = get_energy(longer_path0, bqm)
+        energy_longer_path1 = get_energy(longer_path1, bqm)
+
+        # Compare energy levels
+        self.assertLess(energy_shortest_path, energy_longer_path0)
+        self.assertLess(energy_shortest_path, energy_longer_path1)
+        self.assertLess(energy_longer_path0, energy_longer_path1)
 
     def test_energy_level_multiple_optimal_paths(self):
         # Create maze
