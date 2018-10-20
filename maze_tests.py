@@ -7,8 +7,8 @@ from neal import SimulatedAnnealingSampler
 
 
 # TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
-#TODO: Leave solution_dict.keys() as an iterator. get rid of list casting
-#TODO: test asserts from maze.__init__(..)
+# TODO: test asserts from maze.__init__(..)
+# TODO: test case when no path exists
 def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
     keys = solution_dict.keys() if ignore_list is None else list(solution_dict.keys()) + ignore_list
 
@@ -28,6 +28,7 @@ def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
             if north not in keys:
                 solution_dict[north] = 0
 
+
 def get_energy(solution_dict, bqm):
     min_energy = float('inf')
     aux_variables = [v for v in bqm.variables if match("aux\d+$", v)]
@@ -43,6 +44,7 @@ def get_energy(solution_dict, bqm):
             min_energy = temp_energy
 
     return min_energy
+
 
 class TestMazeSolverConstraints(unittest.TestCase):
     def test_valid_move_constraint(self):
@@ -80,7 +82,7 @@ class TestMazeSolverConstraints(unittest.TestCase):
         start = '4,3w'
         end = '0,2n'
         maze = Maze(n_rows, n_cols, start, end, [])
-        maze._apply_valid_move_constraint()     # Apply constraint to populate csp variables
+        maze._apply_valid_move_constraint()  # Apply constraint to populate csp variables
 
         # Check to see that start and end are in csp.variables
         self.assertTrue(start in maze.csp.variables)
@@ -104,14 +106,14 @@ class TestMazeSolverConstraints(unittest.TestCase):
         start = '0,1n'
         end = '0,3w'
         maze = Maze(n_rows, n_cols, start, end, ['1,1w', '2,1n'])
-        maze._apply_valid_move_constraint()     # Apply constraint to populate csp variables
-        maze._set_start_and_end()       # Start and end locations should not be considered as borders
+        maze._apply_valid_move_constraint()  # Apply constraint to populate csp variables
+        maze._set_start_and_end()  # Start and end locations should not be considered as borders
 
         # Grab border variables
-        borders = {get_label(i, 0, 'w') for i in range(n_rows)}                 # West border
-        borders.update({get_label(i, n_cols, 'w') for i in range(n_rows)})      # East border
-        borders.update({get_label(0, j, 'n') for j in range(n_cols)})           # North border
-        borders.update({get_label(n_rows, j, 'n') for j in range(n_cols)})      # South border
+        borders = {get_label(i, 0, 'w') for i in range(n_rows)}  # West border
+        borders.update({get_label(i, n_cols, 'w') for i in range(n_rows)})  # East border
+        borders.update({get_label(0, j, 'n') for j in range(n_cols)})  # North border
+        borders.update({get_label(n_rows, j, 'n') for j in range(n_cols)})  # South border
         borders.remove(start)
         borders.remove(end)
 
@@ -140,7 +142,7 @@ class TestMazeSolverConstraints(unittest.TestCase):
         end = '0,3n'
         walls = ['2,3w', '2,4w', '2,5w']
         maze = Maze(n_rows, n_cols, start, end, walls)
-        maze._apply_valid_move_constraint()     # Apply constraint to populate csp variables
+        maze._apply_valid_move_constraint()  # Apply constraint to populate csp variables
 
         # Check to see that walls appear as variables in maze.csp
         for wall in walls:
@@ -158,12 +160,12 @@ class TestMazeSolverConstraints(unittest.TestCase):
         # Since start and end locations have not been fixed, a circle is valid path
         circle_solution = {'2,2n': 1, '3,2n': 1, '3,3w': 1, '3,4w': 1, '3,5w': 1, '3,5n': 1, '2,5n': 1, '1,5w': 1,
                            '1,4w': 1, '1,3w': 1}
-        fill_with_zeros(circle_solution, n_rows, n_cols)    # No ignore_list because we didn't fix start and end
+        fill_with_zeros(circle_solution, n_rows, n_cols)  # No ignore_list because we didn't fix start and end
         self.assertTrue(maze.csp.check(circle_solution))
 
 
 class TestMazeSolverResponse(unittest.TestCase):
-    #def compare(self, response, expected):
+    # def compare(self, response, expected):
     #    """Comparing response to expected results
     #    """
     #    for sample in islice(response.samples(), 1):
@@ -180,7 +182,6 @@ class TestMazeSolverResponse(unittest.TestCase):
     #        # Check that non-existent 'sample' variables are 0
     #        for key in different_keys:
     #            self.assertEqual(expected[key], 0)
-
 
     def test_energy_level_one_optimal_path(self):
         # Create maze
@@ -259,9 +260,9 @@ class TestMazeSolverResponse(unittest.TestCase):
         self.assertGreaterEqual(len(response), 1)
 
         # Test heuristic response
-        #expected_solution = {'0,1w': 1, '1,1n': 1, '1,1w': 1, '2,0n': 1, '2,1w': 1, '2,2w': 1}
-        #fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
-        #self.compare(response, expected_solution)
+        # expected_solution = {'0,1w': 1, '1,1n': 1, '1,1w': 1, '2,0n': 1, '2,1w': 1, '2,2w': 1}
+        # fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
+        # self.compare(response, expected_solution)
 
 
 if __name__ == "__main__":
