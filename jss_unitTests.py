@@ -149,20 +149,19 @@ class TestJSSResponse(unittest.TestCase):
     def compare(self, response, expected):
         """Comparing response to expected results
         """
-        for sample in islice(response.samples(), 1):
-            # Comparing variables found in sample and expected
-            expected_keys = set(expected.keys())
-            sample_keys = set(sample.keys())
-            common_keys = expected_keys & sample_keys
-            different_keys = expected_keys - sample_keys  # expected_keys is a superset
+        # Comparing variables found in sample and expected
+        expected_keys = set(expected.keys())
+        sample_keys = set(response.keys())
+        common_keys = expected_keys & sample_keys
+        different_keys = expected_keys - sample_keys  # expected_keys is a superset
 
-            # Check that common variables match
-            for key in common_keys:
-                self.assertEqual(sample[key], expected[key])
+        # Check that common variables match
+        for key in common_keys:
+            self.assertEqual(response[key], expected[key])
 
-            # Check that non-existent 'sample' variables are 0
-            for key in different_keys:
-                self.assertEqual(expected[key], 0)
+        # Check that non-existent 'sample' variables are 0
+        for key in different_keys:
+            self.assertEqual(expected[key], 0)
 
     def test_tinySchedule(self):
         jobs = {"a": [(1, 1), (2, 1)],
@@ -173,13 +172,17 @@ class TestJSSResponse(unittest.TestCase):
         jss = JobShopScheduler(jobs, max_time)
         bqm = jss.get_bqm()
         response = ExactSolver().sample(bqm)
+        response_sample = next(response.samples())
+
+        # Verify that response_sample obeys constraints
+        self.assertTrue(jss.csp.check(response_sample))
 
         # Create expected solution
         expected = {"a_0,0": 1, "a_1,1": 1, "b_0,0": 1}
         fill_with_zeros(expected, jobs, max_time)
 
         # Compare variable values
-        self.compare(response, expected)
+        self.compare(response_sample, expected)
 
     def test_largerSchedule(self):
         jobs = {'small1': [(1, 1)],
@@ -191,6 +194,10 @@ class TestJSSResponse(unittest.TestCase):
         jss = JobShopScheduler(jobs, max_time)
         bqm = jss.get_bqm()
         response = ExactSolver().sample(bqm)
+        response_sample = next(response.samples())
+
+        # Verify that response_sample obeys constraints
+        self.assertTrue(jss.csp.check(response_sample))
 
         # Create expected solution
         expected = {"small1_0,0": 1,
@@ -199,7 +206,7 @@ class TestJSSResponse(unittest.TestCase):
         fill_with_zeros(expected, jobs, max_time)
 
         # Compare variable values
-        self.compare(response, expected)
+        self.compare(response_sample, expected)
 
 
 if __name__ == "__main__":
