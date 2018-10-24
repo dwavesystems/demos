@@ -1,9 +1,7 @@
 from __future__ import print_function
 
 from bisect import bisect_right
-from itertools import islice
 
-from neal import SimulatedAnnealingSampler
 import dwavebinarycsp as dbc
 
 
@@ -182,58 +180,5 @@ class JobShopScheduler():
                 print(bias, end_time, self.max_time)
                 label = self._get_label(task, t)
                 bqm.add_variable(label, bias)
+
         return bqm
-
-
-def demo():
-    # Solve JSS
-    # Assumes that there are no tasks with non-positive processing times.
-    jobs = {"j0": [(1, 2), (2, 2), (3, 2)],
-            "j1": [(3, 3), (2, 1), (1, 1)],
-            "j2": [(2, 2), (1, 3), (2, 1)]}
-    n_samples = 1
-    max_time = 6
-
-    # Sample for a JSS solution
-    scheduler = JobShopScheduler(jobs, max_time)
-    bqm = scheduler.get_bqm()
-    response = SimulatedAnnealingSampler().sample(bqm, num_reads=200)
-
-    # Print response
-    for sample, energy, n_occurences in islice(response.data(), n_samples):
-        print("energy: ", energy)
-        print("check: ", scheduler.csp.check(sample))
-
-        for key in sorted(sample.keys()):
-            print(key, ": ", sample[key])
-        print("")
-
-
-def demo2():
-    # Solve JSS
-    # Assumes that there are no tasks with non-positive processing times.
-    jobs = {"j0": [(0, 1), (3, 1)],
-            "j1": [(1, 1)],
-            "j2": [(2, 1)],
-            "j3": [(3, 1)],
-            "j4": [(4, 1)]}
-    n_samples = 1
-    max_time = 6
-
-    # Sample for a JSS solution
-    scheduler = JobShopScheduler(jobs, max_time)
-    bqm = scheduler.get_bqm()
-    response = SimulatedAnnealingSampler().sample(bqm, num_reads=200)
-
-    # Print response
-    for sample, energy, n_occurences in islice(response.data(), n_samples):
-        print("energy: ", energy)
-        print("check: ", scheduler.csp.check(sample))
-
-        for key in sorted(sample.keys()):
-            print(key, ": ", sample[key])
-        print("")
-
-
-if __name__ == "__main__":
-    demo()

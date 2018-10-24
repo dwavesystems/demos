@@ -1,8 +1,9 @@
-from itertools import islice
 import unittest
 
-from jobShopScheduler import JobShopScheduler
 from dimod import ExactSolver
+from jobShopScheduler import JobShopScheduler
+from neal import SimulatedAnnealingSampler
+
 
 def fill_with_zeros(expected_solution_dict, job_dict, max_time):
     """Fills the 'missing' expected_solution_dict keys with a value of 0.
@@ -207,6 +208,52 @@ class TestJSSResponse(unittest.TestCase):
 
         # Compare variable values
         self.compare(response_sample, expected)
+
+
+class TestDemo(unittest.TestCase):
+    def demo(self):
+        # Solve JSS
+        # Assumes that there are no tasks with non-positive processing times.
+        jobs = {"j0": [(1, 2), (2, 2), (3, 2)],
+                "j1": [(3, 3), (2, 1), (1, 1)],
+                "j2": [(2, 2), (1, 3), (2, 1)]}
+        max_time = 6
+
+        # Sample for a JSS solution
+        scheduler = JobShopScheduler(jobs, max_time)
+        bqm = scheduler.get_bqm()
+        response = SimulatedAnnealingSampler().sample(bqm, num_reads=1000)
+        response_sample = next(response.samples())
+
+        # Expected
+        expected = {"j0_0,0": 1, "j0_1,2": 1, "j0_2,4": 1,
+                    "j1_0,0": 1, "j1_1,4": 1, "j1_2,5": 1,
+                    "j2_0,0": 1, "j2_1,2": 1, "j2_2,5": 1}
+
+        # Print response
+        print("check: ", scheduler.csp.check(response_sample))
+        print("response_sample: ", response_sample)
+
+    def demo2(self):
+        # Solve JSS
+        # Assumes that there are no tasks with non-positive processing times.
+        jobs = {"j0": [(0, 1), (3, 1)],
+                "j1": [(1, 1)],
+                "j2": [(2, 1)],
+                "j3": [(3, 1)],
+                "j4": [(4, 1)]}
+        n_samples = 1
+        max_time = 6
+
+        # Sample for a JSS solution
+        scheduler = JobShopScheduler(jobs, max_time)
+        bqm = scheduler.get_bqm()
+        response = SimulatedAnnealingSampler().sample(bqm, num_reads=200)
+        response_sample = next(response.samples())
+
+        # Print response
+        print("check: ", scheduler.csp.check(response_sample))
+        print("response_sample: ", response_sample)
 
 
 if __name__ == "__main__":
