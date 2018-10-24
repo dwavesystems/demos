@@ -53,7 +53,6 @@ class JobShopScheduler():
     def __init__(self, job_dict, max_time=None):
         self.tasks = []
         self.max_time = max_time
-        self.real_max_time = max_time
         self.csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
 
         # Populates self.tasks and self.max_time
@@ -172,10 +171,16 @@ class JobShopScheduler():
         base = len(self.tasks) + 1     # Base for exponent
         for task in self.tasks:
             for t in range(self.max_time):
-                label = self._get_label(task, t)
                 end_time = t + task.duration
-                bias = 2 * base**(end_time - self.real_max_time)
-                print(bias, end_time, self.real_max_time)
+
+                # Check task's end time
+                if end_time > self.max_time:
+                    continue
+
+                # Add bias to variable
+                bias = 2 * base**(end_time - self.max_time)
+                print(bias, end_time, self.max_time)
+                label = self._get_label(task, t)
                 bqm.add_variable(label, bias)
         return bqm
 
