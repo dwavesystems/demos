@@ -173,7 +173,7 @@ class JobShopScheduler():
             for t in range(self.max_time):
                 end_time = t + task.duration
 
-                # Check task's end time
+                # Check task's end time; do not add in absurd times
                 if end_time > self.max_time:
                     continue
 

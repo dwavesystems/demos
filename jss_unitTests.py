@@ -179,15 +179,13 @@ class TestJSSResponse(unittest.TestCase):
         fill_with_zeros(expected, jobs, max_time)
 
         # Compare variable values
-        for i in islice(response.samples(), 1):
-            print(i)
         self.compare(response, expected)
 
     def test_largerSchedule(self):
         jobs = {'small1': [(1, 1)],
                 'small2': [(2, 2)],
                 'longJob': [(0, 1), (1, 1), (2, 1)]}
-        max_time = 3
+        max_time = 4
 
         # Get exact sample from Job Shop Scheduler BQM
         jss = JobShopScheduler(jobs, max_time)
@@ -201,8 +199,6 @@ class TestJSSResponse(unittest.TestCase):
         fill_with_zeros(expected, jobs, max_time)
 
         # Compare variable values
-        for i in islice(response.samples(), 1):
-            print(i)
         self.compare(response, expected)
 
 
