@@ -179,6 +179,8 @@ class TestJSSResponse(unittest.TestCase):
         fill_with_zeros(expected, jobs, max_time)
 
         # Compare variable values
+        for i in islice(response.samples(), 1):
+            print(i)
         self.compare(response, expected)
 
     def test_largerSchedule(self):
@@ -199,6 +201,8 @@ class TestJSSResponse(unittest.TestCase):
         fill_with_zeros(expected, jobs, max_time)
 
         # Compare variable values
+        for i in islice(response.samples(), 1):
+            print(i)
         self.compare(response, expected)
 
 

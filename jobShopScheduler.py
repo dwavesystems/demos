@@ -53,6 +53,7 @@ class JobShopScheduler():
     def __init__(self, job_dict, max_time=None):
         self.tasks = []
         self.max_time = max_time
+        self.real_max_time = max_time
         self.csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
 
         # Populates self.tasks and self.max_time
@@ -71,7 +72,8 @@ class JobShopScheduler():
 
         # Update values
         self.tasks = tasks
-        if self.max_time is None:
+        #if self.max_time is None or self.max_time > total_time:  #TODO: check if I should overwrite user input
+        if self.max_time is None:  #TODO: check if I should overwrite user input
             self.max_time = total_time
 
     def _get_label(self, task, time):
@@ -154,11 +156,8 @@ class JobShopScheduler():
                 label = self._get_label(task, (self.max_time - 1) - t)  # -1 for zero-indexed time
                 self.csp.fix_variable(label, 0)
 
-
-    def get_bqm(self, sampler=None):
-        """Returns a response to the Job Shop Scheduling problem. Default sampler is simulated annealing.
-        args:
-            sampler: String. {"qpu", "exact", "sa"}
+    def get_bqm(self):
+        """Returns a BQM to the Job Shop Scheduling problem.
         """
         # Apply constraints to self.csp
         self._add_one_start_constraint()
@@ -170,13 +169,14 @@ class JobShopScheduler():
         bqm = dbc.stitch(self.csp)
 
         # Edit BQM
-        """
+        base = len(self.tasks) + 1     # Base for exponent
         for task in self.tasks:
-            for t in range(1, self.max_time):
+            for t in range(self.max_time):
                 label = self._get_label(task, t)
-                bias = t / 2.
+                end_time = t + task.duration
+                bias = 2 * base**(end_time - self.real_max_time)
+                print(bias, end_time, self.real_max_time)
                 bqm.add_variable(label, bias)
-        """
         return bqm
 
 
@@ -231,4 +231,4 @@ def demo2():
 
 
 if __name__ == "__main__":
-    demo2()
+    demo()
