@@ -1,3 +1,5 @@
+from itertools import product
+from re import match
 import unittest
 
 from dimod import ExactSolver
@@ -23,6 +25,23 @@ def fill_with_zeros(expected_solution_dict, job_dict, max_time):
 
                 if key not in expected_solution_dict:
                     expected_solution_dict[key] = 0
+
+
+def get_energy(solution_dict, bqm):
+    min_energy = float('inf')
+    aux_variables = [v for v in bqm.variables if match("aux\d+$", v)]
+
+    # Try all possible values of auxiliary variables
+    for aux_values in product([0, 1], repeat=len(aux_variables)):
+        for variable, value in zip(aux_variables, aux_values):
+            solution_dict[variable] = value
+
+        temp_energy = bqm.energy(solution_dict)
+
+        if temp_energy < min_energy:
+            min_energy = temp_energy
+
+    return min_energy
 
 
 class TestIndividualJSSConstraints(unittest.TestCase):
@@ -220,6 +239,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
                 "j1": [(3, 3), (2, 1), (1, 1)],
                 "j2": [(2, 2), (1, 3), (2, 1)]}
         max_time = 7
+
         """
         jobs = {'small1': [(1, 1), (0, 2)],
                 'small2': [(2, 2), (0, 1)],
@@ -231,18 +251,19 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
         response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
-        response_sample = next(response.samples())
+        response_sample, sample_energy, _, _ = next(response.data())
 
         # Expected
-        """
         expected = {"j0_0,0": 1, "j0_1,2": 1, "j0_2,4": 1,
                     "j1_0,0": 1, "j1_1,4": 1, "j1_2,5": 1,
                     "j2_0,0": 1, "j2_1,2": 1, "j2_2,5": 1}
         fill_with_zeros(expected, jobs, max_time)
-        """
+        expected_energy = get_energy(expected, bqm)
+        print(expected_energy)
 
         # Print response
         self.assertTrue(scheduler.csp.check(response_sample))
+
 
     def test_demo2(self):
         # Solve JSS
