@@ -30,6 +30,7 @@ def fill_with_zeros(expected_solution_dict, job_dict, max_time):
 def get_energy(solution_dict, bqm):
     min_energy = float('inf')
     aux_variables = [v for v in bqm.variables if match("aux\d+$", v)]
+    print("Number of auxiliary variables: ", len(aux_variables))
 
     # Try all possible values of auxiliary variables
     for aux_values in product([0, 1], repeat=len(aux_variables)):
@@ -232,7 +233,7 @@ class TestJSSExactSolverResponse(unittest.TestCase):
 
 
 class TestJSSHeuristicResponse(unittest.TestCase):
-    def test_demo(self):
+    def test_dense_schedule(self):
         # jobs = {'small1': [(1, 1), (0, 2)],
         #         'small2': [(2, 2), (0, 1)],
         #         'longJob': [(0, 1), (1, 1), (2, 1)]}
@@ -245,6 +246,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # Get JSS BQM
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
+        print("Number of bqm variables: ", len(bqm.variables))
 
         # Expected solution
         expected = {"j0_0,0": 1, "j0_1,2": 1, "j0_2,4": 1,
@@ -277,6 +279,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # Get JSS BQM
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
+        print("Number of bqm variables: ", len(bqm.variables))
 
         # Expected solution
         expected = {"j0_0,0": 1, "j0_1,1": 1,
