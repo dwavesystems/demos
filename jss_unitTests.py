@@ -2,7 +2,9 @@ import unittest
 
 from dimod import ExactSolver
 from jobShopScheduler import JobShopScheduler
-from neal import SimulatedAnnealingSampler
+#from neal import SimulatedAnnealingSampler
+from dwave.system.composites import EmbeddingComposite
+from dwave.system.samplers import DWaveSampler
 
 
 def fill_with_zeros(expected_solution_dict, job_dict, max_time):
@@ -146,7 +148,7 @@ class TestCombinedJSSConstraints(unittest.TestCase):
         self.assertFalse(jss.csp.check(bad_order_solution))
 
 
-class TestJSSResponse(unittest.TestCase):
+class TestJSSExactSolverResponse(unittest.TestCase):
     def compare(self, response, expected):
         """Comparing response to expected results
         """
@@ -210,31 +212,39 @@ class TestJSSResponse(unittest.TestCase):
         self.compare(response_sample, expected)
 
 
-class TestDemo(unittest.TestCase):
-    def demo(self):
+class TestJSSHeuristicResponse(unittest.TestCase):
+    def test_demo(self):
         # Solve JSS
         # Assumes that there are no tasks with non-positive processing times.
         jobs = {"j0": [(1, 2), (2, 2), (3, 2)],
                 "j1": [(3, 3), (2, 1), (1, 1)],
                 "j2": [(2, 2), (1, 3), (2, 1)]}
-        max_time = 6
+        max_time = 7
+        """
+        jobs = {'small1': [(1, 1), (0, 2)],
+                'small2': [(2, 2), (0, 1)],
+                'longJob': [(0, 1), (1, 1), (2, 1)]}
+        max_time = 4
+        """
 
         # Sample for a JSS solution
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
-        response = SimulatedAnnealingSampler().sample(bqm, num_reads=1000)
+        response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
         response_sample = next(response.samples())
 
         # Expected
+        """
         expected = {"j0_0,0": 1, "j0_1,2": 1, "j0_2,4": 1,
                     "j1_0,0": 1, "j1_1,4": 1, "j1_2,5": 1,
                     "j2_0,0": 1, "j2_1,2": 1, "j2_2,5": 1}
+        fill_with_zeros(expected, jobs, max_time)
+        """
 
         # Print response
-        print("check: ", scheduler.csp.check(response_sample))
-        print("response_sample: ", response_sample)
+        self.assertTrue(scheduler.csp.check(response_sample))
 
-    def demo2(self):
+    def test_demo2(self):
         # Solve JSS
         # Assumes that there are no tasks with non-positive processing times.
         jobs = {"j0": [(0, 1), (3, 1)],
@@ -242,19 +252,16 @@ class TestDemo(unittest.TestCase):
                 "j2": [(2, 1)],
                 "j3": [(3, 1)],
                 "j4": [(4, 1)]}
-        n_samples = 1
-        max_time = 6
+ = 6
 
         # Sample for a JSS solution
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
-        response = SimulatedAnnealingSampler().sample(bqm, num_reads=200)
+        response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
         response_sample = next(response.samples())
 
         # Print response
-        print("check: ", scheduler.csp.check(response_sample))
-        print("response_sample: ", response_sample)
-
+        self.assertTrue(scheduler.csp.check(response_sample))
 
 if __name__ == "__main__":
     unittest.main()

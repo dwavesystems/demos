@@ -50,6 +50,7 @@ class KeyList():
 class JobShopScheduler():
     def __init__(self, job_dict, max_time=None):
         self.tasks = []
+        self.last_task_indices = []
         self.max_time = max_time
         self.csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
 
@@ -61,14 +62,19 @@ class JobShopScheduler():
         """
         # Create and concatenate Task objects
         tasks = []
+        last_task_indices = [0]
         total_time = 0  # total time of all jobs
+
         for job_name, job_tasks in jobs.items():
+            last_task_indices.append(last_task_indices[-1] + len(job_tasks) - 1)    # -1 for zero-indexing
+
             for i, (machine, time_span) in enumerate(job_tasks):
                 tasks.append(Task(job_name, i, machine, time_span))
                 total_time += time_span
 
         # Update values
         self.tasks = tasks
+        self.last_task_indices = last_task_indices[1:]
         #if self.max_time is None or self.max_time > total_time:  #TODO: check if I should overwrite user input
         if self.max_time is None:  #TODO: check if I should overwrite user input
             self.max_time = total_time
@@ -166,8 +172,10 @@ class JobShopScheduler():
         bqm = dbc.stitch(self.csp)
 
         # Edit BQM
-        base = len(self.tasks) + 1     # Base for exponent
-        for task in self.tasks:
+        base = len(self.last_task_indices) + 1     # Base for exponent
+        for i in self.last_task_indices:
+            task = self.tasks[i]
+
             for t in range(self.max_time):
                 end_time = t + task.duration
 
