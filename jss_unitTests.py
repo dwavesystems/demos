@@ -252,6 +252,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         bqm = scheduler.get_bqm()
         response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
         response_sample, sample_energy, _, _ = next(response.data())
+        print("Sample Energy: ", sample_energy)
 
         # Expected
         expected = {"j0_0,0": 1, "j0_1,2": 1, "j0_2,4": 1,
@@ -259,10 +260,11 @@ class TestJSSHeuristicResponse(unittest.TestCase):
                     "j2_0,0": 1, "j2_1,2": 1, "j2_2,5": 1}
         fill_with_zeros(expected, jobs, max_time)
         expected_energy = get_energy(expected, bqm)
-        print(expected_energy)
+        print("Expected Energy: ", expected_energy)
 
-        # Print response
+        # Check response sample
         self.assertTrue(scheduler.csp.check(response_sample))
+        self.assertLessEqual(expected_energy, sample_energy)
 
 
     def test_demo2(self):
