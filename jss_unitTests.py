@@ -3,10 +3,11 @@ from re import match
 import unittest
 
 from dimod import ExactSolver
-from jobShopScheduler import JobShopScheduler
-from neal import SimulatedAnnealingSampler
 from dwave.system.composites import EmbeddingComposite
 from dwave.system.samplers import DWaveSampler
+from jobShopScheduler import JobShopScheduler
+from neal import SimulatedAnnealingSampler
+from tabu import TabuSampler
 
 
 def fill_with_zeros(expected_solution_dict, job_dict, max_time):
@@ -259,7 +260,8 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # Sampled solution
         # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
         # response_sample, sample_energy, _, _ = next(response.data())
-        response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000)
+        # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000)
+        response = TabuSampler().sample(bqm, num_reads=2000)
         response_sample, sample_energy, _ = next(response.data())
         print("Sample Energy: ", sample_energy)
 
@@ -293,7 +295,8 @@ class TestJSSHeuristicResponse(unittest.TestCase):
 
         # Sampled solution
         # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
-        response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000)
+        # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000)
+        response = TabuSampler().sample(bqm, num_reads=2000)
         response_sample, sample_energy, _ = next(response.data())
         print("Sample Energy: ", sample_energy)
 
