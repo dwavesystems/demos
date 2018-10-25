@@ -47,6 +47,7 @@ class KeyList():
 
 
 # TODO: put asserts to validate jobs
+#TODO: make sure all tasks have positive durations
 class JobShopScheduler():
     def __init__(self, job_dict, max_time=None):
         self.tasks = []
@@ -185,7 +186,6 @@ class JobShopScheduler():
 
                 # Add bias to variable
                 bias = 2 * base**(end_time - self.max_time)
-                print(bias, end_time, self.max_time)
                 label = self._get_label(task, t)
                 bqm.add_variable(label, bias)
         return bqm

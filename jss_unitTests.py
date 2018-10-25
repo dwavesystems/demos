@@ -4,7 +4,7 @@ import unittest
 
 from dimod import ExactSolver
 from jobShopScheduler import JobShopScheduler
-#from neal import SimulatedAnnealingSampler
+from neal import SimulatedAnnealingSampler
 from dwave.system.composites import EmbeddingComposite
 from dwave.system.samplers import DWaveSampler
 
@@ -233,28 +233,20 @@ class TestJSSExactSolverResponse(unittest.TestCase):
 
 class TestJSSHeuristicResponse(unittest.TestCase):
     def test_demo(self):
-        # Solve JSS
-        # Assumes that there are no tasks with non-positive processing times.
+        # jobs = {'small1': [(1, 1), (0, 2)],
+        #         'small2': [(2, 2), (0, 1)],
+        #         'longJob': [(0, 1), (1, 1), (2, 1)]}
+        # max_time = 4
         jobs = {"j0": [(1, 2), (2, 2), (3, 2)],
                 "j1": [(3, 3), (2, 1), (1, 1)],
                 "j2": [(2, 2), (1, 3), (2, 1)]}
         max_time = 7
 
-        """
-        jobs = {'small1': [(1, 1), (0, 2)],
-                'small2': [(2, 2), (0, 1)],
-                'longJob': [(0, 1), (1, 1), (2, 1)]}
-        max_time = 4
-        """
-
-        # Sample for a JSS solution
+        # Get JSS BQM
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
-        response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
-        response_sample, sample_energy, _, _ = next(response.data())
-        print("Sample Energy: ", sample_energy)
 
-        # Expected
+        # Expected solution
         expected = {"j0_0,0": 1, "j0_1,2": 1, "j0_2,4": 1,
                     "j1_0,0": 1, "j1_1,4": 1, "j1_2,5": 1,
                     "j2_0,0": 1, "j2_1,2": 1, "j2_2,5": 1}
@@ -262,14 +254,19 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         expected_energy = get_energy(expected, bqm)
         print("Expected Energy: ", expected_energy)
 
+        # Sampled solution
+        # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
+        # response_sample, sample_energy, _, _ = next(response.data())
+        response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000)
+        response_sample, sample_energy, _ = next(response.data())
+        print("Sample Energy: ", sample_energy)
+
         # Check response sample
         self.assertTrue(scheduler.csp.check(response_sample))
         self.assertLessEqual(expected_energy, sample_energy)
 
-
-    def test_demo2(self):
+    def test_simple_schedule_more_machines(self):
         # Solve JSS
-        # Assumes that there are no tasks with non-positive processing times.
         jobs = {"j0": [(0, 1), (3, 1)],
                 "j1": [(1, 1)],
                 "j2": [(2, 1)],
@@ -277,14 +274,26 @@ class TestJSSHeuristicResponse(unittest.TestCase):
                 "j4": [(4, 1)]}
         max_time = 6
 
-        # Sample for a JSS solution
+        # Get JSS BQM
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
-        response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
-        response_sample = next(response.samples())
+
+        # Expected solution
+        expected = {"j0_0,0": 1, "j0_1,1": 1,
+                    "j1_0,0": 1,
+                    "j2_0,0": 1,
+                    "j3_0,0": 1,
+                    "j4_0,0": 1}
+        fill_with_zeros(expected, jobs, max_time)
+        expected_energy = get_energy(expected, bqm)
+        print("Expected Energy: ", expected_energy)
+
+        # Sampled solution
+        # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
+        response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000)
+        response_sample, sample_energy, _ = next(response.data())
+        print("Sample Energy: ", sample_energy)
 
         # Print response
         self.assertTrue(scheduler.csp.check(response_sample))
-
-if __name__ == "__main__":
-    unittest.main()
+        self.assertLessEqual(expected_energy, sample_energy)
