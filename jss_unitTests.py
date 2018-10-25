@@ -252,7 +252,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
                 "j2": [(2, 1)],
                 "j3": [(3, 1)],
                 "j4": [(4, 1)]}
- = 6
+        max_time = 6
 
         # Sample for a JSS solution
         scheduler = JobShopScheduler(jobs, max_time)
