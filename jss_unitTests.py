@@ -176,16 +176,22 @@ class TestJSSExactSolverResponse(unittest.TestCase):
         # Comparing variables found in sample and expected
         expected_keys = set(expected.keys())
         sample_keys = set(response.keys())
-        common_keys = expected_keys & sample_keys
-        different_keys = expected_keys - sample_keys  # expected_keys is a superset
+        common_keys = expected_keys & sample_keys   # TODO: NO AUX
+        different_keys = sample_keys - expected_keys  # sample_keys is a superset
 
         # Check that common variables match
         for key in common_keys:
-            self.assertEqual(response[key], expected[key])
+            if match('aux\d+$', key):
+                continue
+
+            self.assertEqual(response[key], expected[key], "Failed on key {}".format(key))
 
         # Check that non-existent 'sample' variables are 0
         for key in different_keys:
-            self.assertEqual(expected[key], 0)
+            if match('aux\d+$', key):
+                continue
+
+            self.assertEqual(response[key], 0, "Failed on key {}".format(key))
 
     def test_tinySchedule(self):
         jobs = {"a": [(1, 1), (2, 1)],
@@ -203,7 +209,6 @@ class TestJSSExactSolverResponse(unittest.TestCase):
 
         # Create expected solution
         expected = {"a_0,0": 1, "a_1,1": 1, "b_0,0": 1}
-        fill_with_zeros(expected, jobs, max_time)
 
         # Compare variable values
         self.compare(response_sample, expected)
@@ -227,13 +232,36 @@ class TestJSSExactSolverResponse(unittest.TestCase):
         expected = {"small1_0,0": 1,
                     "small2_0,0": 1,
                     "longJob_0,0": 1, "longJob_1,1": 1, "longJob_2,2": 1}
-        fill_with_zeros(expected, jobs, max_time)
 
         # Compare variable values
         self.compare(response_sample, expected)
 
 
 class TestJSSHeuristicResponse(unittest.TestCase):
+    #TODO: make a general compare function
+    def compare(self, response, expected):
+        """Comparing response to expected results
+        """
+        # Comparing variables found in sample and expected
+        expected_keys = set(expected.keys())
+        sample_keys = set(response.keys())
+        common_keys = expected_keys & sample_keys   # TODO: NO AUX
+        different_keys = sample_keys - expected_keys  # sample_keys is a superset
+
+        # Check that common variables match
+        for key in common_keys:
+            if match('aux\d+$', key):
+                continue
+
+            self.assertEqual(response[key], expected[key], "Failed on key {}".format(key))
+
+        # Check that non-existent 'sample' variables are 0
+        for key in different_keys:
+            if match('aux\d+$', key):
+                continue
+
+            self.assertEqual(response[key], 0, "Failed on key {}".format(key))
+
     def test_dense_schedule(self):
         # jobs = {'small1': [(1, 1), (0, 2)],
         #         'small2': [(2, 2), (0, 1)],
@@ -258,16 +286,18 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         print("Expected Energy: ", expected_energy)
 
         # Sampled solution
-        # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
+        # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=10000)
         # response_sample, sample_energy, _, _ = next(response.data())
-        # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000)
+        # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
         response = TabuSampler().sample(bqm, num_reads=2000)
         response_sample, sample_energy, _ = next(response.data())
         print("Sample Energy: ", sample_energy)
+        print("Dense sample schedule: ", response_sample)
 
         # Check response sample
         self.assertTrue(scheduler.csp.check(response_sample))
-        self.assertLessEqual(expected_energy, sample_energy)
+        self.assertEqual(expected_energy, sample_energy)
+        self.compare(response_sample, expected)
 
     def test_simple_schedule_more_machines(self):
         # Solve JSS
@@ -276,7 +306,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
                 "j2": [(2, 1)],
                 "j3": [(3, 1)],
                 "j4": [(4, 1)]}
-        max_time = 6
+        max_time = 3
 
         # Get JSS BQM
         scheduler = JobShopScheduler(jobs, max_time)
@@ -294,12 +324,19 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         print("Expected Energy: ", expected_energy)
 
         # Sampled solution
-        # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=2000)
-        # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000)
+        # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=10000)
+        # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
         response = TabuSampler().sample(bqm, num_reads=2000)
         response_sample, sample_energy, _ = next(response.data())
+        # response_sample, sample_energy, _, _ = next(response.data())
         print("Sample Energy: ", sample_energy)
+        print("Simple sample schedule: ", response_sample)
 
         # Print response
         self.assertTrue(scheduler.csp.check(response_sample))
-        self.assertLessEqual(expected_energy, sample_energy)
+        self.assertEqual(expected_energy, sample_energy)
+        self.compare(response_sample, expected)
+
+
+if __name__ == "__main__":
+    unittest.main()

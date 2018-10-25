@@ -188,4 +188,5 @@ class JobShopScheduler():
                 bias = 2 * base**(end_time - self.max_time)
                 label = self._get_label(task, t)
                 bqm.add_variable(label, bias)
+
         return bqm
