@@ -63,11 +63,11 @@ class JobShopScheduler():
         """
         # Create and concatenate Task objects
         tasks = []
-        last_task_indices = [0]
+        last_task_indices = [-1]    # -1 for zero-indexing
         total_time = 0  # total time of all jobs
 
         for job_name, job_tasks in jobs.items():
-            last_task_indices.append(last_task_indices[-1] + len(job_tasks) - 1)    # -1 for zero-indexing
+            last_task_indices.append(last_task_indices[-1] + len(job_tasks))
 
             for i, (machine, time_span) in enumerate(job_tasks):
                 tasks.append(Task(job_name, i, machine, time_span))

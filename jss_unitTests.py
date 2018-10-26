@@ -268,7 +268,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         #         'longJob': [(0, 1), (1, 1), (2, 1)]}
         # max_time = 4
         jobs = {"j0": [(1, 2), (2, 2), (3, 2)],
-                "j1": [(3, 3), (2, 1), (1, 1)],
+                "j1": [(3, 4), (2, 1), (1, 1)],
                 "j2": [(2, 2), (1, 3), (2, 1)]}
         max_time = 7
 
