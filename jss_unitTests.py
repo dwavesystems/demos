@@ -300,7 +300,6 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         self.compare(response_sample, expected)
 
     def test_simple_schedule_more_machines(self):
-        # Solve JSS
         jobs = {"j0": [(0, 1), (3, 1)],
                 "j1": [(1, 1)],
                 "j2": [(2, 1)],
@@ -325,10 +324,11 @@ class TestJSSHeuristicResponse(unittest.TestCase):
 
         # Sampled solution
         # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=10000)
+        # response_sample, sample_energy, _, chain_break_fraction = next(response.data())
+        # print("Chain Break Fraction: ", chain_break_fraction)
         # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
         response = TabuSampler().sample(bqm, num_reads=2000)
         response_sample, sample_energy, _ = next(response.data())
-        # response_sample, sample_energy, _, _ = next(response.data())
         print("Sample Energy: ", sample_energy)
         print("Simple sample schedule: ", response_sample)
 
@@ -336,6 +336,42 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         self.assertTrue(scheduler.csp.check(response_sample))
         self.assertEqual(expected_energy, sample_energy)
         self.compare(response_sample, expected)
+
+    def test_multiple_optimal_solutions(self):
+        jobs = {"car": [("gas", 1), ("road", 2), ("park", 1)],
+                "flat_tire": [("park", 1)]}
+        # max_time = 7
+        max_time = 5
+
+        # Get JSS BQM
+        scheduler = JobShopScheduler(jobs, max_time)
+        bqm = scheduler.get_bqm()
+
+        # A possible optimal solution
+        possible_optimal = {"car_0,0": 1, "car_1,1": 1, "car_2,3": 1,
+                            "flat_tire_0,0": 1}
+        fill_with_zeros(possible_optimal, jobs, max_time)
+        optimal_energy = get_energy(possible_optimal, bqm)
+
+        # Sampled solution
+        response = TabuSampler().sample(bqm, num_reads=2000)
+        response_sample, sample_energy, _ = next(response.data())
+
+        # Verify constraints and energy
+        self.assertTrue(scheduler.csp.check(response_sample))
+        self.assertEqual(optimal_energy, sample_energy)
+
+        # Verify sampled solution's makespan by checking all final tasks
+        optimal_makespan = 4
+        bad_events = ["car_2," + str(i) for i in range(optimal_makespan, max_time)]
+        bad_events += ["flat_tire_0," + str(i) for i in range(optimal_makespan, max_time)]
+
+        for bad_event in bad_events:
+            try:
+                self.assertEqual(response_sample[bad_event], 0, "Bad event {} is not 0".format(bad_event))
+            except KeyError:
+                # If key does not exist, event is automatically false
+                pass
 
 
 if __name__ == "__main__":
