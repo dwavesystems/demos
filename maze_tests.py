@@ -1,4 +1,4 @@
-from itertools import islice, product
+from itertools import product
 from re import match
 import unittest
 
@@ -6,9 +6,7 @@ from maze import Maze, get_label
 from neal import SimulatedAnnealingSampler
 
 
-# TODO: Heuristic solutions are not ideal for unit tests. However, these problems are too large for an exact solver.
 # TODO: test asserts from maze.__init__(..)
-# TODO: test case when no path exists
 def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
     keys = solution_dict.keys() if ignore_list is None else list(solution_dict.keys()) + ignore_list
 
@@ -165,23 +163,26 @@ class TestMazeSolverConstraints(unittest.TestCase):
 
 
 class TestMazeSolverResponse(unittest.TestCase):
-    # def compare(self, response, expected):
-    #    """Comparing response to expected results
-    #    """
-    #    for sample in islice(response.samples(), 1):
-    #        # Comparing variables found in sample and expected
-    #        expected_keys = set(expected.keys())
-    #        sample_keys = set(sample.keys())
-    #        common_keys = expected_keys & sample_keys
-    #        different_keys = expected_keys - sample_keys  # expected_keys is a superset
+    def compare(self, sample, expected):
+        """Comparing response to expected results
+        """
+        # Comparing variables found in sample and expected
+        expected_keys = set(expected.keys())
+        sample_keys = set(sample.keys())
+        common_keys = expected_keys & sample_keys
+        different_keys = expected_keys - sample_keys  # expected_keys is a superset
 
-    #        # Check that common variables match
-    #        for key in common_keys:
-    #            self.assertEqual(sample[key], expected[key])
+        # Check that common variables match
+        for key in common_keys:
+            if match('aux\d+$', key):
+                continue
+            self.assertEqual(sample[key], expected[key], "Key {} does not match with expected value".format(key))
 
-    #        # Check that non-existent 'sample' variables are 0
-    #        for key in different_keys:
-    #            self.assertEqual(expected[key], 0)
+        # Check that non-existent 'sample' variables are 0
+        for key in different_keys:
+            if match('aux\d+$', key):
+                continue
+            self.assertEqual(expected[key], 0, "Key {} does not match with expected value".format(key))
 
     def test_energy_level_one_optimal_path(self):
         # Create maze
@@ -244,7 +245,7 @@ class TestMazeSolverResponse(unittest.TestCase):
 
         self.assertGreater(energy_longer_path, energy_shortest_path0)
 
-    def test_maze(self):
+    def test_maze_heuristic_response(self):
         # Create maze
         n_rows = 3
         n_cols = 3
@@ -256,13 +257,14 @@ class TestMazeSolverResponse(unittest.TestCase):
 
         # Sample and test that a response is given
         sampler = SimulatedAnnealingSampler()
-        response = sampler.sample(bqm)
+        response = sampler.sample(bqm, num_reads=1000)
+        response_sample = next(response.samples())
         self.assertGreaterEqual(len(response), 1)
 
         # Test heuristic response
-        # expected_solution = {'0,1w': 1, '1,1n': 1, '1,1w': 1, '2,0n': 1, '2,1w': 1, '2,2w': 1}
-        # fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
-        # self.compare(response, expected_solution)
+        expected_solution = {'0,1w': 1, '1,1n': 1, '1,1w': 1, '2,0n': 1, '2,1w': 1, '2,2w': 1}
+        fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
+        self.compare(response_sample, expected_solution)
 
 
 if __name__ == "__main__":

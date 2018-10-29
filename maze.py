@@ -102,7 +102,7 @@ class Maze():
         for wall in self.walls:
             self.csp.fix_variable(wall, 0)
 
-    def get_bqm(self):
+    def get_bqm(self, penalty_per_tile=0.5):
         """Applies the constraints necessary to form a maze and returns a BQM that would correspond to a valid path
         through said maze.
 
@@ -125,7 +125,7 @@ class Maze():
                 continue
 
             # Add a penalty to every tile of the path
-            bqm.add_variable(v, 1, dbc.BINARY)
+            bqm.add_variable(v, penalty_per_tile, dbc.BINARY)
 
         return bqm
 
