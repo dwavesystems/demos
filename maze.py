@@ -5,9 +5,30 @@ from re import match
 
 
 def get_label(row, col, direction):
-    """Provides a string that follows a standard format.
+    """Provides a string that follows a standard format for naming constraint variables in Maze.
+    Namely, "<row_index>,<column_index><north_or_west_direction>".
+
+    Args:
+        row: Integer. Index of the row.
+        col: Integer. Index of the column.
+        direction: String in the set {'n', 'w'}. 'n' indicates north and 'w' indicates west.
     """
     return "".join([str(row), ",", str(col), direction])
+
+
+def check_label(label):
+    """Checks that label conforms with the standard format for naming constraint variables in Maze.
+    Namely, "<row_index>,<column_index><north_or_west_direction>".
+
+    Args:
+        label: String.
+    """
+    assert isinstance(label, str), "Label {} needs to be a string."
+    assert label[-1] in ['n', 'w'], "Label {} must end with a direction of either 'n' (north) or 'w' (west).".format(label)
+
+    row, col = label[:-1].split(",")
+    assert row.isdigit() and int(row) > -1, "Label {} needs to have a non-negative row index."
+    assert col.isdigit() and int(col) > -1, "Label {} needs to have a non-negative column index."
 
 
 def sum_to_two_or_zero(*args):
@@ -17,7 +38,7 @@ def sum_to_two_or_zero(*args):
     return sum_value in [0, 2]
 
 
-class Maze():
+class Maze:
     """An object that stores all the attributes necessary to represent a maze as a constraint satisfaction problem.
 
     Args:
@@ -33,6 +54,13 @@ class Maze():
         assert isinstance(n_cols, int) and n_cols > 0, "'n_cols' is not a positive integer".format(n_cols)
         assert not(start == end), "'start' cannot be the same as 'end'"
 
+        # Check label format
+        check_label(start)
+        check_label(end)
+
+        for wall in walls:
+            check_label(wall)
+
         # Instantiate
         self.n_rows = n_rows
         self.n_cols = n_cols
@@ -46,6 +74,7 @@ class Maze():
 
         Note: This constraint ensures that a tile is either not entered at all (0), or is entered and exited (2).
         """
+        # Grab the four directions of each maze tile and apply two-or-zero constraint
         for i in range(self.n_rows):
             for j in range(self.n_cols):
                 directions = {get_label(i, j, 'n'), get_label(i, j, 'w'), get_label(i+1, j, 'n'), get_label(i, j+1, 'w')}
