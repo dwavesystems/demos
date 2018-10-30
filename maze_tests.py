@@ -6,7 +6,6 @@ from maze import Maze, get_label
 from neal import SimulatedAnnealingSampler
 
 
-# TODO: test asserts from maze.__init__(..)
 def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
     keys = solution_dict.keys() if ignore_list is None else list(solution_dict.keys()) + ignore_list
 

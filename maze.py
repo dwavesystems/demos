@@ -16,7 +16,7 @@ def get_label(row, col, direction):
     return "".join([str(row), ",", str(col), direction])
 
 
-def check_label(label):
+def check_label_format(label):
     """Checks that label conforms with the standard format for naming constraint variables in Maze.
     Namely, "<row_index>,<column_index><north_or_west_direction>".
 
@@ -25,11 +25,11 @@ def check_label(label):
     """
     assert isinstance(label, str), "Label {} needs to be a string."
     assert label[-1] in ['n', 'w'], ("Label {} must end with a direction of either 'n' (north) or 'w' "
-                                     "(west).").format(label)
+                                     "(west). Ex: '2,3n'").format(label)
 
     row, col = label[:-1].split(",")
-    assert row.isdigit() and int(row) > -1, "Label {} needs to have a non-negative row index."
-    assert col.isdigit() and int(col) > -1, "Label {} needs to have a non-negative column index."
+    assert row.isdigit() and int(row) > -1, "Label {} needs to have a non-negative row index.".format(label)
+    assert col.isdigit() and int(col) > -1, "Label {} needs to have a non-negative column index.".format(label)
 
 
 def sum_to_two_or_zero(*args):
@@ -49,18 +49,17 @@ class Maze:
         end: String. The location of the end point of the maze. String follows the format of get_label(..).
         walls: List of Strings. The list of inner wall locations. Locations follow the format of get_label(..).
     """
-    #TODO: test for valid labels in start, end, and walls
     def __init__(self, n_rows, n_cols, start, end, walls):
         assert isinstance(n_rows, int) and n_rows > 0, "'n_rows' is not a positive integer".format(n_rows)
         assert isinstance(n_cols, int) and n_cols > 0, "'n_cols' is not a positive integer".format(n_cols)
         assert not(start == end), "'start' cannot be the same as 'end'"
 
         # Check label format
-        check_label(start)
-        check_label(end)
+        check_label_format(start)
+        check_label_format(end)
 
         for wall in walls:
-            check_label(wall)
+            check_label_format(wall)
 
         # Instantiate
         self.n_rows = n_rows
