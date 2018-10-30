@@ -24,7 +24,8 @@ def check_label(label):
         label: String.
     """
     assert isinstance(label, str), "Label {} needs to be a string."
-    assert label[-1] in ['n', 'w'], "Label {} must end with a direction of either 'n' (north) or 'w' (west).".format(label)
+    assert label[-1] in ['n', 'w'], ("Label {} must end with a direction of either 'n' (north) or 'w' "
+                                     "(west).").format(label)
 
     row, col = label[:-1].split(",")
     assert row.isdigit() and int(row) > -1, "Label {} needs to have a non-negative row index."
@@ -77,7 +78,8 @@ class Maze:
         # Grab the four directions of each maze tile and apply two-or-zero constraint
         for i in range(self.n_rows):
             for j in range(self.n_cols):
-                directions = {get_label(i, j, 'n'), get_label(i, j, 'w'), get_label(i+1, j, 'n'), get_label(i, j+1, 'w')}
+                directions = {get_label(i, j, 'n'), get_label(i, j, 'w'), get_label(i+1, j, 'n'),
+                              get_label(i, j+1, 'w')}
                 self.csp.add_constraint(sum_to_two_or_zero, directions)
 
     def _set_start_and_end(self):
@@ -130,6 +132,12 @@ class Maze:
     def get_bqm(self, penalty_per_tile=0.5):
         """Applies the constraints necessary to form a maze and returns a BQM that would correspond to a valid path
         through said maze.
+
+        Note: If penalty_per_tile is too large, the path will be too heavily penalized and the optimal solution might
+          no path at all.
+
+        Args:
+            penalty_per_tile: A number. Penalty for each tile that is included in the path; encourages shorter paths.
 
         Returns:
             A dimod.BinaryQuadraticModel

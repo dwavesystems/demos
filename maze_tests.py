@@ -198,19 +198,23 @@ class TestMazeSolverResponse(unittest.TestCase):
         shortest_path = {'1,3w': 1}
         longer_path0 = {'1,2n': 1, '0,3w': 1, '1,3n': 1}
         longer_path1 = {'1,2w': 1, '1,1n': 1, '0,2w': 1, '0,3w': 1, '1,3n': 1}
+        no_path = {}
 
         fill_with_zeros(shortest_path, n_rows, n_cols, [start, end])
         fill_with_zeros(longer_path0, n_rows, n_cols, [start, end])
         fill_with_zeros(longer_path1, n_rows, n_cols, [start, end])
+        fill_with_zeros(no_path, n_rows, n_cols, [start, end])
 
         energy_shortest_path = get_energy(shortest_path, bqm)
         energy_longer_path0 = get_energy(longer_path0, bqm)
         energy_longer_path1 = get_energy(longer_path1, bqm)
+        energy_no_path = get_energy(no_path, bqm)
 
         # Compare energy levels
         self.assertLess(energy_shortest_path, energy_longer_path0)
         self.assertLess(energy_shortest_path, energy_longer_path1)
         self.assertLess(energy_longer_path0, energy_longer_path1)
+        self.assertLess(energy_shortest_path, energy_no_path)
 
     def test_energy_level_multiple_optimal_paths(self):
         # Create maze
@@ -245,13 +249,22 @@ class TestMazeSolverResponse(unittest.TestCase):
 
         self.assertGreater(energy_longer_path, energy_shortest_path0)
 
+        # Compare energy level of no path with shortest path
+        no_path = {}
+        fill_with_zeros(no_path, n_rows, n_cols, [start, end])
+        energy_no_path = get_energy(no_path, bqm)
+
+        self.assertGreater(energy_no_path, energy_shortest_path0)
+
     def test_maze_heuristic_response(self):
+        """Small and simple maze to verify that it is possible get a solution.
+        """
         # Create maze
         n_rows = 3
         n_cols = 3
         start = '0,0n'
         end = '3,2n'
-        walls = ['1,0n', '0,2w', '2,1n', '2,2n']
+        walls = ['1,0n', '2,1n', '2,2n']
         maze = Maze(n_rows, n_cols, start, end, walls)
         bqm = maze.get_bqm()
 
