@@ -20,10 +20,10 @@ else:
 # These should be minimal requiments for the package to work, and avoid pinning dependencies unless required. See
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 install_requires = ['dwavebinarycsp>=0.0.2,<0.1.0',
-                    'dwave-system>=0.5.2,<0.6.0',
-                    'minorminer>=0.1.3,<0.2.0',
+                    'dwave-system>=0.6.0,<0.7.0',
+                    'minorminer>=0.1.7,<0.2.0',
                     'dimod>=0.7.2,<0.8.0',
-                    'dwave-cloud-client>=0.4.13',
+                    'dwave-cloud-client>=0.5.1',
                     'jsonschema>=2.6.0,<3.0.0']
 
 # Any extra requirements, to be used by pip install PACKAGENAME['keyname']
