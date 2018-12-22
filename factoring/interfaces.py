@@ -92,14 +92,15 @@ def factor(P, use_saved_embedding=True):
     sample_time = time.time()
 
     # get QPU sampler
-    sampler = DWaveSampler(solver_features=dict(online=True, name='DW_2000Q.*'))
+    sampler = DWaveSampler(solver=dict(qpu=True))
     _, target_edgelist, target_adjacency = sampler.structure
 
+    embedding = None
     if use_saved_embedding:
         # load a pre-calculated embedding
         from factoring.embedding import embeddings
-        embedding = embeddings[sampler.solver.id]
-    else:
+        embedding = embeddings.get(sampler.solver.id)
+    if not embedding:
         # get the embedding
         embedding = minorminer.find_embedding(bqm.quadratic, target_edgelist)
         if bqm and not embedding:
