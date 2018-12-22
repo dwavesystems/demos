@@ -23,7 +23,7 @@ install_requires = ['networkx>=2.0,<3.0',
                     'dwave_networkx>=0.6.2,<0.7.0',
                     'matplotlib>=2.2.2,<3.0.0',
                     'scipy>=1.1.0,<2.0.0',
-                    'dwave-system>=0.5.2,<0.6.0',
+                    'dwave-system>=0.6.0,<0.7.0',
                     'dwave-neal>=0.4.0,<0.5.0']
 
 # The packages in this repo that are to be installed. Either list these explictly, or use setuptools.find_packages. If
