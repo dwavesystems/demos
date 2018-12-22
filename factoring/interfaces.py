@@ -164,6 +164,8 @@ def factor(P, use_saved_embedding=True):
             a = (a << 1) | sample[lbl]
         for lbl in reversed(b_vars):
             b = (b << 1) | sample[lbl]
+        # cast from numpy.int to int
+        a, b = int(a), int(b)
         # aggregate results by unique A and B values (ignoring internal circuit variables)
         if (a, b, P) in results_dict:
             results_dict[(a, b, P)]["numOfOccurrences"] += num_occurrences
