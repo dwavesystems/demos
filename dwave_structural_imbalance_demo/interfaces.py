@@ -86,8 +86,7 @@ class GlobalSignedSocialNetwork(object):
 
         if self._qpu:
             # select the first available sampler in the `DW_2000Q` class
-            self._sampler = EmbeddingComposite(DWaveSampler(
-                solver_features=dict(online=True, name='DW_2000Q.*')))
+            self._sampler = EmbeddingComposite(DWaveSampler(solver=dict(qpu=True)))
         else:
             self._sampler = SimulatedAnnealingSampler()
 
