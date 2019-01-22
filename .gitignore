@@ -1,3 +1,20 @@
+*.pyc
+*.odp
+
+generated
+
+*.sublime-project
+*.sublime-workspace
+
+sapi_token.py
+
+*.png
+*.csv
+
+*.DS_Store
+
+scratch.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
