@@ -1,0 +1,51 @@
+{
+  "title": "Response",
+  "version": "1.0.0",
+  "type": "object",
+  "required": ["results", "timing", "numberOfReads"],
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["a", "b", "valid", "numOfOccurrences", "percentageOfOccurrences"],
+        "properties": {
+          "a": {
+            "type": "number"
+          },
+          "b": {
+            "type": "number"
+          },
+          "valid": {
+            "type": "boolean"
+          },
+          "numOfOccurrences": {
+            "type": "number"
+          },
+          "percentageOfOccurrences": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "required": ["actual"],
+      "properties": {
+        "actual": {
+          "type": "object",
+          "required": ["qpuProcessTime"],
+          "properties": {
+            "qpuProcessTime": {
+              "type": "number",
+              "description": "duration in microseconds"
+            }
+          }
+        }
+      }
+    },
+    "numberOfReads": {
+      "type": "number"
+    }
+  }
+}
