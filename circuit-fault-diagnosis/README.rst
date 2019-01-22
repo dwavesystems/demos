@@ -1,4 +1,3 @@
-# dwave-demos
 Demo of Circuit Fault Diagnosis
 ===============================
 
