@@ -1,0 +1,6 @@
+dwavebinarycsp==0.0.6
+dwave-system==0.6.0
+minorminer==0.1.7
+dimod==0.7.9
+dwave-cloud-client==0.5.1
+jsonschema==2.6.0
