@@ -1,3 +1,8 @@
+"""
+Copyright 2019 D-Wave Systems Inc.
+
+jobShopScheduler.py licensed to authorized users only under the applicable license agreement. See LICENSE.txt.
+"""
 from __future__ import print_function
 
 from bisect import bisect_right
