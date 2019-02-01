@@ -2,7 +2,7 @@ COPYRIGHT 2019 D-WAVE SYSTEMS INC.  All Rights Reserved.
 
 D-WAVE SYSTEMS INC. ("D-WAVE") END-USER LICENSE AGREEMENT ("EULA")
 
-The software subject to this EULA is/are known as "".
+The software subject to this EULA is/are known as "jobShopScheduler.py".
   
 
 IMPORTANT - READ CAREFULLY BEFORE COPYING, INSTALLING OR OTHERWISE USING: THIS
