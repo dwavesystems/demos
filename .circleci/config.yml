@@ -13,7 +13,7 @@ jobs:
       #TODO: add caching once demos share the same requirements file and can live in the same venv
       - run:
           command: |
-            demos=$(ls -d */ | grep -v "tests" | grep -v "circuit-fault-diagnosis" | sed 's/\///')
+            demos=$(ls -d */ | grep -v "tests" | grep -v "circuit-fault-diagnosis" | grep -v "qboost" | sed 's/\///')
             for demo in $demos
             do
                 env="${demo}_env"
