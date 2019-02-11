@@ -103,25 +103,25 @@ jobs:
     environment:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
-#
+
 #  test-doctest:
 #    docker:
 #      - image: circleci/python:3.5-jessie
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
+#
+#    working_directory: ~/repo
+#
+#    steps:
+#      - checkout
+#
 #      - restore_cache:
 #          keys:
 #          - v1-dependencies-{{ checksum "docs/requirements.txt" }}-{{ checksum "requirements.txt" }}-{{ .Environment.CIRCLE_JOB }}
 #
-      - run:
-          name: install dependencies
-          command: |
-            python -m virtualenv env
-            . env/bin/activate
+#      - run:
+#          name: install dependencies
+#          command: |
+#            python -m virtualenv env
+#            . env/bin/activate
 #            pip install -r docs/requirements.txt
 
 #      - save_cache:
