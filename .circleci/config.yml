@@ -12,6 +12,7 @@ jobs:
 
       #TODO: add caching once demos share the same requirements file and can live in the same venv
       - run:
+          name: install dependences and run tests
           command: |
             demos=$(ls -d */ | grep -v "tests" | grep -v "circuit-fault-diagnosis" | sed 's/\///')
             for demo in $demos
@@ -56,45 +57,32 @@ jobs:
           command: |
             brew install pyenv
 
-#      - restore_cache:
-#          keys:
-#            - pyenv-{{ .Environment.CIRCLE_JOB }}
-
       - run:
           name: install python
           command: |
             pyenv install $PYTHON -s
 
-#      - save_cache:
-#          paths:
-#            - ~/.pyenv
-#          key: pyenv-{{ .Environment.CIRCLE_JOB }}
-
-#      - restore_cache: *restore-cache-template
-
+      #TODO: add caching back in when demos have the same requirements and exist in the same venv
       - run:
           name: create virtualenv
           command: |
             eval "$(pyenv init -)"
             pyenv local $PYTHON
             python -m pip install virtualenv
-            python -m virtualenv env
 
       - run:
-          name: install dependencies
+          name: install dependencies and run tests
           command: |
-            . env/bin/activate
-            pip install -r requirements_tests.txt
-
-#      - save_cache: *save-cache-template
-
-      - run: &run-tests-template
-          name: run tests
-          command: |
-            . env/bin/activate
-            coverage run -m unittest discover
-            deactivate
-#      - run: *run-tests-template
+            demos=$(ls -d */ | grep -v "tests" | grep -v "circuit-fault-diagnosis" | sed 's/\///')
+            for demo in $demos
+            do
+                env="${demo}_env"
+                python -m virtualenv $env
+                . $env/bin/activate
+                pip install -r $demo/requirements_tests.txt
+                coverage run -m unittest discover
+                deactivate
+            done
 
 #      - run: *codecov-template
 
