@@ -1,0 +1,5 @@
+penaltymodel[all]==0.13.2
+dimod==0.6.3
+networkx
+pandas
+git+http://git@github.com/pysmt/pysmt.git@09812b8333cc6b01ee7f9c60ca07813f0abf867c # need to do pysmt-install

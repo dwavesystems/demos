@@ -1,0 +1,124 @@
+{
+  "title": "Response",
+  "type": "object",
+  "required": [
+    "results"
+  ],
+  "properties": {
+    "results": {
+      "type": "array",
+      "items": {
+        "title": "Node Link Data",
+        "description": "NetworkX graph data; returned by nx.node_link_data()",
+        "type": "object",
+        "required": [
+          "nodes",
+          "links"
+        ],
+        "properties": {
+          "nodes": {
+            "description": "vertices in graph representing groups",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "id"
+              ],
+              "properties": {
+                "id": {
+                  "description": "marks unique identifier of group; corresponds to source and target in links",
+                  "type": "number"
+                },
+                "map": {
+                  "type": "string"
+                },
+                "color": {
+                  "description": "group bicoloring; returned by solve_structural_imbalance()",
+                  "type": "number"
+                }
+              }
+            }
+          },
+          "links": {
+            "desciption": "edges in graph respresenting interactions between groups",
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "source",
+                "target",
+                "sign"
+              ],
+              "properties": {
+                "source": {
+                  "description": "marks one group in interaction; corresponds to id in nodes",
+                  "type": "number"
+                },
+                "target": {
+                  "description": "marks one group in interaction; corresponds to id in nodes",
+                  "type": "number"
+                },
+                "sign": {
+                  "description": "marks whether interaction is friendly or hostile; input to solve_structural_imbalance()",
+                  "type": "number"
+                },
+                "event_id": {
+                  "type": "string"
+                },
+                "event_type": {
+                  "type": "string"
+                },
+                "event_description": {
+                  "type": "string"
+                },
+                "event_year": {
+                  "type": "number"
+                },
+                "frustrated": {
+                  "description": "interactions that violate sign; returned by solve_structural_imbalance()",
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "graph": {
+            "type": "object",
+            "properties": {
+              "numOfOccurrences": {
+                "type": "number"
+              },
+              "percentageOfOccurrences": {
+                "type": "number"
+              }
+            }
+          },
+          "directed": {
+            "type": "boolean"
+          },
+          "multigraph": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "required": ["actual"],
+      "properties": {
+        "actual": {
+          "type": "object",
+          "required": ["qpuProcessTime"],
+          "properties": {
+            "qpuProcessTime": {
+              "type": "number",
+              "description": "duration in microseconds"
+            }
+          }
+        }
+      }
+    },
+    "numberOfReads": {
+      "type": "number"
+    }
+  }
+}

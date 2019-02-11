@@ -1,0 +1,2 @@
+include dwave_structural_imbalance_demo/mmp_network/*.csv
+include dwave_structural_imbalance_demo/json_schema.json
