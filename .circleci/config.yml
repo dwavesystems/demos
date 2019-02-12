@@ -18,12 +18,12 @@ jobs:
 
             for demo in !(tests|circuit-fault-diagnosis); do
               if [ -d "$demo" ]; then
-                env=""$demo"_env"
+                env="env_$demo"
 
                 python -m virtualenv "$env"
-                . "$env"/bin/activate
+                . "$env/bin/activate"
 
-                pip install -r "$demo"/requirements_tests.txt
+                pip install -r "$demo/requirements_tests.txt"
                 coverage run -m unittest discover
 
                 deactivate
