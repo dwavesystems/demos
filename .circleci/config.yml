@@ -11,7 +11,7 @@ jobs:
       - checkout
 
       #TODO: add caching once demos share the same requirements file and can live in the same venv
-      - run:
+      - run: &install-and-test-template
           name: install dependences and run tests
           command: |
             shopt -s extglob
@@ -75,19 +75,7 @@ jobs:
             pyenv local $PYTHON
             python -m pip install virtualenv
 
-      - run:
-          name: install dependencies and run tests
-          command: |
-            demos=$(ls -d */ | grep -v "tests" | grep -v "circuit-fault-diagnosis" | sed 's/\///')
-            for demo in $demos
-            do
-                env="${demo}_env"
-                python -m virtualenv $env
-                . $env/bin/activate
-                pip install -r $demo/requirements_tests.txt
-                coverage run -m unittest discover
-                deactivate
-            done
+      - run: *install-and-test-template
 
 #      - run: *codecov-template
 
