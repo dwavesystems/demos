@@ -12,13 +12,10 @@ jobs:
 
       #TODO: add caching once demos share the same requirements file and can live in the same venv
       - run:
-          name: set shell options
+          name: install dependences and run tests
           command: |
             shopt -s extglob
 
-      - run:
-          name: install dependences and run tests
-          command: |
             for demo in !(tests|circuit-fault-diagnosis); do
               if [ -d "$demo" ]; then
                 env=""$demo"_env"
