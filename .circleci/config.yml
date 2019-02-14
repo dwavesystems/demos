@@ -18,8 +18,7 @@ jobs:
 
             for demo in !(tests|circuit-fault-diagnosis); do
               if [ -d "$demo" ]; then
-                env="env_$demo"
-
+                env="envs/$demo"
                 python -m virtualenv "$env"
                 . "$env/bin/activate"
 
