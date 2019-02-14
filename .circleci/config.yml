@@ -10,60 +10,24 @@ jobs:
     steps:
       - checkout
 
-      # Factoring demo
-#      - run: &make-virtualenv
-#          command: |
-#            python -m virtualenv env
-#
-#      - run:
-#          command: |
-#            . env/bin/activate
-#            pip install -r factoring/requirements_tests.txt
-#
-#TODO: add caching back in, maybe use loop
-      - run:
+      #TODO: add caching once demos share the same requirements file and can live in the same venv
+      - run: &install-and-test-template
+          name: install dependences and run tests
           command: |
-            demos=$(ls -d */ | grep -v "tests" | grep -v "circuit-fault-diagnosis" | sed 's/\///')
-            for demo in $demos
-            do
-                env="${demo}_env"
-                python -m virtualenv $env
-                . $env/bin/activate
-                pip install -r $demo/requirements_tests.txt
+            shopt -s extglob
+
+            for demo in !(tests|circuit-fault-diagnosis); do
+              if [ -d "$demo" ]; then
+                env="envs/$demo"
+                python -m virtualenv "$env"
+                . "$env/bin/activate"
+
+                pip install -r "$demo/requirements_tests.txt"
                 coverage run -m unittest discover
+
                 deactivate
+              fi
             done
-
-#      - run: &run-tests-template
-#          name: run tests
-#          command: |
-#            . env/bin/activate
-#            coverage run -m unittest discover
-#            deactivate
-
-#      # Qboost demo
-#      - run: *make-virtualenv
-#      - run:
-#          command: |
-#            . env/bin/activate
-#            pip install -r qboost/requirements_tests.txt
-#      - run: *run-tests-template
-#
-#      # Structural Imbalance demo
-#      - run: *make-virtualenv
-#      - run:
-#          command: |
-#            . env/bin/activate
-#            pip install -r structural-imbalance-demo/requirements_tests.txt
-#      - run: *run-tests-template
-#
-      # Circuit Fault Diagnosis demo
-      #- run: *make-virtualenv
-      #- run:
-      #    command: |
-      #      . env/bin/activate
-      #      pip install -r circuit-fault-diagnosis/requirements_tests.txt
-      #- run: *run-tests-template
 
   test-3.6:
     <<: *full-test-template
@@ -75,12 +39,9 @@ jobs:
     docker:
       - image: circleci/python:3.5-jessie
 
-  test-3.4:
-    <<: *full-test-template
-    docker:
-      - image: circleci/python:3.4-jessie
-
   test-2.7:
+    # Note: CircleCI's Python 2.7 environment already has virtualenv pre-installed.
+    #   Hence, even though it's Python 2.7, `python -m virtualenv ..` works.
     <<: *full-test-template
     docker:
       - image: circleci/python:2.7-jessie
@@ -102,45 +63,20 @@ jobs:
           command: |
             brew install pyenv
 
-#      - restore_cache:
-#          keys:
-#            - pyenv-{{ .Environment.CIRCLE_JOB }}
-
       - run:
           name: install python
           command: |
             pyenv install $PYTHON -s
 
-#      - save_cache:
-#          paths:
-#            - ~/.pyenv
-#          key: pyenv-{{ .Environment.CIRCLE_JOB }}
-
-#      - restore_cache: *restore-cache-template
-
+      #TODO: add caching back in when demos have the same requirements and exist in the same venv
       - run:
           name: create virtualenv
           command: |
             eval "$(pyenv init -)"
             pyenv local $PYTHON
             python -m pip install virtualenv
-            python -m virtualenv env
 
-      - run:
-          name: install dependencies
-          command: |
-            . env/bin/activate
-            pip install -r requirements_tests.txt
-
-#      - save_cache: *save-cache-template
-
-      - run: &run-tests-template
-          name: run tests
-          command: |
-            . env/bin/activate
-            coverage run -m unittest discover
-            deactivate
-#      - run: *run-tests-template
+      - run: *install-and-test-template
 
 #      - run: *codecov-template
 
@@ -156,36 +92,30 @@ jobs:
       PYTHON: 3.5.5
       HOMEBREW_NO_AUTO_UPDATE: 1
 
-  test-osx-3.4:
-    <<: *osx-tests-template
-    environment:
-      PYTHON: 3.4.8
-      HOMEBREW_NO_AUTO_UPDATE: 1
-
   test-osx-2.7:
     <<: *osx-tests-template
     environment:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
-#
+
 #  test-doctest:
 #    docker:
 #      - image: circleci/python:3.5-jessie
-
-    working_directory: ~/repo
-
-    steps:
-      - checkout
-
+#
+#    working_directory: ~/repo
+#
+#    steps:
+#      - checkout
+#
 #      - restore_cache:
 #          keys:
 #          - v1-dependencies-{{ checksum "docs/requirements.txt" }}-{{ checksum "requirements.txt" }}-{{ .Environment.CIRCLE_JOB }}
 #
-      - run:
-          name: install dependencies
-          command: |
-            python -m virtualenv env
-            . env/bin/activate
+#      - run:
+#          name: install dependencies
+#          command: |
+#            python -m virtualenv env
+#            . env/bin/activate
 #            pip install -r docs/requirements.txt
 
 #      - save_cache:
@@ -256,12 +186,10 @@ workflows:
       - test-3.7
       - test-3.6
       - test-3.5
-      - test-3.4
       - test-2.7
       - test-osx-3.7
       - test-osx-3.6
       - test-osx-3.5
-      - test-osx-3.4
       - test-osx-2.7
 #      - test-doctest
 
