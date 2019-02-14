@@ -40,6 +40,8 @@ jobs:
       - image: circleci/python:3.5-jessie
 
   test-2.7:
+    # Note: CircleCI's Python 2.7 environment already has virtualenv pre-installed.
+    #   Hence, even though it's Python 2.7, `python -m virtualenv ..` works.
     <<: *full-test-template
     docker:
       - image: circleci/python:2.7-jessie
