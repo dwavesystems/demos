@@ -4,6 +4,24 @@ import dwavebinarycsp as dbc
 from re import match
 
 
+def build_bqm(n_rows, n_cols, start, end, walls, penalty_per_tile=0.5):
+    """Returns a maze BQM.
+
+    Specifically, it uses the parameters to build a maze constraint satisfaction problem (CSP). This
+    maze CSP is then converted into the returned BQM.
+
+    Args:
+        n_rows: Integer. The number of rows in the maze.
+        n_cols: Integer. The number of cols in the maze.
+        start: String. The location of the starting point of the maze. String follows the format of get_label(..).
+        end: String. The location of the end point of the maze. String follows the format of get_label(..).
+        walls: List of Strings. The list of inner wall locations. Locations follow the format of get_label(..).
+        penalty_per_tile: A number. Penalty for each tile that is included in the path; encourages shorter paths.
+    """
+    maze = Maze(n_rows, n_cols, start, end, walls)
+    return maze.get_bqm(penalty_per_tile)
+
+
 def get_label(row, col, direction):
     """Provides a string that follows a standard format for naming constraint variables in Maze.
     Namely, "<row_index>,<column_index><north_or_west_direction>".
