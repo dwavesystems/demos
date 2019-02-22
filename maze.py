@@ -5,10 +5,13 @@ from re import match
 
 
 def build_bqm(n_rows, n_cols, start, end, walls, penalty_per_tile=0.5):
-    """Returns a maze BQM.
+    """Returns a BQM that corresponds to a valid path through a maze. This maze is described by the parameters.
 
-    Specifically, it uses the parameters to build a maze constraint satisfaction problem (CSP). This
-    maze CSP is then converted into the returned BQM.
+    Specifically, it uses the parameters to build a maze constraint satisfaction problem (CSP). This maze CSP is then
+    converted into the returned BQM.
+
+    Note: If penalty_per_tile is too large, the path will be too heavily penalized and the optimal solution might
+    produce no path at all.
 
     Args:
         n_rows: Integer. The number of rows in the maze.
@@ -17,6 +20,9 @@ def build_bqm(n_rows, n_cols, start, end, walls, penalty_per_tile=0.5):
         end: String. The location of the end point of the maze. String follows the format of get_label(..).
         walls: List of Strings. The list of inner wall locations. Locations follow the format of get_label(..).
         penalty_per_tile: A number. Penalty for each tile that is included in the path; encourages shorter paths.
+
+    Returns:
+        A dimod.BinaryQuadraticModel
     """
     maze = Maze(n_rows, n_cols, start, end, walls)
     return maze.get_bqm(penalty_per_tile)
