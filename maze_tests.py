@@ -16,7 +16,8 @@ from itertools import product
 from re import match
 import unittest
 
-from maze import Maze, get_label
+from dimod import BinaryQuadraticModel
+from maze import Maze, get_label, build_bqm
 from neal import SimulatedAnnealingSampler
 
 
@@ -291,6 +292,22 @@ class TestMazeSolverResponse(unittest.TestCase):
         expected_solution = {'0,1w': 1, '1,1n': 1, '1,1w': 1, '2,0n': 1, '2,1w': 1, '2,2w': 1}
         fill_with_zeros(expected_solution, n_rows, n_cols, [start, end])
         self.compare(response_sample, expected_solution)
+
+
+class TestBuildBqm(unittest.TestCase):
+    def test_bqm_return(self):
+        """build_bqm(..) is merely a wrapper. This test is just to ensure that the wrapper works.
+        """
+        # Create maze
+        n_rows = 2
+        n_cols = 2
+        start = '0,0n'
+        end = '1,0w'
+        walls = ['1,1n']
+
+        # Get bqm
+        bqm = build_bqm(n_rows, n_cols, start, end, walls)
+        self.assertIsInstance(bqm, BinaryQuadraticModel)
 
 
 if __name__ == "__main__":
