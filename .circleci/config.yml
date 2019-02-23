@@ -16,7 +16,7 @@ jobs:
           command: |
             shopt -s extglob
 
-            for demo in !(tests|circuit-fault-diagnosis); do
+            for demo in !(tests|circuit-fault-diagnosis|examples); do
               if [ -d "$demo" ]; then
                 env="envs/$demo"
                 python -m virtualenv "$env"
