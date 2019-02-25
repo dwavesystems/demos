@@ -1,8 +1,17 @@
-"""
-Copyright 2019 D-Wave Systems Inc.
+# Copyright 2019 D-Wave Systems Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-jobShopScheduler.py licensed to authorized users only under the applicable license agreement. See LICENSE.txt.
-"""
 from __future__ import print_function
 
 from bisect import bisect_right
@@ -14,7 +23,7 @@ def sum_to_one(*args):
     return sum(args) == 1
 
 
-class Task():
+class Task:
     def __init__(self, job, position, machine, duration):
         self.job = job
         self.position = position
@@ -32,7 +41,7 @@ class Task():
         return "{" + task_str + "}"
 
 
-class KeyList():
+class KeyList:
     """A wrapper to an array. Used for passing the key of a custom object to the bisect function.
 
     Note: bisect function does not let you choose an arbitrary key, hence this class was created.
@@ -53,7 +62,7 @@ class KeyList():
 
 # TODO: put asserts to validate jobs
 #TODO: make sure all tasks have positive durations
-class JobShopScheduler():
+class JobShopScheduler:
     def __init__(self, job_dict, max_time=None):
         self.tasks = []
         self.last_task_indices = []
