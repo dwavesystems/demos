@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from itertools import product
-from re import match
+import re
 import unittest
+
+from itertools import product
 
 from dimod import BinaryQuadraticModel
 from maze import Maze, get_label, build_bqm
@@ -43,7 +44,7 @@ def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
 
 def get_energy(solution_dict, bqm):
     min_energy = float('inf')
-    aux_variables = [v for v in bqm.variables if match("aux\d+$", v)]
+    aux_variables = [v for v in bqm.variables if re.match("aux\d+$", v)]
 
     # Try all possible values of auxiliary variables
     for aux_values in product([0, 1], repeat=len(aux_variables)):
@@ -188,13 +189,13 @@ class TestMazeSolverResponse(unittest.TestCase):
 
         # Check that common variables match
         for key in common_keys:
-            if match('aux\d+$', key):
+            if re.match('aux\d+$', key):
                 continue
             self.assertEqual(sample[key], expected[key], "Key {} does not match with expected value".format(key))
 
         # Check that non-existent 'sample' variables are 0
         for key in different_keys:
-            if match('aux\d+$', key):
+            if re.match('aux\d+$', key):
                 continue
             self.assertEqual(expected[key], 0, "Key {} does not match with expected value".format(key))
 

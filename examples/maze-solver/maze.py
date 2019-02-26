@@ -14,8 +14,8 @@
 
 from __future__ import print_function
 
-import dwavebinarycsp as dbc
-from re import match
+import dwavebinarycsp
+import re
 
 
 def build_bqm(n_rows, n_cols, start, end, walls, penalty_per_tile=0.5):
@@ -105,7 +105,7 @@ class Maze:
         self.start = start
         self.end = end
         self.walls = walls
-        self.csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
+        self.csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
 
     def _apply_valid_move_constraint(self):
         """Applies a sum to either 0 or 2 constraint on each tile of the maze.
@@ -186,16 +186,16 @@ class Maze:
         self._set_inner_walls()
 
         # Grab bqm constrained for valid solutions
-        bqm = dbc.stitch(self.csp)
+        bqm = dwavebinarycsp.stitch(self.csp)
 
         # Edit bqm to favour optimal solutions
         for v in bqm.variables:
             # Ignore auxiliary variables
-            if isinstance(v, str) and match("aux\d+$", v):
+            if isinstance(v, str) and re.match("aux\d+$", v):
                 continue
 
             # Add a penalty to every tile of the path
-            bqm.add_variable(v, penalty_per_tile, dbc.BINARY)
+            bqm.add_variable(v, penalty_per_tile, dwavebinarycsp.BINARY)
 
         return bqm
 
