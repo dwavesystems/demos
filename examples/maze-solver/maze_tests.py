@@ -22,7 +22,7 @@ from neal import SimulatedAnnealingSampler
 
 
 def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
-    keys = list(itertools.chain(solution_dict.keys(), ignore_list or []))
+    keys = set(itertools.chain(solution_dict.keys(), ignore_list or []))
 
     # Setting west direction to zero
     for i in range(n_rows):
