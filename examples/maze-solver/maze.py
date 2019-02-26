@@ -54,20 +54,16 @@ def get_label(row, col, direction):
     return "{row},{col}{direction}".format(**locals())
 
 
-def check_label_format(label):
+def assert_label_format_valid(label):
     """Checks that label conforms with the standard format for naming constraint variables in Maze.
     Namely, "<row_index>,<column_index><north_or_west_direction>".
 
     Args:
         label: String.
     """
-    assert isinstance(label, str), "Label {} needs to be a string."
-    assert label[-1] in ['n', 'w'], ("Label {} must end with a direction of either 'n' (north) or 'w' "
-                                     "(west). Ex: '2,3n'").format(label)
-
-    row, col = label[:-1].split(",")
-    assert row.isdigit() and int(row) > -1, "Label {} needs to have a non-negative row index.".format(label)
-    assert col.isdigit() and int(col) > -1, "Label {} needs to have a non-negative column index.".format(label)
+    is_valid = bool(re.match(r'^(\d+),(\d+)[nw]$', label))
+    assert is_valid, ("{label} is in the incorrect format. Format is <row_index>,<column_index><north_or_west>. "
+                      "Example: '4,3w'").format(**locals())
 
 
 def sum_to_two_or_zero(*args):
@@ -93,11 +89,11 @@ class Maze:
         assert start != end, "'start' cannot be the same as 'end'"
 
         # Check label format
-        check_label_format(start)
-        check_label_format(end)
+        assert_label_format_valid(start)
+        assert_label_format_valid(end)
 
         for wall in walls:
-            check_label_format(wall)
+            assert_label_format_valid(wall)
 
         # Instantiate
         self.n_rows = n_rows
