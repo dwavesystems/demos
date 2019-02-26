@@ -18,7 +18,7 @@ import dwavebinarycsp
 import re
 
 
-def build_bqm(n_rows, n_cols, start, end, walls, penalty_per_tile=0.5):
+def get_maze_bqm(n_rows, n_cols, start, end, walls, penalty_per_tile=0.5):
     """Returns a BQM that corresponds to a valid path through a maze. This maze is described by the parameters.
 
     Specifically, it uses the parameters to build a maze constraint satisfaction problem (CSP). This maze CSP is then
