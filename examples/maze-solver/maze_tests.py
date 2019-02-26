@@ -17,7 +17,7 @@ import re
 import unittest
 
 from dimod import BinaryQuadraticModel
-from maze import Maze, get_label, build_bqm
+from maze import Maze, get_label, get_maze_bqm
 from neal import SimulatedAnnealingSampler
 
 
@@ -43,7 +43,7 @@ def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
 
 def get_energy(solution_dict, bqm):
     min_energy = float('inf')
-    aux_variables = [v for v in bqm.variables if re.match("aux\d+$", v)]
+    aux_variables = [v for v in bqm.variables if re.match(r'aux\d+$', v)]
 
     # Try all possible values of auxiliary variables
     for aux_values in itertools.product([0, 1], repeat=len(aux_variables)):
@@ -188,13 +188,13 @@ class TestMazeSolverResponse(unittest.TestCase):
 
         # Check that common variables match
         for key in common_keys:
-            if re.match('aux\d+$', key):
+            if re.match(r'aux\d+$', key):
                 continue
             self.assertEqual(sample[key], expected[key], "Key {} does not match with expected value".format(key))
 
         # Check that non-existent 'sample' variables are 0
         for key in different_keys:
-            if re.match('aux\d+$', key):
+            if re.match(r'aux\d+$', key):
                 continue
             self.assertEqual(expected[key], 0, "Key {} does not match with expected value".format(key))
 
@@ -306,7 +306,7 @@ class TestBuildBqm(unittest.TestCase):
         walls = ['1,1n']
 
         # Get bqm
-        bqm = build_bqm(n_rows, n_cols, start, end, walls)
+        bqm = get_maze_bqm(n_rows, n_cols, start, end, walls)
         self.assertIsInstance(bqm, BinaryQuadraticModel)
 
 

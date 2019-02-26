@@ -187,7 +187,7 @@ class Maze:
         # Edit bqm to favour optimal solutions
         for v in bqm.variables:
             # Ignore auxiliary variables
-            if isinstance(v, str) and re.match("aux\d+$", v):
+            if isinstance(v, str) and re.match(r'aux\d+$', v):
                 continue
 
             # Add a penalty to every tile of the path
