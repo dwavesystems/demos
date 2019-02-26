@@ -12,10 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import itertools
 import re
 import unittest
-
-from itertools import product
 
 from dimod import BinaryQuadraticModel
 from maze import Maze, get_label, build_bqm
@@ -23,7 +22,7 @@ from neal import SimulatedAnnealingSampler
 
 
 def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
-    keys = solution_dict.keys() if ignore_list is None else list(solution_dict.keys()) + ignore_list
+    keys = list(itertools.chain(solution_dict.keys(), ignore_list or []))
 
     # Setting west direction to zero
     for i in range(n_rows):
@@ -47,7 +46,7 @@ def get_energy(solution_dict, bqm):
     aux_variables = [v for v in bqm.variables if re.match("aux\d+$", v)]
 
     # Try all possible values of auxiliary variables
-    for aux_values in product([0, 1], repeat=len(aux_variables)):
+    for aux_values in itertools.product([0, 1], repeat=len(aux_variables)):
         for variable, value in zip(aux_variables, aux_values):
             solution_dict[variable] = value
 

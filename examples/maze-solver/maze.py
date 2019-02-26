@@ -90,7 +90,7 @@ class Maze:
     def __init__(self, n_rows, n_cols, start, end, walls):
         assert isinstance(n_rows, int) and n_rows > 0, "'n_rows' is not a positive integer".format(n_rows)
         assert isinstance(n_cols, int) and n_cols > 0, "'n_cols' is not a positive integer".format(n_cols)
-        assert not(start == end), "'start' cannot be the same as 'end'"
+        assert start != end, "'start' cannot be the same as 'end'"
 
         # Check label format
         check_label_format(start)
