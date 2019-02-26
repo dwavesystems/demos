@@ -51,7 +51,7 @@ def get_label(row, col, direction):
         col: Integer. Index of the column.
         direction: String in the set {'n', 'w'}. 'n' indicates north and 'w' indicates west.
     """
-    return "".join([str(row), ",", str(col), direction])
+    return "{row},{col}{direction}".format(**locals())
 
 
 def check_label_format(label):
