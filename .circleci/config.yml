@@ -18,7 +18,7 @@ jobs:
 
             # Looping through demos
             # Note: code examples within 'examples' dir share a virtual environment
-            for demo in !(tests|circuit-fault-diagnosis); do
+            for demo in !(tests|circuit-fault-diagnosis|qboost); do
               if [ -d "$demo" ]; then
                 env="envs/$demo"
                 python -m virtualenv "$env"
