@@ -16,6 +16,8 @@ jobs:
           command: |
             shopt -s extglob
 
+            # Looping through demos
+            # Note: code examples within 'examples' dir share a virtual environment
             for demo in !(tests|circuit-fault-diagnosis); do
               if [ -d "$demo" ]; then
                 env="envs/$demo"
