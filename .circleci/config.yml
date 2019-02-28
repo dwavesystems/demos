@@ -35,7 +35,7 @@ jobs:
           command: |
             shopt -s extglob
 
-            for demo in !(tests|circuit-fault-diagnosis|qboost); do
+            for demo in !(envs|tests|circuit-fault-diagnosis|qboost); do
               if [ -d "$demo" ]; then (
                 env="envs/$demo"
                 . "$env/bin/activate"
