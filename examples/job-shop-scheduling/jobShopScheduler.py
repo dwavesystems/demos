@@ -30,15 +30,8 @@ class Task:
         self.machine = machine
         self.duration = duration
 
-    def __str__(self):
-        # TODO: could do better a differentiating strings and numbers
-        job = "job: " + str(self.job)
-        position = "position: " + str(self.position)
-        machine = "machine: " + str(self.machine)
-        duration = "duration: " + str(self.duration)
-        task_str = ", ".join([job, position, machine, duration])
-
-        return "{" + task_str + "}"
+    def __repr__(self):
+        return "{{job: {job}, position: {position}, machine: {machine}, duration: {duration}}}".format(**vars(self))
 
 
 class KeyList:
