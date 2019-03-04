@@ -20,12 +20,13 @@ jobs:
             # Looping through demos
             # Note: code examples within 'examples' dir share a virtual environment
             for demo in !(tests|circuit-fault-diagnosis|qboost); do
-              if [ -d "$demo" ]; then (
-                env="envs/$demo"
-                python -m virtualenv "$env"
-                . "$env/bin/activate"
+              if [ -d "$demo" ]; then
+                (
+                  env="envs/$demo"
+                  python -m virtualenv "$env"
+                  . "$env/bin/activate"
 
-                pip install -r "$demo/requirements_tests.txt"
+                  pip install -r "$demo/requirements_tests.txt"
                 )
               fi
             done
@@ -36,12 +37,13 @@ jobs:
             shopt -s extglob
 
             for demo in !(envs|tests|circuit-fault-diagnosis|qboost|examples); do
-              if [ -d "$demo" ]; then (
-                env="envs/$demo"
-                . "$env/bin/activate"
+              if [ -d "$demo" ]; then
+                (
+                  env="envs/$demo"
+                  . "$env/bin/activate"
 
-                cd "$demo"
-                coverage run -m unittest discover
+                  cd "$demo"
+                  coverage run -m unittest discover
                 )
               fi
             done
