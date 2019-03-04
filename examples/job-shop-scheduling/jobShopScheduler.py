@@ -23,6 +23,12 @@ def sum_to_one(*args):
     return sum(args) == 1
 
 
+def get_label(task, time):
+    """Creates a standardized name for variables in the constraint satisfaction problem, JobShopScheduler.csp.
+    """
+    return "{task.job}_{task.position},{time}".format(**locals())
+
+
 class Task:
     def __init__(self, job, position, machine, duration):
         self.job = job
@@ -85,17 +91,11 @@ class JobShopScheduler:
         if self.max_time is None:
             self.max_time = total_time
 
-    def _get_label(self, task, time):
-        """Creates a standardized name for variables in the constraint satisfaction problem, self.csp.
-        """
-        name = str(task.job) + "_" + str(task.position)
-        return name + "," + str(time)
-
     def _add_one_start_constraint(self):
         """self.csp gets the constraint: A task can start once and only once
         """
         for task in self.tasks:
-            task_times = {self._get_label(task, t) for t in range(self.max_time)}
+            task_times = {get_label(task, t) for t in range(self.max_time)}
             self.csp.add_constraint(sum_to_one, task_times)
 
     def _add_precedence_constraint(self):
@@ -111,10 +111,10 @@ class JobShopScheduler:
 
             # Forming constraints with the relevant times of the next task
             for t in range(self.max_time):
-                current_label = self._get_label(current_task, t)
+                current_label = get_label(current_task, t)
 
                 for tt in range(min(t + current_task.duration, self.max_time)):
-                    next_label = self._get_label(next_task, tt)
+                    next_label = get_label(next_task, tt)
                     self.csp.add_constraint(valid_edges, {current_label, next_label})
 
     def _add_share_machine_constraint(self):
@@ -145,10 +145,10 @@ class JobShopScheduler:
                         continue
 
                     for t in range(self.max_time):
-                        current_label = self._get_label(task, t)
+                        current_label = get_label(task, t)
 
                         for tt in range(t, min(t + task.duration, self.max_time)):
-                            self.csp.add_constraint(valid_values, {current_label, self._get_label(other_task, tt)})
+                            self.csp.add_constraint(valid_values, {current_label, get_label(other_task, tt)})
 
     def _remove_absurd_times(self):
         """Sets impossible task times in self.csp to 0.
@@ -157,12 +157,12 @@ class JobShopScheduler:
         for task in self.tasks:
             # Times that are too early for task
             for t in range(task.position):
-                label = self._get_label(task, t)
+                label = get_label(task, t)
                 self.csp.fix_variable(label, 0)
 
             # Times that are too late for task to complete
             for t in range(task.duration - 1):  # -1 to ignore duration==1
-                label = self._get_label(task, (self.max_time - 1) - t)  # -1 for zero-indexed time
+                label = get_label(task, (self.max_time - 1) - t)  # -1 for zero-indexed time
                 self.csp.fix_variable(label, 0)
 
     def get_bqm(self):
@@ -207,7 +207,7 @@ class JobShopScheduler:
 
                 # Add bias to variable
                 bias = 2 * base**(end_time - self.max_time)
-                label = self._get_label(task, t)
+                label = get_label(task, t)
                 bqm.add_variable(label, bias)
 
         return bqm
