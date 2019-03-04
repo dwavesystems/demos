@@ -53,8 +53,6 @@ class KeyList:
         return key
 
 
-# TODO: put asserts to validate jobs
-#TODO: make sure all tasks have positive durations
 class JobShopScheduler:
     def __init__(self, job_dict, max_time=None):
         self.tasks = []
@@ -83,8 +81,8 @@ class JobShopScheduler:
         # Update values
         self.tasks = tasks
         self.last_task_indices = last_task_indices[1:]
-        #if self.max_time is None or self.max_time > total_time:  #TODO: check if I should overwrite user input
-        if self.max_time is None:  #TODO: check if I should overwrite user input
+
+        if self.max_time is None:
             self.max_time = total_time
 
     def _get_label(self, task, time):
