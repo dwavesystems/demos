@@ -16,7 +16,7 @@ from __future__ import print_function
 
 from bisect import bisect_right
 
-import dwavebinarycsp as dbc
+import dwavebinarycsp
 
 
 def sum_to_one(*args):
@@ -67,7 +67,7 @@ class JobShopScheduler:
         self.tasks = []
         self.last_task_indices = []
         self.max_time = max_time
-        self.csp = dbc.ConstraintSatisfactionProblem(dbc.BINARY)
+        self.csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
 
         # Populates self.tasks and self.max_time
         self._process_data(job_dict)
@@ -200,7 +200,7 @@ class JobShopScheduler:
         self._remove_absurd_times()
 
         # Get BQM
-        bqm = dbc.stitch(self.csp)
+        bqm = dwavebinarycsp.stitch(self.csp)
 
         # Edit BQM
         base = len(self.last_task_indices) + 1     # Base for exponent
