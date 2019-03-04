@@ -42,7 +42,6 @@ def fill_with_zeros(expected_solution_dict, job_dict, max_time):
 def get_energy(solution_dict, bqm):
     min_energy = float('inf')
     aux_variables = [v for v in bqm.variables if match("aux\d+$", v)]
-    print("Number of auxiliary variables: ", len(aux_variables))
 
     # Try all possible values of auxiliary variables
     for aux_values in product([0, 1], repeat=len(aux_variables)):
@@ -286,7 +285,6 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # Get JSS BQM
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
-        print("Number of bqm variables: ", len(bqm.variables))
 
         # Expected solution
         expected = {"j0_0,0": 1, "j0_1,2": 1, "j0_2,4": 1,
@@ -294,7 +292,6 @@ class TestJSSHeuristicResponse(unittest.TestCase):
                     "j2_0,0": 1, "j2_1,2": 1, "j2_2,5": 1}
         fill_with_zeros(expected, jobs, max_time)
         expected_energy = get_energy(expected, bqm)
-        print("Expected Energy: ", expected_energy)
 
         # Sampled solution
         # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=10000)
@@ -302,8 +299,6 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
         response = TabuSampler().sample(bqm, num_reads=2000)
         response_sample, sample_energy, _ = next(response.data())
-        print("Sample Energy: ", sample_energy)
-        print("Dense sample schedule: ", response_sample)
 
         # Check response sample
         self.assertTrue(scheduler.csp.check(response_sample))
@@ -321,7 +316,6 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # Get JSS BQM
         scheduler = JobShopScheduler(jobs, max_time)
         bqm = scheduler.get_bqm()
-        print("Number of bqm variables: ", len(bqm.variables))
 
         # Expected solution
         expected = {"j0_0,0": 1, "j0_1,1": 1,
@@ -331,7 +325,6 @@ class TestJSSHeuristicResponse(unittest.TestCase):
                     "j4_0,0": 1}
         fill_with_zeros(expected, jobs, max_time)
         expected_energy = get_energy(expected, bqm)
-        print("Expected Energy: ", expected_energy)
 
         # Sampled solution
         # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=10000)
@@ -340,8 +333,6 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
         response = TabuSampler().sample(bqm, num_reads=2000)
         response_sample, sample_energy, _ = next(response.data())
-        print("Sample Energy: ", sample_energy)
-        print("Simple sample schedule: ", response_sample)
 
         # Print response
         self.assertTrue(scheduler.csp.check(response_sample))
