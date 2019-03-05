@@ -66,7 +66,8 @@ def get_jss_bqm(job_dict, max_time=None):
           - Job a's 1st task is ("oven", 1)
           - Hence, at time 0, Job a's 1st task is not run
     """
-    pass
+    scheduler = JobShopScheduler(job_dict, max_time)
+    return scheduler.get_bqm()
 
 
 def sum_to_one(*args):
@@ -74,7 +75,8 @@ def sum_to_one(*args):
 
 
 def get_label(task, time):
-    """Creates a standardized name for variables in the constraint satisfaction problem, JobShopScheduler.csp.
+    """Creates a standardized name for variables in the constraint satisfaction problem,
+    JobShopScheduler.csp.
     """
     return "{task.job}_{task.position},{time}".format(**locals())
 
@@ -87,7 +89,8 @@ class Task:
         self.duration = duration
 
     def __repr__(self):
-        return "{{job: {job}, position: {position}, machine: {machine}, duration: {duration}}}".format(**vars(self))
+        return ("{{job: {job}, position: {position}, machine: {machine}, duration:"
+                " {duration}}}").format(**vars(self))
 
 
 class KeyList:
@@ -171,7 +174,7 @@ class JobShopScheduler:
         """self.csp gets the constraint: At most one task per machine per time
         """
         sorted_tasks = sorted(self.tasks, key=lambda x: x.machine)
-        wrapped_tasks = KeyList(sorted_tasks, lambda x: x.machine)  # Key wrapper for bisect function
+        wrapped_tasks = KeyList(sorted_tasks, lambda x: x.machine) # Key wrapper for bisect function
 
         head = 0
         valid_values = {(0, 0), (1, 0), (0, 1)}
@@ -198,7 +201,8 @@ class JobShopScheduler:
                         current_label = get_label(task, t)
 
                         for tt in range(t, min(t + task.duration, self.max_time)):
-                            self.csp.add_constraint(valid_values, {current_label, get_label(other_task, tt)})
+                            self.csp.add_constraint(valid_values, {current_label,
+                                                                   get_label(other_task, tt)})
 
     def _remove_absurd_times(self):
         """Sets impossible task times in self.csp to 0.
