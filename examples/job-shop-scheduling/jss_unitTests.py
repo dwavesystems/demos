@@ -16,8 +16,8 @@ from itertools import product
 from re import match
 import unittest
 
-from dimod import ExactSolver
-from jobShopScheduler import JobShopScheduler
+from dimod import ExactSolver, BinaryQuadraticModel
+from jobShopScheduler import JobShopScheduler, get_jss_bqm
 from tabu import TabuSampler
 
 
@@ -378,6 +378,16 @@ class TestJSSHeuristicResponse(unittest.TestCase):
                 # If key does not exist, event is automatically false
                 pass
     """
+
+
+class TestGetJssBqm(unittest.TestCase):
+    def test_get_jss_bqm(self):
+        jobs = {"sandwich": [("bread", 1), ("roast_beef", 1)],
+                "french_toast": [("egg", 1), ("bread", 1)]}
+        max_time = 3
+
+        bqm = get_jss_bqm(jobs, max_time)
+        self.assertIsInstance(bqm, BinaryQuadraticModel)
 
 
 if __name__ == "__main__":
