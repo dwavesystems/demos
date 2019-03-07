@@ -114,6 +114,25 @@ class KeyList:
 
 class JobShopScheduler:
     def __init__(self, job_dict, max_time=None):
+        """
+        Args:
+            job_dict: A dictionary. It describes the jobs that need to be scheduled. Namely, the
+              dict key is the name of the job and the dict value is the ordered list of tasks that
+              the job must do. (See Job Dict Details below.)
+            max_time: An integer. The upper bound on the amount of time the schedule can take.
+
+        Job Dict Details:
+            The job_dict has the following format:
+              {"job_name": [(machine_name, integer_time_duration_on_machine), ..],
+               ..
+               "another_job_name": [(some_machine, integer_time_duration_on_machine), ..]}
+
+            A small job_dict example:
+              jobs = {"job_a": [("mach_1", 2), ("mach_2", 2), ("mach_3", 2)],
+                      "job_b": [("mach_3", 3), ("mach_2", 1), ("mach_1", 1)],
+                      "job_c": [("mach_2", 2), ("mach_1", 3), ("mach_2", 1)]}
+        """
+
         self.tasks = []
         self.last_task_indices = []
         self.max_time = max_time
@@ -219,22 +238,6 @@ class JobShopScheduler:
 
     def get_bqm(self):
         """Returns a BQM to the Job Shop Scheduling problem.
-
-        Example on usage:
-            # 'jobs' dict describes the jobs we're interested in scheduling. Namely,
-            # the dict key is the name of the job and the dict value is the ordered
-            # list of tasks that the job must do.
-            #
-            # {"job_name": [(machine_name, time_duration_on_machine), ..],
-            #  "another_job_name": [(some_machine, time_duration_on_machine), ..]}
-
-            jobs = {"job_a": [("mach_1", 2), ("mach_2", 2), ("mach_3", 2)],
-                    "job_b": [("mach_3", 3), ("mach_2", 1), ("mach_1", 1)],
-                    "job_c": [("mach_2", 2), ("mach_1", 3), ("mach_2", 1)]}
-            max_time = 6	# Put an upperbound on how long the schedule can be
-
-            jss = JobShopScheduler(jobs, max_time)
-            jss.get_bqm()   # Run job shop scheduling constraints
         """
         # Apply constraints to self.csp
         self._add_one_start_constraint()
