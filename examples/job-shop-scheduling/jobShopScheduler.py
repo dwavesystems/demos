@@ -156,9 +156,7 @@ class JobShopScheduler:
          Note: assumes self.tasks are sorted by jobs and then by position
         """
         valid_edges = {(0, 0), (1, 0), (0, 1)}
-        for i, current_task in enumerate(self.tasks[:-1]):
-            next_task = self.tasks[i + 1]
-
+        for current_task, next_task in zip(self.tasks, self.tasks[1:]):
             if current_task.job != next_task.job:
                 continue
 
