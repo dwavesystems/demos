@@ -38,20 +38,20 @@ def get_jss_bqm(job_dict, max_time=None):
           {"job_name": [(machine_name, time_duration_on_machine), ..],
            "another_job_name": [(some_machine, time_duration_on_machine), ..]}
 
-        >> # Create BQM
-        >> jobs = {"a": [("mixer", 2), ("oven", 1)],
+        >>> # Create BQM
+        >>> jobs = {"a": [("mixer", 2), ("oven", 1)],
                    "b": [("mixer", 1)],
                    "c": [("oven", 2)]}
-        >> max_time = 4	  # Put an upperbound on how long the schedule can be
-        >> bqm = get_jss_bqm(jobs, max_time)
+        >>> max_time = 4	  # Put an upperbound on how long the schedule can be
+        >>> bqm = get_jss_bqm(jobs, max_time)
 
-        >> # May need to tweak the chain strength and the number of reads
-        >> sampler = EmbeddingComposite(DWaveSampler(solver={'qpu':True}))
-        >> sampleset = sampler.sample(bqm, chain_strength=2, num_reads=1000)
+        >>> # May need to tweak the chain strength and the number of reads
+        >>> sampler = EmbeddingComposite(DWaveSampler(solver={'qpu':True}))
+        >>> sampleset = sampler.sample(bqm, chain_strength=2, num_reads=1000)
 
-        >> # Results
-        >> # Note: Each node follows the format <job_name>_<task_number>,<time>.
-        >> print(sampleset)
+        >>> # Results
+        >>> # Note: Each node follows the format <job_name>_<task_number>,<time>.
+        >>> print(sampleset)
         c_0,0  b_0,1  c_0,1  b_0,3  c_0,2  b_0,0  b_0,2  a_1,2  a_1,3  a_1,1  a_0,0  a_1,0  a_0,1  a_0,2
             1      0      0      0      0      0      1      1      0      0      1      0      0      0
 
