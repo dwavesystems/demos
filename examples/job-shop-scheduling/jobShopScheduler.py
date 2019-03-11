@@ -248,7 +248,42 @@ class JobShopScheduler:
         # Get BQM
         bqm = dwavebinarycsp.stitch(self.csp)
 
-        # Edit BQM
+        # Edit BQM to encourage the shortest schedule
+        # Overview of this added penalty:
+        # - Want any-optimal-schedule-penalty < any-non-optimal-schedule-penalty
+        # - Suppose there are N tasks that need to be scheduled and N > 0
+        # - Suppose the the optimal end time for this schedule is t_N
+        # - Then the worst optimal schedule would be if ALL the tasks ended at time t_N. (Since
+        #   the optimal schedule is only dependent on when the LAST task is run, it is irrelevant
+        #   when the first N-1 tasks end.) Note that by "worst" optimal schedule, I am merely
+        #   referring to the most heavily penalized optimal schedule.
+        #
+        # Show math satisfies any-optimal-schedule-penalty < any-non-optimal-schedule-penalty:
+        # - Penalty scheme. Each task is given the penalty: base^(task-end-time). The penalty
+        #   of the entire schedule is the sum of penalties of these chosen tasks.
+        # - Chose the base of my geometric series to be N+1. This simplifies the math and it will
+        #   become apparent why it's handy later on.
+        #
+        # - Comparing the SUM of penalties between any optimal schedule (on left) with that of the
+        #   WORST optimal schedule (on right). As shown below, in this penalty scheme, any optimal
+        #   schedule penalty <= the worst optimal schedule.
+        #     sum_i (N+1)^t_i <= N * (N+1)^t_N, where t_i the time when the task i ends  [eq 1]
+        #
+        # - Now let's show that all optimal schedule penalties < any non-optimal schedule penalty.
+        #   We can prove this by applying eq 1 and simply proving that the worst optimal schedule
+        #   penalty (below, on left) is always less than any non-optimal schedule penalty.
+        #     N * (N+1)^t_N < (N+1)^(t_N + 1)
+        #                               Note: t_N + 1 is the smallest end time for a non-optimal
+        #                                     schedule. Hence, if t_N' is the end time of the last
+        #                                     task of a non-optimal schedule, t_N + 1 <= t_N'
+        #                   <= (N+1)^t_N'
+        #                   < sum^(N-1) (N+1)^t_i' + (N+1)^t_N'
+        #                   = sum^N (N+1)^t_i'
+        #                               Note: sum^N (N+1)^t' is the sum of penalties for a
+        #                                     non-optimal schedule
+        #
+        # - Therefore, with this penalty scheme, all optimal solution penalties < any non-optimal
+        #   solution penalties
         base = len(self.last_task_indices) + 1     # Base for exponent
         for i in self.last_task_indices:
             task = self.tasks[i]
