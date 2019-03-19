@@ -13,7 +13,7 @@ Essentially, this means running the multiplication circuit in reverse!
 
 A Boolean logic circuit is usually viewed as computing outputs from inputs based on the logic of the gates.  However,
 the problem can also be thought of as seeking an assignment of values to the inputs and outputs consistent with the
-logic of all the gates in the circuit.  This perspective of  constraint satisfaction has no directionality. That is,
+logic of all the gates in the circuit.  This perspective of constraint satisfaction has no directionality. That is,
 input values do not need to flow through a series of gates to yield a result, as they do in a multiplication circuit.
 
 This code demonstrates the use of the D-Wave system to solve such a problem in the case of a three-bit multiplier
