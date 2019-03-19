@@ -2,5 +2,5 @@ dwavebinarycsp==0.0.6
 dwave-system==0.6.0
 minorminer==0.1.8
 dimod==0.7.9
-dwave-cloud-client==0.5.1
+dwave-cloud-client==0.5.3
 jsonschema==2.6.0
