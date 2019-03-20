@@ -36,7 +36,7 @@ jobs:
           command: |
             shopt -s extglob
 
-            for demo in !(envs|tests|circuit-fault-diagnosis|qboost|examples); do
+            for demo in !(envs|tests|circuit-fault-diagnosis|qboost); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
@@ -47,19 +47,6 @@ jobs:
                 )
               fi
             done
-
-            # Loop through examples/*
-            (
-              . "envs/examples/bin/activate"
-  
-              cd examples
-              for demo in *; do
-                if [ -d "$demo" ]; then
-                  echo $demo
-                  coverage run -m unittest discover -s "$demo"
-                fi
-              done
-            )
 
   test-3.6:
     <<: *full-test-template
