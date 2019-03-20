@@ -20,10 +20,10 @@ import functools
 from collections import OrderedDict
 
 import dwavebinarycsp as dbc
+import dwave.embedding
 from dwave.system.samplers import DWaveSampler
 from dwave.cloud.exceptions import SolverOfflineError
 import minorminer
-import dimod
 
 log = logging.getLogger(__name__)
 
@@ -107,7 +107,7 @@ def factor(P, use_saved_embedding=True):
             raise ValueError("no embedding found")
 
     # apply the embedding to the given problem to map it to the sampler
-    bqm_embedded = dimod.embed_bqm(bqm, embedding, target_adjacency, 3.0)
+    bqm_embedded = dwave.embedding.embed_bqm(bqm, embedding, target_adjacency, 3.0)
 
     # draw samples from the QPU
     kwargs = {}
@@ -118,7 +118,7 @@ def factor(P, use_saved_embedding=True):
     response = sampler.sample(bqm_embedded, **kwargs)
 
     # convert back to the original problem space
-    response = dimod.unembed_response(response, embedding, source_bqm=bqm)
+    response = dwave.embedding.unembed_sampleset(response, embedding, source_bqm=bqm)
 
     sampler.client.close()
 
