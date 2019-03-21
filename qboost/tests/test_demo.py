@@ -12,7 +12,7 @@ except ValueError:
 
 # /tests/integration/test_demo.py
 PY2 = sys.version_info.major == 2
-project_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 @unittest.skipUnless(_config_found, "no configuration found for accessing the D-Wave System")

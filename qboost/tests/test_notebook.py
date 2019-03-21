@@ -63,7 +63,7 @@ class TestNotebook(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         print('Running modified notebook...')
-        notebook_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'demo.ipynb')
+        notebook_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'demo.ipynb')
         with open(notebook_path) as notebook_file:
             cls.notebook = nbformat.read(notebook_file, nbformat.current_nbformat)
             cls.notebook = _modify_grid_search_cell(cls.notebook)
