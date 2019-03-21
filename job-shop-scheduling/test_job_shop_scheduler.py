@@ -327,7 +327,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # response_sample, sample_energy, _, chain_break_fraction = next(response.data())
         # print("Chain Break Fraction: ", chain_break_fraction)
         # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
-        response = TabuSampler().sample(bqm, num_reads=1000)
+        response = TabuSampler().sample(bqm, num_reads=2000)
         response_sample, sample_energy, _ = next(response.data())
 
         # Print response
