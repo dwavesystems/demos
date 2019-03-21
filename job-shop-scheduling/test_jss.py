@@ -17,7 +17,7 @@ from re import match
 import unittest
 
 from dimod import ExactSolver, BinaryQuadraticModel
-from jobShopScheduler import JobShopScheduler, get_jss_bqm
+from job_shop_scheduler import JobShopScheduler, get_jss_bqm
 from tabu import TabuSampler
 
 
