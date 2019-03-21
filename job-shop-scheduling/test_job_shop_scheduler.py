@@ -247,6 +247,36 @@ class TestJSSExactSolverResponse(unittest.TestCase):
         self.compare(response_sample, expected)
 
 
+    def test_simple_schedule_more_machines(self):
+        jobs = {"j0": [(0, 1)],
+                "j1": [(1, 1)],
+                "j2": [(2, 1)]}
+        max_time = 3
+
+        # Get JSS BQM
+        scheduler = JobShopScheduler(jobs, max_time)
+        bqm = scheduler.get_bqm()
+
+        # Expected solution
+        expected = {"j0_0,0": 1,
+                    "j1_0,0": 1,
+                    "j2_0,0": 1}
+        fill_with_zeros(expected, jobs, max_time)
+        expected_energy = get_energy(expected, bqm)
+
+        # Sampled solution
+        # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=10000)
+        # response_sample, sample_energy, _, chain_break_fraction = next(response.data())
+        # print("Chain Break Fraction: ", chain_break_fraction)
+        # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
+        response = ExactSolver().sample(bqm)
+        response_sample, sample_energy, _ = next(response.data())
+
+        # Print response
+        self.assertTrue(scheduler.csp.check(response_sample))
+        self.assertEqual(expected_energy, sample_energy)
+        self.compare(response_sample, expected)
+
 class TestJSSHeuristicResponse(unittest.TestCase):
     #TODO: make a general compare function
     def compare(self, response, expected):
@@ -301,36 +331,6 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         response_sample, sample_energy, _ = next(response.data())
 
         # Check response sample
-        self.assertTrue(scheduler.csp.check(response_sample))
-        self.assertEqual(expected_energy, sample_energy)
-        self.compare(response_sample, expected)
-
-    def test_simple_schedule_more_machines(self):
-        jobs = {"j0": [(0, 1)],
-                "j1": [(1, 1)],
-                "j2": [(2, 1)]}
-        max_time = 3
-
-        # Get JSS BQM
-        scheduler = JobShopScheduler(jobs, max_time)
-        bqm = scheduler.get_bqm()
-
-        # Expected solution
-        expected = {"j0_0,0": 1,
-                    "j1_0,0": 1,
-                    "j2_0,0": 1}
-        fill_with_zeros(expected, jobs, max_time)
-        expected_energy = get_energy(expected, bqm)
-
-        # Sampled solution
-        # response = EmbeddingComposite(DWaveSampler()).sample(bqm, num_reads=10000)
-        # response_sample, sample_energy, _, chain_break_fraction = next(response.data())
-        # print("Chain Break Fraction: ", chain_break_fraction)
-        # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
-        response = TabuSampler().sample(bqm, num_reads=2000)
-        response_sample, sample_energy, _ = next(response.data())
-
-        # Print response
         self.assertTrue(scheduler.csp.check(response_sample))
         self.assertEqual(expected_energy, sample_energy)
         self.compare(response_sample, expected)
