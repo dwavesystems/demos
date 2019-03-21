@@ -17,7 +17,7 @@ from re import match
 import unittest
 
 from dimod import ExactSolver, BinaryQuadraticModel
-from jobShopScheduler import JobShopScheduler, get_jss_bqm
+from job_shop_scheduler import JobShopScheduler, get_jss_bqm
 from tabu import TabuSampler
 
 
@@ -306,11 +306,9 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         self.compare(response_sample, expected)
 
     def test_simple_schedule_more_machines(self):
-        jobs = {"j0": [(0, 1), (3, 1)],
+        jobs = {"j0": [(0, 1)],
                 "j1": [(1, 1)],
-                "j2": [(2, 1)],
-                "j3": [(3, 1)],
-                "j4": [(4, 1)]}
+                "j2": [(2, 1)]}
         max_time = 3
 
         # Get JSS BQM
@@ -318,11 +316,9 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         bqm = scheduler.get_bqm()
 
         # Expected solution
-        expected = {"j0_0,0": 1, "j0_1,1": 1,
+        expected = {"j0_0,0": 1,
                     "j1_0,0": 1,
-                    "j2_0,0": 1,
-                    "j3_0,0": 1,
-                    "j4_0,0": 1}
+                    "j2_0,0": 1}
         fill_with_zeros(expected, jobs, max_time)
         expected_energy = get_energy(expected, bqm)
 
@@ -331,7 +327,7 @@ class TestJSSHeuristicResponse(unittest.TestCase):
         # response_sample, sample_energy, _, chain_break_fraction = next(response.data())
         # print("Chain Break Fraction: ", chain_break_fraction)
         # response = SimulatedAnnealingSampler().sample(bqm, num_reads=2000, beta_range=[0.01, 10])
-        response = TabuSampler().sample(bqm, num_reads=2000)
+        response = TabuSampler().sample(bqm, num_reads=1000)
         response_sample, sample_energy, _ = next(response.data())
 
         # Print response
