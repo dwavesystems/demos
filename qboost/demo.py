@@ -23,8 +23,7 @@ import matplotlib.pyplot as plt
 
 from sklearn import preprocessing, metrics
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
-from sklearn.datasets.mldata import fetch_mldata
-from sklearn.datasets import load_breast_cancer
+from sklearn.datasets import load_breast_cancer, load_digits
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
 
@@ -178,7 +177,7 @@ if __name__ == '__main__':
 
     if '--mnist' in sys.argv:
 
-        mnist = fetch_mldata('MNIST original', data_home='data')
+        mnist = load_digits()
 
         idx_01 = np.where(mnist.target <= 10)[0]
 
