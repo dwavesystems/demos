@@ -15,14 +15,12 @@
 
 from __future__ import print_function, division
 
-import os
 import sys
 
 import numpy as np
-import matplotlib.pyplot as plt
 
 from sklearn import preprocessing, metrics
-from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
+from sklearn.ensemble import AdaBoostClassifier
 from sklearn.datasets import load_breast_cancer, fetch_openml
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
