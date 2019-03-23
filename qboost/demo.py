@@ -23,7 +23,7 @@ import matplotlib.pyplot as plt
 
 from sklearn import preprocessing, metrics
 from sklearn.ensemble import AdaBoostClassifier, RandomForestClassifier
-from sklearn.datasets import load_breast_cancer, load_digits
+from sklearn.datasets import load_breast_cancer, fetch_openml
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
 
@@ -177,20 +177,21 @@ if __name__ == '__main__':
 
     if '--mnist' in sys.argv:
 
-        mnist = load_digits()
+        mnist = fetch_openml('mnist_784', version=1)
 
-        idx_01 = np.where(mnist.target <= 10)[0]
+        idx = np.arange(len(mnist['data']))
+        np.random.shuffle(idx)
 
-        np.random.shuffle(idx_01)
-        idx_01 = idx_01[:5000]
-        idx_train = idx_01[:2*len(idx_01)//3]
-        idx_test = idx_01[2*len(idx_01)//3:]
+        n = 5000
+        idx = idx[:n]
+        idx_train = idx[:2*n//3]
+        idx_test = idx[2*n//3:]
 
-        X_train = mnist.data[idx_train]
-        X_test = mnist.data[idx_test]
+        X_train = mnist['data'][idx_train]
+        X_test = mnist['data'][idx_test]
 
-        y_train = 2*(mnist.target[idx_train] <= 4) - 1
-        y_test = 2*(mnist.target[idx_test] <= 4) - 1
+        y_train = 2*(mnist['target'][idx_train] <= 4) - 1
+        y_test = 2*(mnist['target'][idx_test] <= 4) - 1
 
         clfs = train_model(X_train, y_train, X_test, y_test, 1.0)
 
