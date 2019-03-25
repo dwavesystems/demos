@@ -22,6 +22,23 @@ Each of these constraints are implemented by the `maze` functions: `_apply_valid
 `_set_start_and_end()`, `_set_borders()`, and `_set_inner_walls()`, respectively. These functions
 are called when the user calls `get_maze_bqm(..)` in Example below.
 
+Code Specifics
+--------------
+The maze is a rectangular grid. The path segments (aka edges) that can be formed in this grid are
+described with respect to a grid point.
+
+Consider the edge labelled `'1,0w'`:
+* `1,0` refers to grid point on row 1, column 0
+* `w` refers to "west"
+* Hence, if you imagine a compass that is centered at position `1,0`, the edge `'1,0w'` is the
+west "spoke" of this compass
+
+Note that the code only accepts edge inputs in the north direction (`'<row>,<col>n'`) and the west
+direction (`'<row>,<col>w'`). So if edges in the south or east directions are needed, please rewrite
+in terms of north and west. Namely,
+.. code-block::
+  '<row>,<col>s' == '<row+1>,<col>n'
+  '<row>,<col>e' == '<row>,<col+1>w'
 
 Example
 -------
