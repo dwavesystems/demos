@@ -19,24 +19,38 @@ import dimod
 import neal
 import networkx as nx
 
-# we wish to divide 9 satellites into 3 constellations of 3 satellites each.
-num_satellites = 9
-num_constellations = 3
+# we wish to divide 12 satellites into 4 constellations of 3 satellites each.
+num_satellites = 12
+num_constellations = 4
 
 constellation_size = num_satellites // num_constellations
 
+
+# each of the 12 satellites (labelled 0-11) has a coverage score. This could be
+# calculated as the percentage of time that the Earth region is in range of the
+# satellite
+coverage = {0: 0.90,
+            1: 0.36,
+            2: 0.79,
+            3: 0.78,
+            4: 0.46,
+            5: 0.27,
+            6: 0.86,
+            7: 0.52,
+            8: 0.78,
+            9: 0.99,
+            10: 0.25,
+            11: 0.91}
+
 # don't consider constellations with average score less than score_threshold
 score_threshold = .4
-
-# for this example we will randomly assign a coverage score to each satellite
-coverage = {v: random.uniform(.25, 1) for v in range(num_satellites)}
 
 bqm = dimod.BinaryQuadraticModel.empty(dimod.BINARY)
 
 # first we want to favor combinations with a high score
 for constellation in itertools.combinations(range(num_satellites), constellation_size):
     # the score is the average coverage for a constellation
-    score = sum(coverage[v] for v in constellation) / len(constellation)
+    score = sum(coverage[v] for v in constellation) / constellation_size
 
     # to make it smaller, throw out the combinations with a score below
     # a set threshold
