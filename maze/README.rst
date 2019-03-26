@@ -1,16 +1,16 @@
-Maze Solver Demo
-================
-Getting the D-Wave Quantum Computer to solve a maze!
+Demo of Maze Solving
+====================
+Getting the D-Wave quantum computer to solve a maze!
 
-The purpose of this demo is to take a simple and familiar problem - solving a maze - and go through
-the steps of submitting the problem to the quantum computer.
+The following code takes a simple and familiar problem---solving a maze---and demonstrates the steps
+of submitting such problems to the quantum computer.
 
 Code Overview
 -------------
-The idea is to describe the rules of how one can move through a maze with a set of constraints.
-Using the Ocean toolkit, these constraints can be converted into a binary quadratic model (BQM)
-that can then be solved with a D-Wave quantum computer. The solution that gets returned by the
-quantum computer is the path needed to get through the maze.
+The solution technique is to construct a set of constraints that enforces the rules of moving
+through a maze. These constraints are then converted by Ocean software tools to a binary
+quadratic model (BQM) that can then be solved with a D-Wave quantum computer. The solution that gets
+returned by the quantum computer is the path needed to get through the maze.
 
 There are several constraints involved with a maze:
  - Specify valid path moves (ie if the path enters a grid point, it must also leave said grid point)
@@ -58,10 +58,10 @@ Example
   end = '1,0w'
   walls = ['1,1n']
 
-  # Get bqm
+  # Get BQM
   bqm = get_maze_bqm(n_rows, n_cols, start, end, walls)
 
-  # Submit bqm to a D-Wave Sampler
+  # Submit BQM to a D-Wave sampler
   sampler = EmbeddingComposite(DWaveSampler())
   result = sampler.sample(bqm, num_reads=1000)
   print(result)
