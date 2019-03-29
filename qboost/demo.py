@@ -188,8 +188,9 @@ if __name__ == '__main__':
         X_train = mnist['data'][idx_train]
         X_test = mnist['data'][idx_test]
 
-        y_train = 2*(mnist['target'][idx_train] <= 4) - 1
-        y_test = 2*(mnist['target'][idx_test] <= 4) - 1
+        # Note: mnist['target'] is an array of string numbers, hence the comparison with '4'
+        y_train = 2*(mnist['target'][idx_train] <= '4') - 1
+        y_test = 2*(mnist['target'][idx_test] <= '4') - 1
 
         clfs = train_model(X_train, y_train, X_test, y_test, 1.0)
 
