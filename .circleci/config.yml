@@ -19,7 +19,8 @@ jobs:
 
             # Looping through demos
             # Note: code examples within 'examples' dir share a virtual environment
-            for demo in !(tests|circuit-fault-diagnosis); do
+            # Note: temporarily skipping over factoring to avoid API Token issue in GitHub
+            for demo in !(tests|circuit-fault-diagnosis|factoring); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
@@ -36,7 +37,8 @@ jobs:
           command: |
             shopt -s extglob
 
-            for demo in !(envs|tests|circuit-fault-diagnosis); do
+            # Note: temporarily skipping over factoring to avoid API Token issue in GitHub
+            for demo in !(envs|tests|circuit-fault-diagnosis|factoring); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
