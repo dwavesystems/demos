@@ -19,7 +19,7 @@ jobs:
 
             # Looping through demos
             # Note: code examples within 'examples' dir share a virtual environment
-            for demo in !(tests|circuit-fault-diagnosis|qboost); do
+            for demo in !(tests|circuit-fault-diagnosis); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
@@ -36,7 +36,7 @@ jobs:
           command: |
             shopt -s extglob
 
-            for demo in !(envs|tests|circuit-fault-diagnosis|qboost); do
+            for demo in !(envs|tests|circuit-fault-diagnosis); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
