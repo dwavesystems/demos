@@ -22,6 +22,7 @@ import numpy as np
 from sklearn import preprocessing, metrics
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.datasets import load_breast_cancer, fetch_openml
+from sklearn.impute import SimpleImputer
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
 
@@ -66,7 +67,7 @@ def train_model(X_train, y_train, X_test, y_test, lmd):
     # input: dataset X and labels y (in {+1, -1}
 
     # Preprocessing data
-    imputer = preprocessing.Imputer()
+    imputer = SimpleImputer()
     # scaler = preprocessing.MinMaxScaler()
     scaler = preprocessing.StandardScaler()
     normalizer = preprocessing.Normalizer()
