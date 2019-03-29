@@ -13,30 +13,31 @@ quadratic model (BQM) that can then be solved with a D-Wave quantum computer. Th
 returned by the quantum computer is the path needed to get through the maze.
 
 There are several constraints involved with a maze:
- - Specify valid path moves (ie if the path enters a grid point, it must also leave said grid point)
- - Path has a specific start and end position
- - Path cannot go beyond the border of the maze
- - Path cannot go through the walls within the maze
+
+- Valid path movements (i.e., if the path enters a grid point, it must also leave said grid point)
+- Path has a specific start and end position
+- Path cannot pass maze borders
+- Path cannot pass through the internal walls of the maze
 
 Each of these constraints are implemented by the :code:`maze` functions:
 :code:`_apply_valid_move_constraint()`, :code:`_set_start_and_end()`, :code:`_set_borders()`, and
 :code:`_set_inner_walls()`, respectively. These functions are called when the user calls
-:code:`get_maze_bqm(..)` in Example below.
+:code:`get_maze_bqm(..)` in the Example section below.
 
 Code Specifics
 --------------
 The maze is a rectangular grid. The path segments (aka edges) that can be formed in this grid are
-described with respect to a grid point.
+described with respect to a grid point. For example, the edge labelled :code:`'1,0w'`:
 
-Consider the edge labelled :code:`'1,0w'`:
- - :code:`1,0` refers to grid point on row 1, column 0
- - :code:`w` refers to "west"
- - Hence, if you imagine a compass that is centered at position :code:`1,0`, the edge :code:`'1,0w'`
-   is the west "spoke" of this compass
+- :code:`1,0` refers to grid point on row 1, column 0
+- :code:`w` refers to "west"
+
+Hence, if you imagine a compass that is centered at position :code:`1,0`, the edge :code:`'1,0w'`
+is the path segment that sits along the western direction of this compass.
 
 Note that the code only accepts edge inputs in the north direction (:code:`'<row>,<col>n'`) and the
-west direction (:code:`'<row>,<col>w'`). So if edges in the south or east directions are needed,
-please rewrite in terms of north and west. Namely,
+west direction (:code:`'<row>,<col>w'`). Edges in south or east directions can be restated as edges
+in north and west directions:
 
 .. code-block:: none
 
@@ -72,7 +73,10 @@ Example
   0     1     0     0    -3.5      1000       0.0
 
 Printed results:
-  - Only the edge :code:`'1,0n'` is needed in this tiny example maze
-  - Hence, the path from start to end is :code:`'0,0n' -> '1,0n' -> '1,0w'`
+
+- The 1s and 0s beneath each path segment indicate whether or not the segment is included in the path.
+  Specifically, 1 indicates that the segment contributes to the path, while 0 indicates otherwise.
+- As shown above, :code:`'1,0n'` is a segment that is needed in our tiny maze path
+- Hence, the path from start to end is :code:`'0,0n' -> '1,0n' -> '1,0w'`
 
 
