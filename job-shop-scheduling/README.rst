@@ -3,6 +3,6 @@ Demo of Job Shop Scheduling
 
 Further Information
 -------------------
-D. Venurelli, D. Marchand, and G. Rojo,
+D. Venturelli, D. Marchand, and G. Rojo,
 "Quantum Annealing Implementation of Job-Shop Scheduling",
 `arXiv:1506.08479v2 <https://arxiv.org/abs/1506.08479v2>`_
