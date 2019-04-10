@@ -16,7 +16,7 @@ jobs:
           command: |
             shopt -s extglob
 
-            echo 'export TEMP_FILE=temp_requirements_summary.txt' >> $BASH_ENV
+            echo 'export TEMP_FILE="temp_requirements_summary.txt"' >> $BASH_ENV
             source $BASH_ENV
 
             > "$TEMP_FILE"
