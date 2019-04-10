@@ -26,7 +26,7 @@ jobs:
             > "$TEMP_FILE"
 
             # Concatenate demo requirements.txt files into a temp file
-            for demo in !("$IGNORED_DIRS"); do
+            for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 echo "$demo" >> "$TEMP_FILE"
                 cat "$demo/requirements.txt" >> "$TEMP_FILE"
@@ -44,7 +44,7 @@ jobs:
             shopt -s extglob
 
             # Looping through demos
-            for demo in !("$IGNORED_DIRS"); do
+            for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
@@ -68,7 +68,7 @@ jobs:
             shopt -s extglob
 
             # Note: temporarily skipping over factoring to avoid API Token issue in GitHub
-            for demo in !("$IGNORED_DIRS"); do
+            for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
