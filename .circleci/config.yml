@@ -37,7 +37,7 @@ jobs:
             done
 
       - restore_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}
+          key: v2-dependencies-{{ checksum "temp_requirements_summary.txt" }}
 
       - run: &install-dependences-template
           name: Install dependences
@@ -59,7 +59,7 @@ jobs:
             done
 
       - save_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}
+          key: v2-dependencies-{{ checksum "temp_requirements_summary.txt" }}
           paths:
             - envs
 
