@@ -17,7 +17,7 @@ jobs:
             # Note: TEMP_FILE value is hardcoded in restore_cache and save_cache's checksum
             echo 'export TEMP_FILE="temp_requirements_summary.txt"' >> $BASH_ENV
             echo 'export IGNORED_DIRS="envs|tests|circuit-fault-diagnosis|factoring"' >> $BASH_ENV
-            source $BASH_ENV
+            . $BASH_ENV
 
       - run:
           name: Create requirements summary
