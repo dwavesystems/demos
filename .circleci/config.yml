@@ -10,18 +10,23 @@ jobs:
     steps:
       - checkout
 
-      #TODO: remove hard code in for-loops
       - run:
-          name: create requirements summary
+          name: Set bash environment
+          command: |
+            echo 'export TEMP_FILE="temp_requirements_summary.txt"' >> $BASH_ENV
+            echo 'export IGNORED_DIRS="envs|tests|circuit-fault-diagnosis|factoring"' >> $BASH_ENV
+            source $BASH_ENV
+
+      - run:
+          name: Create requirements summary
           command: |
             shopt -s extglob
 
-            echo 'export TEMP_FILE="temp_requirements_summary.txt"' >> $BASH_ENV
-            source $BASH_ENV
-
+            # Clear file contents if it exists
             > "$TEMP_FILE"
 
-            for demo in !(tests|circuit-fault-diagnosis|factoring); do
+            # Concatenate demo requirements.txt files into a temp file
+            for demo in !("$IGNORED_DIRS"); do
               if [ -d "$demo" ]; then
                 echo "$demo" >> "$TEMP_FILE"
                 cat "$demo/requirements.txt" >> "$TEMP_FILE"
@@ -34,21 +39,20 @@ jobs:
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}
 
       - run: &install-dependences-template
-          name: install dependences
+          name: Install dependences
           command: |
             shopt -s extglob
 
             # Looping through demos
-            # Note: code examples within 'examples' dir share a virtual environment
-            # Note: temporarily skipping over factoring to avoid API Token issue in GitHub
-            for demo in !(tests|circuit-fault-diagnosis|factoring); do
+            for demo in !("$IGNORED_DIRS"); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
                   python -m virtualenv "$env"
                   . "$env/bin/activate"
 
-                  pip install -r "$demo/requirements_tests.txt"
+                  pip install -r "$demo/requirements.txt"
+                  pip install coverage
                 )
               fi
             done
@@ -59,12 +63,12 @@ jobs:
             - envs
 
       - run: &run-tests-template
-          name: run unit tests
+          name: Run unit tests
           command: |
             shopt -s extglob
 
             # Note: temporarily skipping over factoring to avoid API Token issue in GitHub
-            for demo in !(envs|tests|circuit-fault-diagnosis|factoring); do
+            for demo in !("$IGNORED_DIRS"); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
