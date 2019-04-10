@@ -10,8 +10,29 @@ jobs:
     steps:
       - checkout
 
-      #TODO: add caching once demos share the same requirements file and can live in the same venv
       #TODO: remove hard code in for-loops
+      - run:
+          name: create requirements summary
+          command: |
+            shopt -s extglob
+
+            echo 'export TEMP_FILE=temp_requirements_summary.txt' >> $BASH_ENV
+            source $BASH_ENV
+
+            > "$TEMP_FILE"
+
+            for demo in !(tests|circuit-fault-diagnosis|factoring); do
+              if [ -d "$demo" ]; then
+                echo "$demo" >> "$TEMP_FILE"
+                cat "$demo/requirements.txt" >> "$TEMP_FILE"
+                echo "" >> "$TEMP_FILE"
+              fi
+            done
+
+      #TODO: remove hardcoded temp_requirements_summary.txt
+      - restore_cache:
+          key: v1-dependencies-{{ checksum "$TEMP_FILE" }}
+
       - run: &install-dependences-template
           name: install dependences
           command: |
@@ -31,6 +52,11 @@ jobs:
                 )
               fi
             done
+
+      - save_cache:
+          key: v1-dependencies-{{ checksum "$TEMP_FILE" }}
+          paths:
+            - envs
 
       - run: &run-tests-template
           name: run unit tests
