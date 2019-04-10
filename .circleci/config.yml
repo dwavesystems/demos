@@ -13,6 +13,8 @@ jobs:
       - run:
           name: Set bash environment
           command: |
+            # Storing values shared between run calls
+            # Note: TEMP_FILE value is hardcoded in restore_cache and save_cache's checksum
             echo 'export TEMP_FILE="temp_requirements_summary.txt"' >> $BASH_ENV
             echo 'export IGNORED_DIRS="envs|tests|circuit-fault-diagnosis|factoring"' >> $BASH_ENV
             source $BASH_ENV
@@ -34,7 +36,6 @@ jobs:
               fi
             done
 
-      #TODO: remove hardcoded temp_requirements_summary.txt
       - restore_cache:
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}
 
@@ -67,7 +68,6 @@ jobs:
           command: |
             shopt -s extglob
 
-            # Note: temporarily skipping over factoring to avoid API Token issue in GitHub
             for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 (
