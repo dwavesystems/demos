@@ -31,7 +31,7 @@ jobs:
 
       #TODO: remove hardcoded temp_requirements_summary.txt
       - restore_cache:
-          key: v1-dependencies-{{ checksum ${TEMP_FILE} }}
+          key: v1-dependencies-{{ checksum $TEMP_FILE }}
 
       - run: &install-dependences-template
           name: install dependences
@@ -54,7 +54,7 @@ jobs:
             done
 
       - save_cache:
-          key: v1-dependencies-{{ checksum ${TEMP_FILE} }}
+          key: v1-dependencies-{{ checksum $TEMP_FILE }}
           paths:
             - envs
 
