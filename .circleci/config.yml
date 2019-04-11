@@ -10,6 +10,7 @@ jobs:
     steps:
       - checkout
 
+      # Restore cache
       - run: &set-bash-env-template
           name: Set bash environment
           command: |
@@ -18,7 +19,6 @@ jobs:
             echo 'export TEMP_FILE="temp_requirements_summary.txt"' >> $BASH_ENV
             echo 'export IGNORED_DIRS="envs|tests|circuit-fault-diagnosis|factoring"' >> $BASH_ENV
             . $BASH_ENV
-
       - run: &set-requirements-summary-template
           name: Create requirements summary
           command: |
@@ -35,10 +35,8 @@ jobs:
                 echo "" >> "$TEMP_FILE"
               fi
             done
-
       - restore_cache: &restore-cache-template
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
-
       - run: &install-dependences-template
           name: Install dependences
           command: |
@@ -57,7 +55,6 @@ jobs:
                 )
               fi
             done
-
       - save_cache: &save-cache-template
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
           paths:
@@ -110,13 +107,10 @@ jobs:
       - checkout
 
       - run: brew install pyenv
-
       - restore_cache:
           keys:
             - pyenv-{{ .Environment.CIRCLE_JOB }}
-
       - run: pyenv install $PYTHON -s
-
       - save_cache:
           key: pyenv-{{ .Environment.CIRCLE_JOB }}
           paths:
@@ -129,14 +123,11 @@ jobs:
             pyenv local $PYTHON
             python -m pip install virtualenv
 
-      - run: *set-bash-env-template
-
       # Restore cache
+      - run: *set-bash-env-template
       - run: *set-requirements-summary-template
       - run: *restore-cache-template
-
       - run: *install-dependences-template
-
       - fun: *save-cache-template
 
       - run: *run-tests-template
