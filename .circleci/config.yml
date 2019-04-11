@@ -101,6 +101,12 @@ jobs:
 
     working_directory: ~/repo
 
+    environment:
+      # Note: TEMP_FILE is hardcoded for save_cache and restore_cache. See dicussion on
+      # https://discuss.circleci.com/t/cannot-use-circle-yml-environment-variables-in-cache-keys/10994/20
+      TEMP_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
+
     steps: 
       - checkout
 
