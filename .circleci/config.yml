@@ -8,6 +8,8 @@ jobs:
     working_directory: ~/repo/
 
     environment:
+      # Note: TEMP_FILE is hardcoded for save_cache and restore_cache. See dicussion on
+      # https://discuss.circleci.com/t/cannot-use-circle-yml-environment-variables-in-cache-keys/10994/20
       TEMP_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
@@ -32,7 +34,7 @@ jobs:
               fi
             done
       - restore_cache:
-          key: v1-dependencies-{{ checksum $TEMP_FILE }}-{{ .Environment.CIRCLE_JOB }}
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
       - run: &install-dependences-template
           name: Install dependences
           command: |
@@ -52,7 +54,7 @@ jobs:
               fi
             done
       - save_cache:
-          key: v1-dependencies-{{ checksum $TEMP_FILE }}-{{ .Environment.CIRCLE_JOB }}
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
           paths:
             - envs
 
@@ -120,12 +122,13 @@ jobs:
             python -m pip install virtualenv
 
       # Restore cache
+      - run: *set-bash-env-template
       - run: *set-requirements-summary-template
       - restore_cache:
-          key: v1-dependencies-{{ checksum $TEMP_FILE }}-{{ .Environment.CIRCLE_JOB }}
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
       - run: *install-dependences-template
       - save_cache:
-          key: v1-dependencies-{{ checksum $TEMP_FILE }}-{{ .Environment.CIRCLE_JOB }}
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
           paths:
             - envs
 
