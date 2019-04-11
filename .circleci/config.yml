@@ -10,7 +10,7 @@ jobs:
     steps:
       - checkout
 
-      - run:
+      - run: &set-bash-env-template
           name: Set bash environment
           command: |
             # Storing values shared between run calls
@@ -19,7 +19,7 @@ jobs:
             echo 'export IGNORED_DIRS="envs|tests|circuit-fault-diagnosis|factoring"' >> $BASH_ENV
             . $BASH_ENV
 
-      - run:
+      - run: &set-requirements-summary-template
           name: Create requirements summary
           command: |
             shopt -s extglob
@@ -36,7 +36,7 @@ jobs:
               fi
             done
 
-      - restore_cache:
+      - restore_cache: &restore-cache-template
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
 
       - run: &install-dependences-template
@@ -58,7 +58,7 @@ jobs:
               fi
             done
 
-      - save_cache:
+      - save_cache: &save-cache-template
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
           paths:
             - envs
@@ -129,7 +129,15 @@ jobs:
             pyenv local $PYTHON
             python -m pip install virtualenv
 
+      - run: *set-bash-env-template
+
+      # Restore cache
+      - run: *set-requirements-summary-template
+      - run: *restore-cache-template
+
       - run: *install-dependences-template
+
+      - fun: *save-cache-template
 
       - run: *run-tests-template
 
