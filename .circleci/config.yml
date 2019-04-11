@@ -142,18 +142,24 @@ jobs:
     environment:
       PYTHON: 3.6.5
       HOMEBREW_NO_AUTO_UPDATE: 1
+      TEMP_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
   test-osx-3.5:
     <<: *osx-tests-template
     environment:
       PYTHON: 3.5.5
       HOMEBREW_NO_AUTO_UPDATE: 1
+      TEMP_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
   test-osx-2.7:
     <<: *osx-tests-template
     environment:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
+      TEMP_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
 
   deploy:
