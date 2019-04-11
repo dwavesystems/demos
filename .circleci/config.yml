@@ -109,17 +109,19 @@ jobs:
     steps: 
       - checkout
 
-      - run: 
-          name: install pyenv
-          command: |
-            brew install pyenv
+      - run: brew install pyenv
 
-      - run:
-          name: install python
-          command: |
-            pyenv install $PYTHON -s
+      - restore_cache:
+          keys:
+            - pyenv-{{ .Environment.CIRCLE_JOB }}
 
-      #TODO: add caching back in when demos have the same requirements and exist in the same venv
+      - run: pyenv install $PYTHON -s
+
+      - save_cache:
+          key: pyenv-{{ .Environment.CIRCLE_JOB }}
+          paths:
+            - ~/.pyenv
+
       - run:
           name: create virtualenv
           command: |
