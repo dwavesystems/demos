@@ -32,7 +32,7 @@ jobs:
               fi
             done
       - restore_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          key: v1-dependencies-{{ checksum $TEMP_FILE }}-{{ .Environment.CIRCLE_JOB }}
       - run: &install-dependences-template
           name: Install dependences
           command: |
@@ -52,7 +52,7 @@ jobs:
               fi
             done
       - save_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          key: v1-dependencies-{{ checksum $TEMP_FILE }}-{{ .Environment.CIRCLE_JOB }}
           paths:
             - envs
 
@@ -122,10 +122,10 @@ jobs:
       # Restore cache
       - run: *set-requirements-summary-template
       - restore_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          key: v1-dependencies-{{ checksum $TEMP_FILE }}-{{ .Environment.CIRCLE_JOB }}
       - run: *install-dependences-template
       - save_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          key: v1-dependencies-{{ checksum $TEMP_FILE }}-{{ .Environment.CIRCLE_JOB }}
           paths:
             - envs
 
