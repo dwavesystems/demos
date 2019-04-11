@@ -117,7 +117,7 @@ jobs:
             - ~/.pyenv
 
       - run:
-          name: create virtualenv
+          name: Create virtualenv
           command: |
             eval "$(pyenv init -)"
             pyenv local $PYTHON
@@ -156,36 +156,6 @@ jobs:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
 
-#  test-doctest:
-#    docker:
-#      - image: circleci/python:3.5-jessie
-#
-#    working_directory: ~/repo
-#
-#    steps:
-#      - checkout
-#
-#      - restore_cache:
-#          keys:
-#          - v1-dependencies-{{ checksum "docs/requirements.txt" }}-{{ checksum "requirements.txt" }}-{{ .Environment.CIRCLE_JOB }}
-#
-#      - run:
-#          name: install dependencies
-#          command: |
-#            python -m virtualenv env
-#            . env/bin/activate
-#            pip install -r docs/requirements.txt
-
-#      - save_cache:
-#          paths:
-#            - ./env
-#          key: v1-dependencies-{{ checksum "docs/requirements.txt" }}-{{ checksum "requirements.txt" }}-{{ .Environment.CIRCLE_JOB }}
-
-#      - run:
-#          name: doctest
-#          command: |
-#            . env/bin/activate
-#            make -C docs/ doctest
 
   deploy:
     docker:
@@ -197,20 +167,20 @@ jobs:
       - checkout
 
       - run:
-          name: install dependencies
+          name: Install dependencies
           command: |
             python -m virtualenv env
             . env/bin/activate
             pip install -r requirements.txt
 
       - run:
-          name: install twine
+          name: Install twine
           command: |
             . env/bin/activate
             pip install twine
 
       - run:
-          name: verify version matches tag
+          name: Verify version matches tag
           command: |
             . env/bin/activate
             pip install .
@@ -218,21 +188,21 @@ jobs:
             [[ "$(pip show dwave-networkx 2>/dev/null | grep Version)" == "Version: $CIRCLE_TAG" ]]
 
       - run:
-          name: init .pypirc
+          name: Initialize .pypirc
           command: |
             echo -e "[pypi]" >> ~/.pypirc
             echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
             echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
 
       - run:
-          name: build sdist and bdist
+          name: Build sdist and bdist
           command: |
             . env/bin/activate
             python setup.py sdist
             python setup.py bdist_wheel
 
       - run:
-          name: upload
+          name: Upload
           command: |
             . env/bin/activate
             twine upload dist/*
@@ -249,7 +219,6 @@ workflows:
       - test-osx-3.6
       - test-osx-3.5
       - test-osx-2.7
-#      - test-doctest
 
   deploy:
     jobs:
