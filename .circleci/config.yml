@@ -35,7 +35,7 @@ jobs:
                 echo "" >> "$TEMP_FILE"
               fi
             done
-      - restore_cache: &restore-cache-template
+      - restore_cache:
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
       - run: &install-dependences-template
           name: Install dependences
@@ -55,7 +55,7 @@ jobs:
                 )
               fi
             done
-      - save_cache: &save-cache-template
+      - save_cache:
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
           paths:
             - envs
@@ -126,9 +126,13 @@ jobs:
       # Restore cache
       - run: *set-bash-env-template
       - run: *set-requirements-summary-template
-      - run: *restore-cache-template
+      - restore_cache:
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
       - run: *install-dependences-template
-      - run: *save-cache-template
+      - save_cache:
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          paths:
+            - envs
 
       - run: *run-tests-template
 
