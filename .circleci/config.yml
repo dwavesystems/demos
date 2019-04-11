@@ -23,14 +23,14 @@ jobs:
             shopt -s extglob
 
             # Clear file contents if it exists
-            > "$TEMP_FILE"
+            : > "$TEMP_FILE"
 
             # Concatenate demo requirements.txt files into a temp file
             for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 echo "$demo" >> "$TEMP_FILE"
                 cat "$demo/requirements.txt" >> "$TEMP_FILE"
-                echo "" >> "$TEMP_FILE"
+                echo >> "$TEMP_FILE"
               fi
             done
       - restore_cache:
