@@ -122,7 +122,6 @@ jobs:
             python -m pip install virtualenv
 
       # Restore cache
-      - run: *set-bash-env-template
       - run: *set-requirements-summary-template
       - restore_cache:
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
