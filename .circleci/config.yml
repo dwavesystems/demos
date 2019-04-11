@@ -128,7 +128,7 @@ jobs:
       - run: *set-requirements-summary-template
       - run: *restore-cache-template
       - run: *install-dependences-template
-      - fun: *save-cache-template
+      - run: *save-cache-template
 
       - run: *run-tests-template
 
