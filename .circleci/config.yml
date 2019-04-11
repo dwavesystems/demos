@@ -7,18 +7,14 @@ jobs:
 
     working_directory: ~/repo/
 
+    environment:
+      TEMP_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
+
     steps:
       - checkout
 
       # Restore cache
-      - run: &set-bash-env-template
-          name: Set bash environment
-          command: |
-            # Storing values shared between run calls
-            # Note: TEMP_FILE value is hardcoded in restore_cache and save_cache's checksum
-            echo 'export TEMP_FILE="temp_requirements_summary.txt"' >> $BASH_ENV
-            echo 'export IGNORED_DIRS="envs|tests|circuit-fault-diagnosis|factoring"' >> $BASH_ENV
-            . $BASH_ENV
       - run: &set-requirements-summary-template
           name: Create requirements summary
           command: |
@@ -124,7 +120,6 @@ jobs:
             python -m pip install virtualenv
 
       # Restore cache
-      - run: *set-bash-env-template
       - run: *set-requirements-summary-template
       - restore_cache:
           key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
