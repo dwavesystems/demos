@@ -8,9 +8,9 @@ jobs:
     working_directory: ~/repo/
 
     environment:
-      # Note: TEMP_FILE is hardcoded for save_cache and restore_cache. See dicussion on
+      # Note: SUM_REQ_FILE is hardcoded for save_cache and restore_cache. See dicussion on
       # https://discuss.circleci.com/t/cannot-use-circle-yml-environment-variables-in-cache-keys/10994/20
-      TEMP_FILE: temp_requirements_summary.txt
+      SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
     steps:
@@ -23,14 +23,14 @@ jobs:
             shopt -s extglob
 
             # Clear file contents if it exists
-            : > "$TEMP_FILE"
+            : > "$SUM_REQ_FILE"
 
             # Concatenate demo requirements.txt files into a temp file
             for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
-                echo "$demo" >> "$TEMP_FILE"
-                cat "$demo/requirements.txt" >> "$TEMP_FILE"
-                echo >> "$TEMP_FILE"
+                echo "$demo" >> "$SUM_REQ_FILE"
+                cat "$demo/requirements.txt" >> "$SUM_REQ_FILE"
+                echo >> "$SUM_REQ_FILE"
               fi
             done
       - restore_cache:
@@ -98,7 +98,7 @@ jobs:
     environment:
       PYTHON: 3.7.0
       HOMEBREW_NO_AUTO_UPDATE: 1
-      TEMP_FILE: temp_requirements_summary.txt  # Note: hardcoded for save_cache and restore_cache
+      SUM_REQ_FILE: temp_requirements_summary.txt  # Note: hardcoded for save_cache and restore_cache
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
     working_directory: ~/repo
@@ -142,7 +142,7 @@ jobs:
     environment:
       PYTHON: 3.6.5
       HOMEBREW_NO_AUTO_UPDATE: 1
-      TEMP_FILE: temp_requirements_summary.txt
+      SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
   test-osx-3.5:
@@ -150,7 +150,7 @@ jobs:
     environment:
       PYTHON: 3.5.5
       HOMEBREW_NO_AUTO_UPDATE: 1
-      TEMP_FILE: temp_requirements_summary.txt
+      SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
   test-osx-2.7:
@@ -158,7 +158,7 @@ jobs:
     environment:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
-      TEMP_FILE: temp_requirements_summary.txt
+      SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
 
