@@ -1,16 +1,11 @@
 import sys
-
 import pandas as pd
 
-from dwave_circuit_fault_diagnosis_demo import three_bit_multiplier, GATES
+from dwave.system.samplers import DWaveSampler
+from dwave.system.composites import EmbeddingComposite
 
-try:
-    from dwave.system.samplers import DWaveSampler
-    from dwave.system.composites import EmbeddingComposite
-    _qpu = True
-except ImportError:
-    import dwave_qbsolv as qbsolv
-    _qpu = False
+from circuit_fault_diagnosis.circuits import three_bit_multiplier
+from circuit_fault_diagnosis.gates import GATES
 
 _PY2 = sys.version_info.major == 2
 if _PY2:
@@ -75,16 +70,10 @@ if __name__ == '__main__':
     # 'aux1' becomes disconnected, so needs to be fixed
     bqm.fix_variable('aux1', 1)  # don't care value
 
-    if _qpu:
-        # find embedding and put on system
-        print("Running using QPU\n")
-        sampler = EmbeddingComposite(DWaveSampler())
-        response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
-    else:
-        # if no qpu access, use qbsolv's tabu
-        print("Running using qbsolv's classical tabu search\n")
-        sampler = qbsolv.QBSolv()
-        response = sampler.sample_ising(bqm.linear, bqm.quadratic)
+    # find embedding and put on system
+    print("Running using QPU\n")
+    sampler = EmbeddingComposite(DWaveSampler(solver={'qpu': True}))
+    response = sampler.sample_ising(bqm.linear, bqm.quadratic, num_reads=NUM_READS)
 
     ####################################################################################################
     # output results
