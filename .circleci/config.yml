@@ -7,38 +7,63 @@ jobs:
 
     working_directory: ~/repo/
 
+    environment:
+      # Note: SUM_REQ_FILE is hardcoded for save_cache and restore_cache. See dicussion on
+      # https://discuss.circleci.com/t/cannot-use-circle-yml-environment-variables-in-cache-keys/10994/20
+      SUM_REQ_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
+
     steps:
       - checkout
 
-      #TODO: add caching once demos share the same requirements file and can live in the same venv
-      #TODO: remove hard code in for-loops
+      # Restore cache
+      - run: &set-requirements-summary-template
+          name: Create requirements summary
+          command: |
+            shopt -s extglob
+
+            # Clear file contents if it exists
+            : > "$SUM_REQ_FILE"
+
+            # Concatenate demo requirements.txt files into a temp file
+            for demo in !($IGNORED_DIRS); do
+              if [ -d "$demo" ]; then
+                echo "$demo" >> "$SUM_REQ_FILE"
+                cat "$demo/requirements.txt" >> "$SUM_REQ_FILE"
+                echo >> "$SUM_REQ_FILE"
+              fi
+            done
+      - restore_cache:
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
       - run: &install-dependences-template
-          name: install dependences
+          name: Install dependences
           command: |
             shopt -s extglob
 
             # Looping through demos
-            # Note: code examples within 'examples' dir share a virtual environment
-            # Note: temporarily skipping over factoring to avoid API Token issue in GitHub
-            for demo in !(tests|circuit-fault-diagnosis|factoring); do
+            for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
                   python -m virtualenv "$env"
                   . "$env/bin/activate"
 
-                  pip install -r "$demo/requirements_tests.txt"
+                  pip install -r "$demo/requirements.txt"
+                  pip install coverage
                 )
               fi
             done
+      - save_cache:
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          paths:
+            - envs
 
       - run: &run-tests-template
-          name: run unit tests
+          name: Run unit tests
           command: |
             shopt -s extglob
 
-            # Note: temporarily skipping over factoring to avoid API Token issue in GitHub
-            for demo in !(envs|tests|circuit-fault-diagnosis|factoring); do
+            for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 (
                   env="envs/$demo"
@@ -73,31 +98,40 @@ jobs:
     environment:
       PYTHON: 3.7.0
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SUM_REQ_FILE: temp_requirements_summary.txt  # Note: hardcoded for save_cache and restore_cache
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
     working_directory: ~/repo
 
     steps: 
       - checkout
 
-      - run: 
-          name: install pyenv
-          command: |
-            brew install pyenv
+      - run: brew install pyenv
+      - restore_cache:
+          keys:
+            - pyenv-{{ .Environment.CIRCLE_JOB }}
+      - run: pyenv install $PYTHON -s
+      - save_cache:
+          key: pyenv-{{ .Environment.CIRCLE_JOB }}
+          paths:
+            - ~/.pyenv
 
       - run:
-          name: install python
-          command: |
-            pyenv install $PYTHON -s
-
-      #TODO: add caching back in when demos have the same requirements and exist in the same venv
-      - run:
-          name: create virtualenv
+          name: Create virtualenv
           command: |
             eval "$(pyenv init -)"
             pyenv local $PYTHON
             python -m pip install virtualenv
 
+      # Restore cache
+      - run: *set-requirements-summary-template
+      - restore_cache:
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
       - run: *install-dependences-template
+      - save_cache:
+          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          paths:
+            - envs
 
       - run: *run-tests-template
 
@@ -108,49 +142,25 @@ jobs:
     environment:
       PYTHON: 3.6.5
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SUM_REQ_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
   test-osx-3.5:
     <<: *osx-tests-template
     environment:
       PYTHON: 3.5.5
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SUM_REQ_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
   test-osx-2.7:
     <<: *osx-tests-template
     environment:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
+      SUM_REQ_FILE: temp_requirements_summary.txt
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
 
-#  test-doctest:
-#    docker:
-#      - image: circleci/python:3.5-jessie
-#
-#    working_directory: ~/repo
-#
-#    steps:
-#      - checkout
-#
-#      - restore_cache:
-#          keys:
-#          - v1-dependencies-{{ checksum "docs/requirements.txt" }}-{{ checksum "requirements.txt" }}-{{ .Environment.CIRCLE_JOB }}
-#
-#      - run:
-#          name: install dependencies
-#          command: |
-#            python -m virtualenv env
-#            . env/bin/activate
-#            pip install -r docs/requirements.txt
-
-#      - save_cache:
-#          paths:
-#            - ./env
-#          key: v1-dependencies-{{ checksum "docs/requirements.txt" }}-{{ checksum "requirements.txt" }}-{{ .Environment.CIRCLE_JOB }}
-
-#      - run:
-#          name: doctest
-#          command: |
-#            . env/bin/activate
-#            make -C docs/ doctest
 
   deploy:
     docker:
@@ -162,20 +172,20 @@ jobs:
       - checkout
 
       - run:
-          name: install dependencies
+          name: Install dependencies
           command: |
             python -m virtualenv env
             . env/bin/activate
             pip install -r requirements.txt
 
       - run:
-          name: install twine
+          name: Install twine
           command: |
             . env/bin/activate
             pip install twine
 
       - run:
-          name: verify version matches tag
+          name: Verify version matches tag
           command: |
             . env/bin/activate
             pip install .
@@ -183,21 +193,21 @@ jobs:
             [[ "$(pip show dwave-networkx 2>/dev/null | grep Version)" == "Version: $CIRCLE_TAG" ]]
 
       - run:
-          name: init .pypirc
+          name: Initialize .pypirc
           command: |
             echo -e "[pypi]" >> ~/.pypirc
             echo -e "username = $PYPI_USERNAME" >> ~/.pypirc
             echo -e "password = $PYPI_PASSWORD" >> ~/.pypirc
 
       - run:
-          name: build sdist and bdist
+          name: Build sdist and bdist
           command: |
             . env/bin/activate
             python setup.py sdist
             python setup.py bdist_wheel
 
       - run:
-          name: upload
+          name: Upload
           command: |
             . env/bin/activate
             twine upload dist/*
@@ -214,7 +224,6 @@ workflows:
       - test-osx-3.6
       - test-osx-3.5
       - test-osx-2.7
-#      - test-doctest
 
   deploy:
     jobs:
