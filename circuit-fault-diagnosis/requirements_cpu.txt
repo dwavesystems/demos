@@ -1,2 +1,0 @@
--r requirements_base.txt
-dwave_qbsolv==0.2.6
