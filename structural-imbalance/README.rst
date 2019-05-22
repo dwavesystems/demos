@@ -30,47 +30,12 @@ organization based on data from the Stanford Militants Mapping Project:
 Mapping Militant Organizations, Stanford University, last modified February 28, 2016,
 http://web.stanford.edu/group/mappingmilitants/cgi-bin/.
 
-Setting Up the Demo
--------------------
-
-Copy (clone) this structural-imbalance-demo repository to your local machine.
-
-In the root directory of your copy of this repository, execute one of the following two commands:
-
-Install as package:
-
-.. code-block:: bash
-
-   pip install .
-
-or, install requirements:
-
-.. code-block:: bash
-
-   pip install -r requirements.txt
-
-Note: access to a D-Wave system must be configured, as described in the
-`dwave-cloud-client <http://dwave-cloud-client.readthedocs.io/en/latest/reference/intro.html#configuration>`_ documentation.
-Only API endpoint and API token are required. The first available DW_2000Q solver will be used by default.
-
-Running the Demo
-----------------
-
-To run the demo, execute one of the following two commands:
-
-A. Local CPU Execution
-~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   python demo.py cpu
-
 B. D-Wave System Execution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
-   python demo.py qpu
+   python demo.py
 
 The demo fetches data from the Stanford Militants Mapping Project, calculates the networks,
 and saves PNG-formatted graphic files and CSV-formatted files in the root directory of your
