@@ -1,14 +1,8 @@
 import dwavebinarycsp
 from hybrid.reference.kerberos import KerberosSampler
 
-not_both = {(0, 1), (1, 0), (0, 0)}
-select_one = {(0, 0, 0, 1),
-              (0, 0, 1, 0),
-              (0, 1, 0, 0),
-              (1, 0, 0, 0)}
 
-
-class Region:
+class Province:
     def __init__(self, name):
         self.red = name + "_r"
         self.green = name + "_g"
@@ -16,23 +10,24 @@ class Region:
         self.yellow = name + "_y"
 
 
-# Set up provinces and neighbours
-bc = Region("bc")   # British Columbia
-ab = Region("ab")   # Alberta
-sk = Region("sk")   # Saskatchewan
-mb = Region("mb")   # Manitoba
-on = Region("on")   # Ontario
-qc = Region("qc")   # Quebec
-nl = Region("nl")   # Newfoundland and Labrador
-nb = Region("nb")   # New Brunswick
-pe = Region("pe")   # Prince Edward Island
-ns = Region("ns")   # Nova Scotia
-yt = Region("yt")   # Yukon
-nt = Region("nt")   # Northwest Territories
-nu = Region("nu")   # Nunavut
+# Set up provinces
+bc = Province("bc")   # British Columbia
+ab = Province("ab")   # Alberta
+sk = Province("sk")   # Saskatchewan
+mb = Province("mb")   # Manitoba
+on = Province("on")   # Ontario
+qc = Province("qc")   # Quebec
+nl = Province("nl")   # Newfoundland and Labrador
+nb = Province("nb")   # New Brunswick
+pe = Province("pe")   # Prince Edward Island
+ns = Province("ns")   # Nova Scotia
+yt = Province("yt")   # Yukon
+nt = Province("nt")   # Northwest Territories
+nu = Province("nu")   # Nunavut
 
 provinces = [bc, ab, sk, mb, on, qc, nl, nb, pe, ns, yt, nt, nu]
 
+# Set up province neighbours (i.e. shares a border)
 neighbours = [(bc, ab),
               (bc, nt),
               (bc, yt),
@@ -50,10 +45,15 @@ neighbours = [(bc, ab),
               (yt, nt),
               (nt, nu)]
 
-# Set up constraint
+# Initialize constraint satisfaction problem
 csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
+not_both = {(0, 1), (1, 0), (0, 0)}
+select_one = {(0, 0, 0, 1),
+              (0, 0, 1, 0),
+              (0, 1, 0, 0),
+              (1, 0, 0, 0)}
 
-# Apply one colour
+# Apply one colour constraint
 for p in provinces:
     csp.add_constraint(select_one, {p.red, p.green, p.blue, p.yellow})
 
@@ -64,8 +64,10 @@ for x, y in neighbours:
     csp.add_constraint(not_both, {x.blue, y.blue})
     csp.add_constraint(not_both, {x.yellow, y.yellow})
 
+# Combine constraints to form a BQM
 bqm = dwavebinarycsp.stitch(csp)
 
+# Solve BQM
 solution = KerberosSampler().sample(bqm, max_iter=10, convergence=3)
 best_solution = solution.first.sample
 print(best_solution)
