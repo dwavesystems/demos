@@ -2,9 +2,9 @@ Demo of Antennas Selection
 ===========================
 This code was taken from the webinar, *Quantum Programming with the Ocean Tools Suite*.
 
-A graph representing antenna coverage. Each of the seven nodes below represent seven
-different antennas with some amount of coverage. The edges between each node represent
-antennas with overlapping coverage.
+This is a graph representing antenna coverage. Each of the seven nodes below represents
+seven different antennas with some amount of coverage. The edges between each node
+represent antennas with overlapping coverage.
 
 .. image:: readme_imgs/example_original.png
 
