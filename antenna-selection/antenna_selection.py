@@ -34,6 +34,10 @@ othersubgraph = G.subgraph(notS)
 pos = nx.spring_layout(G)
 plt.figure()
 nx.draw(G, pos=pos)
-nx.draw(k, pos=pos)
+nx.draw(k, pos=pos, node_color='r')
 nx.draw(othersubgraph, pos=pos, node_color='b')
-plt.show()
+
+# Save plot
+plot_name = "antenna_plot.png"
+plt.savefig(plot_name, bbox_inches='tight')
+print("Your plot has been saved to {}".format(plot_name))
