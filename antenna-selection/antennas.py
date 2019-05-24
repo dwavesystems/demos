@@ -1,7 +1,7 @@
 # Import networkx for graph tools
 import networkx as nx
 
-# Import dwave_networkx for d-wave functions
+# Import dwave_networkx for d-wave graph tools/functions
 import dwave_networkx as dnx
 
 # Import matplotlib.pyplot to draw graphs on screen
@@ -26,19 +26,23 @@ S = dnx.maximum_independent_set(G, sampler=sampler, num_reads=10)
 print('Maximum independent set size found is', len(S))
 print(S)
 
-# TODO: add indices to the plotted nodes
 # Visualize the results
-#   Red nodes are in the set, blue nodes are not
 k = G.subgraph(S)
 notS = list(set(G.nodes()) - set(S))
 othersubgraph = G.subgraph(notS)
 pos = nx.spring_layout(G)
 plt.figure()
-nx.draw(G, pos=pos)
-nx.draw(k, pos=pos, node_color='r')
-nx.draw(othersubgraph, pos=pos, node_color='b')
 
-# Save plot
-plot_name = "antenna_plot.png"
-plt.savefig(plot_name, bbox_inches='tight')
-print("Your plot has been saved to {}".format(plot_name))
+# Save original problem graph
+original_name = "antenna_plot_original.png"
+nx.draw_networkx(G, pos=pos, with_labels=True)
+plt.savefig(original_name, bbox_inches='tight')
+
+# Save solution graph
+# Note: red nodes are in the set, blue nodes are not
+solution_name = "antenna_plot_solution.png"
+nx.draw_networkx(k, pos=pos, with_labels=True, node_color='r', font_color='k')
+nx.draw_networkx(othersubgraph, pos=pos, with_labels=True, node_color='b', font_color='w')
+plt.savefig(solution_name, bbox_inches='tight')
+
+print("Your plots are saved to {} and {}".format(original_name, solution_name))
