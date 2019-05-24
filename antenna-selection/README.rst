@@ -6,14 +6,14 @@ A graph representing antenna coverage. Each of the seven nodes below represent s
 different antennas with some amount of coverage. The edges between each node represent
 antennas with overlapping coverage.
 
-![original_graph](https://github.com/m3ller/demos/blob/feature/antenna-selection-v2/antenna-selection/readme_imgs/example_original.png)
+![original_graph](readme_imgs/example_original.png)
 
 Problem: Given the above set of antennas, which antennas should you choose such that
 you maximize antenna coverage without any overlaps?
 
 Solution: The red antennas below are the ones you should choose.
 
-![solution_graph](https://github.com/m3ller/demos/blob/feature/antenna-selection-v2/antenna-selection/readme_imgs/example_solution.png)
+![solution_graph](readme_imgs/example_solution.png)
 
 Further Information
 -------------------
