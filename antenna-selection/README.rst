@@ -1,5 +1,6 @@
 Demo of Antennas Selection
 ===========================
+This code was taken from the webinar, *Quantum Programming with the Ocean Tools Suite*.
 
 Further Information
 -------------------
