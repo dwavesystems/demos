@@ -26,6 +26,7 @@ S = dnx.maximum_independent_set(G, sampler=sampler, num_reads=10)
 print('Maximum independent set size found is', len(S))
 print(S)
 
+# TODO: add indices to the plotted nodes
 # Visualize the results
 #   Red nodes are in the set, blue nodes are not
 k = G.subgraph(S)
