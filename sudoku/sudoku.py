@@ -52,77 +52,82 @@ def is_correct(matrix):
 
     return True
 
-#TODO: remove hardcoded loops
-n_rows = 9
-n_cols = 9
-sudoku_filename = "problem.txt"
-digits = range(1, 10)
-# TODO: check that file exists
+def main:
+    #TODO: remove hardcoded loops
+    n_rows = 9
+    n_cols = 9
+    sudoku_filename = "problem.txt"
+    digits = range(1, 10)
+    # TODO: check that file exists
 
-bqm = dimod.BinaryQuadraticModel({}, {}, 0.0, dimod.SPIN)
+    bqm = dimod.BinaryQuadraticModel({}, {}, 0.0, dimod.SPIN)
 
-# Constraint: Each node can only select one digit
-for row in range(n_rows):
-    for col in range(n_cols):
-        node_digits = [get_label(row, col, digit) for digit in digits]
-        one_digit_bqm = combinations(node_digits, 1)
-        bqm.update(one_digit_bqm)
+    # Constraint: Each node can only select one digit
+    for row in range(n_rows):
+        for col in range(n_cols):
+            node_digits = [get_label(row, col, digit) for digit in digits]
+            one_digit_bqm = combinations(node_digits, 1)
+            bqm.update(one_digit_bqm)
 
-# Constraint: Each row of nodes cannot have duplicate digits
-for row in range(n_rows):
-    for digit in digits:
-        row_nodes = [get_label(row, col, digit) for col in range(n_cols)]
-        row_bqm = combinations(row_nodes, 1)
-        bqm.update(row_bqm)
-
-# Constraint: Each column of nodes cannot have duplicate digits
-for col in range(n_cols):
-    for digit in digits:
-        col_nodes = [get_label(row, col, digit) for row in range(n_rows)]
-        col_bqm = combinations(col_nodes, 1)
-        bqm.update(col_bqm)
-
-# Constraint: Each sub-square cannot have duplicates
-# Build indices of a basic subsquare
-base_array = [(row, col) for row in range(3) for col in range(3)]
-
-# Build full sudoku array
-for r_scalar in range(3):
-    for c_scalar in range(3):
+    # Constraint: Each row of nodes cannot have duplicate digits
+    for row in range(n_rows):
         for digit in digits:
-            # Build the labels for a subsquare
-            # Note: r_scalar*3 and c_scalar*3 are used to shift the subsquare
-            subsquare = [get_label(row + r_scalar*3, col + c_scalar*3, digit)
-                         for row, col in base_array]
-            subsquare_bqm = combinations(subsquare, 1)
-            bqm.update(subsquare_bqm)
+            row_nodes = [get_label(row, col, digit) for col in range(n_cols)]
+            row_bqm = combinations(row_nodes, 1)
+            bqm.update(row_bqm)
 
-# Constraint: Fix known values
-matrix = get_matrix(sudoku_filename)
+    # Constraint: Each column of nodes cannot have duplicate digits
+    for col in range(n_cols):
+        for digit in digits:
+            col_nodes = [get_label(row, col, digit) for row in range(n_rows)]
+            col_bqm = combinations(col_nodes, 1)
+            bqm.update(col_bqm)
 
-for row, line in enumerate(matrix):
-    for col, value in enumerate(line):
-        if value > 0:
-            bqm.fix_variable(get_label(row, col, value), 1)
+    # Constraint: Each sub-square cannot have duplicates
+    # Build indices of a basic subsquare
+    base_array = [(row, col) for row in range(3) for col in range(3)]
 
-# Solve BQM
-solution = KerberosSampler().sample(bqm, max_iter=10, convergence=3)
-best_solution = solution.first.sample
+    # Build full sudoku array
+    for r_scalar in range(3):
+        for c_scalar in range(3):
+            for digit in digits:
+                # Build the labels for a subsquare
+                # Note: r_scalar*3 and c_scalar*3 are used to shift the subsquare
+                subsquare = [get_label(row + r_scalar*3, col + c_scalar*3, digit)
+                             for row, col in base_array]
+                subsquare_bqm = combinations(subsquare, 1)
+                bqm.update(subsquare_bqm)
 
-# Print solution
-solution_list = [k for k, v in best_solution.items() if v == 1]
+    # Constraint: Fix known values
+    matrix = get_matrix(sudoku_filename)
 
-for label in solution_list:
-    coord, digit = label.split('_')
-    row, col = map(int, coord.split(','))
-    matrix[row][col] = int(digit)
+    for row, line in enumerate(matrix):
+        for col, value in enumerate(line):
+            if value > 0:
+                bqm.fix_variable(get_label(row, col, value), 1)
 
-for line in matrix:
-    print(line)
+    # Solve BQM
+    solution = KerberosSampler().sample(bqm, max_iter=10, convergence=3)
+    best_solution = solution.first.sample
 
-# Verify
-if is_correct(matrix):
-    print("The solution is correct")
-else:
-    print("The solution is incorrect")
+    # Print solution
+    solution_list = [k for k, v in best_solution.items() if v == 1]
+
+    for label in solution_list:
+        coord, digit = label.split('_')
+        row, col = map(int, coord.split(','))
+        matrix[row][col] = int(digit)
+
+    for line in matrix:
+        print(line)
+
+    # Verify
+    if is_correct(matrix):
+        print("The solution is correct")
+    else:
+        print("The solution is incorrect")
+
+
+if __name__ == "__main__":
+    main()
 
