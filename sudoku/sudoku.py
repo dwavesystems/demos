@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import dimod
 import math
 
@@ -124,7 +126,7 @@ def main():
         matrix[row][col] = int(digit)
 
     for line in matrix:
-        print(line)
+        print(*line, sep=" ")   # Print list without commas or brackets
 
     # Verify
     if is_correct(matrix):
