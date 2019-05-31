@@ -7,7 +7,7 @@ def get_label(row, col, digit):
     return "{row},{col}_{digit}".format(**locals())
 
 
-def get_sudoku_matrix(filename):
+def get_matrix(filename):
     try:
         with open(filename, "r") as f:
             content = f.readlines()
@@ -22,10 +22,33 @@ def get_sudoku_matrix(filename):
 
     return lines
 
+#TODO: remove hard coded loop values
+def is_correct(matrix):
+    solution = set(range(1, 10))
+
+    for row in matrix:
+        if set(row) != solution:
+            return False
+
+    #TODO: clean up. Not very pythonic
+    for j in range(9):
+        col = [matrix[i][j] for i in range(9)]
+        if set(col) != solution:
+            return False
+
+    subsquare_coords = [(i, j) for i in range(3) for j in range(3)]
+    for r_scalar in range(3):
+        for c_scalar in range(3):
+            subsquare = [matrix[i + r_scalar * 3][j + c_scalar * 3] for i, j
+                         in subsquare_coords]
+            if set(subsquare) != solution:
+                return False
+
+    return True
 
 n_rows = 9
 n_cols = 9
-filename = "problem.txt"
+sudoku_filename = "problem.txt"
 digits = range(1, 10)
 # TODO: check that file exists
 
@@ -68,7 +91,7 @@ for r_scalar in range(3):
             bqm.update(subsquare_bqm)
 
 # Constraint: Fix known values
-matrix = get_sudoku_matrix(filename)
+matrix = get_matrix(sudoku_filename)
 
 for row, line in enumerate(matrix):
     for col, value in enumerate(line):
@@ -92,4 +115,8 @@ for line in matrix:
     print(line)
 
 # Verify
+if is_correct(matrix):
+    print("The solution is correct")
+else:
+    print("The solution is incorrect")
 
