@@ -18,17 +18,19 @@ def get_matrix(filename):
 
     lines = []
     for line in content:
-        new_line = line.rstrip('\n').split(' ')
-        new_line = list(map(int, new_line))
-        lines.append(new_line)
+        new_line = line.rstrip()    # Strip whitespace
+
+        if new_line:
+            new_line = list(map(int, new_line.split(' ')))
+            lines.append(new_line)
 
     return lines
 
 
 def is_correct(matrix):
-    n = len(matrix)                 # number of rows; number of columns
-    m = int(math.sqrt(n_rows))      # number of subsquare rows; number of subsquare columns
-    solution = set(range(1, n+1))   # digits in a solution
+    n = len(matrix)        # Number of rows/columns
+    m = int(math.sqrt(n))  # Number of subsquare rows/columns
+    solution = set(range(1, n+1))  # Digits in a solution
 
     # Verifying rows
     for row in matrix:
@@ -36,7 +38,7 @@ def is_correct(matrix):
             return False
 
     # Verifying columns
-    for j in range(n_rows):
+    for j in range(n):
         col = [matrix[i][j] for i in range(n)]
         if set(col) != solution:
             return False
@@ -52,55 +54,58 @@ def is_correct(matrix):
 
     return True
 
-def main:
-    #TODO: remove hardcoded loops
-    n_rows = 9
-    n_cols = 9
-    sudoku_filename = "problem.txt"
-    digits = range(1, 10)
-    # TODO: check that file exists
+
+def main():
+    filename = "problem.txt"
+    matrix = get_matrix(filename)
+
+    # Set up
+    n = len(matrix)          # Number of rows/columns in sudoku
+    m = int(math.sqrt(n))    # Number of rows/columns in sudoku subsquare
+    digits = range(1, n+1)
 
     bqm = dimod.BinaryQuadraticModel({}, {}, 0.0, dimod.SPIN)
 
     # Constraint: Each node can only select one digit
-    for row in range(n_rows):
-        for col in range(n_cols):
+    for row in range(n):
+        for col in range(n):
             node_digits = [get_label(row, col, digit) for digit in digits]
             one_digit_bqm = combinations(node_digits, 1)
             bqm.update(one_digit_bqm)
 
     # Constraint: Each row of nodes cannot have duplicate digits
-    for row in range(n_rows):
+    for row in range(n):
         for digit in digits:
-            row_nodes = [get_label(row, col, digit) for col in range(n_cols)]
+            row_nodes = [get_label(row, col, digit) for col in range(n)]
             row_bqm = combinations(row_nodes, 1)
             bqm.update(row_bqm)
 
     # Constraint: Each column of nodes cannot have duplicate digits
-    for col in range(n_cols):
+    for col in range(n):
         for digit in digits:
-            col_nodes = [get_label(row, col, digit) for row in range(n_rows)]
+            col_nodes = [get_label(row, col, digit) for row in range(n)]
             col_bqm = combinations(col_nodes, 1)
             bqm.update(col_bqm)
 
     # Constraint: Each sub-square cannot have duplicates
     # Build indices of a basic subsquare
-    base_array = [(row, col) for row in range(3) for col in range(3)]
+    subsquare_indices = [(row, col) for row in range(3) for col in range(3)]
 
     # Build full sudoku array
-    for r_scalar in range(3):
-        for c_scalar in range(3):
+    for r_scalar in range(m):
+        for c_scalar in range(m):
             for digit in digits:
+                # Shifts for moving subsquare inside sudoku matrix
+                row_shift = r_scalar * m
+                col_shift = c_scalar * m
+
                 # Build the labels for a subsquare
-                # Note: r_scalar*3 and c_scalar*3 are used to shift the subsquare
-                subsquare = [get_label(row + r_scalar*3, col + c_scalar*3, digit)
-                             for row, col in base_array]
+                subsquare = [get_label(row + row_shift, col + col_shift, digit)
+                             for row, col in subsquare_indices]
                 subsquare_bqm = combinations(subsquare, 1)
                 bqm.update(subsquare_bqm)
 
     # Constraint: Fix known values
-    matrix = get_matrix(sudoku_filename)
-
     for row, line in enumerate(matrix):
         for col, value in enumerate(line):
             if value > 0:
