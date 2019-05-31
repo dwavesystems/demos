@@ -1,4 +1,6 @@
 import dimod
+import math
+
 from dimod.generators.constraints import combinations
 from hybrid.reference import KerberosSampler
 
@@ -22,30 +24,35 @@ def get_matrix(filename):
 
     return lines
 
-#TODO: remove hard coded loop values
-def is_correct(matrix):
-    solution = set(range(1, 10))
 
+def is_correct(matrix):
+    n = len(matrix)                 # number of rows; number of columns
+    m = int(math.sqrt(n_rows))      # number of subsquare rows; number of subsquare columns
+    solution = set(range(1, n+1))   # digits in a solution
+
+    # Verifying rows
     for row in matrix:
         if set(row) != solution:
             return False
 
-    #TODO: clean up. Not very pythonic
-    for j in range(9):
-        col = [matrix[i][j] for i in range(9)]
+    # Verifying columns
+    for j in range(n_rows):
+        col = [matrix[i][j] for i in range(n)]
         if set(col) != solution:
             return False
 
-    subsquare_coords = [(i, j) for i in range(3) for j in range(3)]
-    for r_scalar in range(3):
-        for c_scalar in range(3):
-            subsquare = [matrix[i + r_scalar * 3][j + c_scalar * 3] for i, j
+    # Verifying subsquares
+    subsquare_coords = [(i, j) for i in range(m) for j in range(m)]
+    for r_scalar in range(m):
+        for c_scalar in range(m):
+            subsquare = [matrix[i + r_scalar * m][j + c_scalar * m] for i, j
                          in subsquare_coords]
             if set(subsquare) != solution:
                 return False
 
     return True
 
+#TODO: remove hardcoded loops
 n_rows = 9
 n_cols = 9
 sudoku_filename = "problem.txt"
@@ -103,8 +110,7 @@ solution = KerberosSampler().sample(bqm, max_iter=10, convergence=3)
 best_solution = solution.first.sample
 
 # Print solution
-solution_list = [k for k, v in best_solution.items() if v==1]
-solution_list.sort()
+solution_list = [k for k, v in best_solution.items() if v == 1]
 
 for label in solution_list:
     coord, digit = label.split('_')
