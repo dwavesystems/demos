@@ -7,9 +7,27 @@ def get_label(row, col, digit):
     return "{row},{col}_{digit}".format(**locals())
 
 
+def get_sudoku_matrix(filename):
+    try:
+        with open(filename, "r") as f:
+            content = f.readlines()
+    except FileNotFoundError:
+        raise
+
+    lines = []
+    for line in content:
+        new_line = line.rstrip('\n').split(' ')
+        new_line = list(map(int, new_line))
+        lines.append(new_line)
+
+    return lines
+
+
 n_rows = 9
 n_cols = 9
+filename = "problem.txt"
 digits = range(1, 10)
+# TODO: check that file exists
 
 bqm = dimod.BinaryQuadraticModel({}, {}, 0.0, dimod.SPIN)
 
@@ -23,14 +41,14 @@ for row in range(n_rows):
 # Constraint: Each row of nodes cannot have duplicate digits
 for row in range(n_rows):
     for digit in digits:
-        row_nodes = [get_label(row, col, digit) for col in range(1, n_cols+1)]
+        row_nodes = [get_label(row, col, digit) for col in range(n_cols)]
         row_bqm = combinations(row_nodes, 1)
         bqm.update(row_bqm)
 
 # Constraint: Each column of nodes cannot have duplicate digits
 for col in range(n_cols):
     for digit in digits:
-        col_nodes = [get_label(row, col, digit) for row in range(1, n_rows+1)]
+        col_nodes = [get_label(row, col, digit) for row in range(n_rows)]
         col_bqm = combinations(col_nodes, 1)
         bqm.update(col_bqm)
 
@@ -49,27 +67,29 @@ for r_scalar in range(3):
             subsquare_bqm = combinations(subsquare, 1)
             bqm.update(subsquare_bqm)
 
-# Fix values
+# Constraint: Fix known values
+matrix = get_sudoku_matrix(filename)
+
+for row, line in enumerate(matrix):
+    for col, value in enumerate(line):
+        if value > 0:
+            bqm.fix_variable(get_label(row, col, value), 1)
 
 # Solve BQM
-solution = KerberosSampler().sample(bqm, max_iter=30, convergence=3)
+solution = KerberosSampler().sample(bqm, max_iter=10, convergence=3)
 best_solution = solution.first.sample
 
 # Print solution
 solution_list = [k for k, v in best_solution.items() if v==1]
 solution_list.sort()
 
-for x in range(9):
-    start = x*9
-    line = solution_list[start:start+9]
-    processed_line = []
-    for item in line:
-        processed_line.append(item.split("_")[1])
+for label in solution_list:
+    coord, digit = label.split('_')
+    row, col = map(int, coord.split(','))
+    matrix[row][col] = int(digit)
 
-    print(processed_line)
-
+for line in matrix:
+    print(line)
 
 # Verify
-#is_correct = csp.check(best_solution)
-#print("Does solution satisfy our constraints? {}".format(is_correct))
 
