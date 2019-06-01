@@ -37,12 +37,14 @@ def is_correct(matrix):
     # Verifying rows
     for row in matrix:
         if set(row) != solution:
+            print("Error in row: ", row)
             return False
 
     # Verifying columns
     for j in range(n):
         col = [matrix[i][j] for i in range(n)]
         if set(col) != solution:
+            print("Error in col: ", col)
             return False
 
     # Verifying subsquares
@@ -52,6 +54,7 @@ def is_correct(matrix):
             subsquare = [matrix[i + r_scalar * m][j + c_scalar * m] for i, j
                          in subsquare_coords]
             if set(subsquare) != solution:
+                print("Error in sub-square: ", subsquare)
                 return False
 
     return True
