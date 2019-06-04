@@ -1,6 +1,6 @@
 Sudoku Demo
 ===========
-A demo on how to solve a Sudoku with D-Wave Ocean.
+A demo on how to solve a Sudoku puzzle with D-Wave Ocean.
 
 Code Overview
 -------------

@@ -16,16 +16,25 @@ from __future__ import print_function
 
 import dimod
 import math
+import sys
 
 from dimod.generators.constraints import combinations
 from hybrid.reference import KerberosSampler
 
 
 def get_label(row, col, digit):
+    """Returns a string.
+    """
     return "{row},{col}_{digit}".format(**locals())
 
 
 def get_matrix(filename):
+    """Reads a text file, stores the information in a list of lists, and
+    returns said list of lists.
+
+    Note: each line of the text file corresponds to a list. Each item in
+    the list is from splitting the line of text by the whitespace ' '.
+    """
     try:
         with open(filename, "r") as f:
             content = f.readlines()
@@ -44,6 +53,12 @@ def get_matrix(filename):
 
 
 def is_correct(matrix):
+    """Verifying that the matrix satisfies the Sudoku constraints.
+
+    Args:
+      matrix(list of lists): list contains 'n' lists, where each of the 'n'
+        lists contains 'n' digits. 
+    """
     n = len(matrix)        # Number of rows/columns
     m = int(math.sqrt(n))  # Number of subsquare rows/columns
     solution = set(range(1, n+1))  # Digits in a solution
@@ -75,7 +90,17 @@ def is_correct(matrix):
 
 
 def main():
-    filename = "problem.txt"
+    # Note: for the purposes of a code example, main() is written as a script 
+
+    # Read user input
+    if len(sys.argv) > 1:
+        filename = sys.argv[1]
+    else:
+        filename = "problem.txt"
+        print("Warning: using default problem file, '{}'. Usage: python "
+              "sudoku.py <sudoku filepath>".format(filename))
+
+    # Read sudoku problem
     matrix = get_matrix(filename)
 
     # Set up
