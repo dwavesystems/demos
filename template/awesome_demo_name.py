@@ -1,4 +1,4 @@
-# Copyright [yyyy] D-Wave Systems Inc.
+# Copyright [yyyy] [name of copyright owner]
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,11 +15,7 @@
 
 """
 Things to do:
- - Fill in [yyyy] in the license
+ - Fill in [yyyy] and [name of copyright owner] in the license
  - Add demo code below
  - Format code so that it conforms with PEP 8
- - Delete this comment :)
 """
-
-#TODO: Do people with no affliation with D-Wave also need this license when
-# they are submitting to our Demos repo?
