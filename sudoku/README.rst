@@ -17,6 +17,14 @@ There are several constraints in Sudoku:
 * Each column may not have duplicate digits
 * Each sub-square may not have duplicate digits
 
+Usage
+-----
+``python sudoku.py <sudoku file path>``
+
+For example,
+::
+    python sudoku.py problem.txt
+
 Code Specifics
 --------------
 Inputs
