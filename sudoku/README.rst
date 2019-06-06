@@ -6,16 +6,16 @@ Code Overview
 -------------
 The idea is to describe the Sudoku puzzle as a set of constraints that our
 solution needs to satisfy (i.e. we are posing the puzzle as a constraint
-satisfaction problem). By laying down these constraints, our solver can
-optimize over them and hopefully return a solution that satisfies all
+satisfaction problem). By laying down these constraints, we can get our solver
+to optimize over them and hopefully return a solution that satisfies all
 our constraints.
 
 There are several constraints in Sudoku:
 
 * Each cell in the Sudoku array must contain one digit
-* Each row may not have duplicate digits
-* Each column may not have duplicate digits
-* Each sub-square may not have duplicate digits
+* No row may have duplicate digits
+* No column may have duplicate digits
+* No sub-square may have duplicate digits
 
 Usage
 -----
@@ -27,27 +27,23 @@ For example,
 
 Code Specifics
 --------------
-Inputs
-~~~~~~
-* The Sudoku puzzle needs to be given as a text file
-* The text file should only contain the puzzle (i.e. don't add comments)
-* Each Sudoku cell value in the text file is separated with a space
-* Empty Sudoku cells should be represented with 0
-* For example,
-  ::
-    5 0 0 8 3 1 0 6 0
-    3 0 0 0 9 2 0 0 5
-    0 0 4 0 7 6 0 2 0
-    0 2 0 0 6 7 1 0 0
-    9 0 0 0 0 0 0 0 4
-    0 0 6 9 4 0 0 3 0
-    0 4 0 2 8 0 7 0 0
-    2 0 0 7 1 0 0 0 6
-    0 7 0 6 5 3 0 0 9
+Input
+~~~~~
+The code takes as its input a text file containing a Sudoku puzzle in
+the following format:
+
+* Rows of the puzzle are represented as a sequence of lines, one per row
+* Cells in each row of the puzzle are represented as space-separated integers
+* Empty cells are represented by zeros
+* The file should not contain any additional lines (e.g. headers) or comments
+
+For example,
+::
+  Put new Sudoku puzzle here!
  
 Comments on the variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~
-* For a Sudoku puzzle with ``n`` by ``n`` cells, it requires that each
+* A Sudoku puzzle with ``n`` by ``n`` cells requires that each
   row, column, and sub-square have ``n`` unique values. Since the
   sub-square is a square matrix with ``n`` items, it means that ``n``
   must be a square number (i.e. for a sub-square of size ``m`` by ``m``,
