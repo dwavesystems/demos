@@ -27,10 +27,11 @@ Code Specifics
 --------------
 Why only four colours?
 ~~~~~~~~~~~~~~~~~~~~~~
-* According to the `Four Colour Theorem
-  <https://en.wikipedia.org/wiki/Four_color_theorem>`_, we need no more than
-  four colours to colour any map such that no two adjacent regions share the
-  same colour
+* In the code, we let each of the regions choose one among four colours. Why
+  are we limiting ourselves to only four colours? According to the `Four Colour
+  Theorem <https://en.wikipedia.org/wiki/Four_color_theorem>`_, we need no more
+  than four colours to colour any map such that no two adjacent regions share
+  the same colour
 
 License
 -------
