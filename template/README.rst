@@ -2,13 +2,18 @@
 ========================
 Short blurb on what this awesome demo does.
 
-Expected QPU time: <some number> <some unit of time>
+Usage
+-----
+A simple command on how to run the code. For example,
+::
+  python <some_demo_name>.py
 
 Code Overview
 -------------
 Give a general overview of how the code works.
 
 When possible, use bullet points so that:
+
 * Ideas are bite-sized
 * Ideas are quickly conveyed
 
@@ -17,7 +22,8 @@ Code Specifics
 Draw attention to certain parts of the code implementation.
 
 This is the place to:
-* Highlight an implentation
+
+* Highlight an implementation
 * Talk about unusual or potentially difficult parts of the code
 * Explain a code decision
 
