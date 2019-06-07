@@ -1,12 +1,12 @@
-<awesome demo name> Demo
-========================
-Short blurb on what this awesome demo does.
+<demo_name> Demo
+=============
+Short blurb on what this demo does.
 
 Usage
 -----
-A simple command on how to run the code. For example,
+A simple command on how to run the demo. For example,
 ::
-  python <some_demo_name>.py
+  python <demo_name>.py
 
 Code Overview
 -------------
@@ -34,3 +34,7 @@ References
 ----------
 A. Person, "Title of Amazing Information",
 `short link name <https://example.com/>`_
+
+License
+-------
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.

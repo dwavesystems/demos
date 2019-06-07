@@ -14,7 +14,7 @@
 
 """
 Things to do:
- - Please name this file `test_<awesome_demo_name>.py`
+ - Please name this file `test_<demo_name>.py`
  - Fill in [yyyy] and [name of copyright owner] in the license
  - Add unit tests for your demo
  - Add a smoke test (i.e. does the demo actually run?)
