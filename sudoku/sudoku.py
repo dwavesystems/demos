@@ -23,14 +23,14 @@ from hybrid.reference import KerberosSampler
 
 
 def get_label(row, col, digit):
-    """Returns a string.
+    """Returns a string of the cell coordinates and the cell value in a
+    standard format.
     """
     return "{row},{col}_{digit}".format(**locals())
 
 
 def get_matrix(filename):
-    """Reads a text file, stores the information in a list of lists, and
-    returns said list of lists.
+    """Return a list of lists containing the content of the input text file.
 
     Note: each line of the text file corresponds to a list. Each item in
     the list is from splitting the line of text by the whitespace ' '.

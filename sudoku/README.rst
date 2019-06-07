@@ -60,8 +60,4 @@ Comments on the solver
   runs multiple solvers in parallel and combines their solutions together
 * We are using Kerberos because it can break down our problem into smaller
   chunks that could then be solved by our solvers. These smaller solutions
-  are then composed together, resulting to our final solution
-
-Reference
----------
-Puzzle in problem.txt: 8450793680, `Web Sudoku <https://www.websudoku.com/>`_
+  are then combined together, resulting in our final solution
