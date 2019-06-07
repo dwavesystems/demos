@@ -35,15 +35,12 @@ def get_matrix(filename):
     Note: each line of the text file corresponds to a list. Each item in
     the list is from splitting the line of text by the whitespace ' '.
     """
-    try:
-        with open(filename, "r") as f:
-            content = f.readlines()
-    except FileNotFoundError:
-        raise
+    with open(filename, "r") as f:
+        content = f.readlines()
 
     lines = []
     for line in content:
-        new_line = line.rstrip()    # Strip whitespace
+        new_line = line.rstrip()    # Strip any whitespace after last value
 
         if new_line:
             new_line = list(map(int, new_line.split(' ')))
@@ -53,7 +50,7 @@ def get_matrix(filename):
 
 
 def is_correct(matrix):
-    """Verifying that the matrix satisfies the Sudoku constraints.
+    """Verify that the matrix satisfies the Sudoku constraints.
 
     Args:
       matrix(list of lists): list contains 'n' lists, where each of the 'n'
@@ -61,18 +58,18 @@ def is_correct(matrix):
     """
     n = len(matrix)        # Number of rows/columns
     m = int(math.sqrt(n))  # Number of subsquare rows/columns
-    solution = set(range(1, n+1))  # Digits in a solution
+    unique_digits = set(range(1, n+1))  # Digits in a solution
 
     # Verifying rows
     for row in matrix:
-        if set(row) != solution:
+        if set(row) != unique_digits:
             print("Error in row: ", row)
             return False
 
     # Verifying columns
     for j in range(n):
         col = [matrix[i][j] for i in range(n)]
-        if set(col) != solution:
+        if set(col) != unique_digits:
             print("Error in col: ", col)
             return False
 
@@ -82,7 +79,7 @@ def is_correct(matrix):
         for c_scalar in range(m):
             subsquare = [matrix[i + r_scalar * m][j + c_scalar * m] for i, j
                          in subsquare_coords]
-            if set(subsquare) != solution:
+            if set(subsquare) != unique_digits:
                 print("Error in sub-square: ", subsquare)
                 return False
 
@@ -98,7 +95,7 @@ def main():
     else:
         filename = "problem.txt"
         print("Warning: using default problem file, '{}'. Usage: python "
-              "sudoku.py <sudoku filepath>".format(filename))
+              "{} <sudoku filepath>".format(filename, sys.argv[0]))
 
     # Read sudoku problem
     matrix = get_matrix(filename)
@@ -153,6 +150,18 @@ def main():
     for row, line in enumerate(matrix):
         for col, value in enumerate(line):
             if value > 0:
+                # Recall that in the "Each node can only select one digit"
+                # constraint, for a given cell at row r and column c, we
+                # produced 'n' labels. Namely,
+                # ["r,c_1", "r,c_2", ..., "r,c_(n-1)", "r,c_n"]
+                #
+                # Due to this same constraint, we can only select one of these
+                # 'n' labels (achieved by 'generators.combinations(..)').
+                #
+                # The 1 below indicates that we are selecting the label
+                # produced by 'get_label(row, col, value)'. All other labels
+                # with the same 'row' and 'col' will be discouraged from being
+                # selected.
                 bqm.fix_variable(get_label(row, col, value), 1)
 
     # Solve BQM
