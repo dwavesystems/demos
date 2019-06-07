@@ -57,7 +57,7 @@ Comments on the solver
 ~~~~~~~~~~~~~~~~~~~~~~
 * We are using a hybrid solver called Kerberos (specifically,
   ``hybrid.reference.KerberosSampler``). It is a hybrid solver because it
-  combine classical and quantum resources together
+  combines classical and quantum resources together
 * We are using Kerberos because it can break down our problem into smaller
   chunks that could then be solved by our quantum computer. The quantum
   and classical solutions are then combined together, resulting in our final
