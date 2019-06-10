@@ -30,8 +30,8 @@ organization based on data from the Stanford Militants Mapping Project:
 Mapping Militant Organizations, Stanford University, last modified February 28, 2016,
 http://web.stanford.edu/group/mappingmilitants/cgi-bin/.
 
-B. D-Wave System Execution
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+D-Wave System Execution
+~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
