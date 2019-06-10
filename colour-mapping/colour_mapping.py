@@ -1,6 +1,8 @@
 import dwavebinarycsp
 from hybrid.reference.kerberos import KerberosSampler
 
+from utilities import visualize_map
+
 
 class Province:
     def __init__(self, name):
@@ -78,25 +80,9 @@ is_correct = csp.check(best_solution)
 print("Does solution satisfy our constraints? {}".format(is_correct))
 
 
-# Visualize
+# Visualize the solution
 # Note: The following is purely for visualizing the output and is not necessary
 # for the demo.
-import networkx as nx
-import matplotlib.pyplot as plt
-
-# Set up graph
-edges = [(u.name, v.name) for (u, v) in neighbours]
-G = nx.Graph(edges)
-G.add_node(pe.name)
-
-# Grab the colours selected by best_solution
-colour_labels = [k for k, v in best_solution.items() if v == 1]
-
-# Get colour order to match that of the graph nodes
-for label in colour_labels:
-    name, colour = label.split("_")
-    G.nodes[name]["colour"] = colour
-colour_map = [colour for name, colour in G.nodes(data="colour")]
 
 # Hard code node positions to be reminiscent of the map of Canada
 node_positions = {"bc": (0, 1),
@@ -113,7 +99,7 @@ node_positions = {"bc": (0, 1),
                   "nt": (2, 3),
                   "nu": (6, 3)}
 
-# Draw and save graph
-nx.draw_networkx(G, pos=node_positions, with_labels=True, node_color=colour_map,
-                 font_color="w", node_size=400)
-plt.savefig("graph.png")
+nodes = [u.name for u in provinces]
+edges = [(u.name, v.name) for u, v in neighbours]
+visualize_map(nodes, edges, best_solution, node_positions=node_positions)
+
