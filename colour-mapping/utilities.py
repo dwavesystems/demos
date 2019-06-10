@@ -26,4 +26,4 @@ def visualize_map(nodes, edges, sample, node_positions=None):
     # Save graph
     filename = "graph.png"
     plt.savefig(filename)
-    print("The graph is saved in '{}.'".format(filename))
+    print("The graph is saved in '{}'.".format(filename))
