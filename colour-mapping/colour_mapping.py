@@ -73,7 +73,7 @@ bqm = dwavebinarycsp.stitch(csp)
 # Solve BQM
 solution = KerberosSampler().sample(bqm, max_iter=10, convergence=3)
 best_solution = solution.first.sample
-print(best_solution)
+print("Solution: ", best_solution)
 
 # Verify
 is_correct = csp.check(best_solution)
