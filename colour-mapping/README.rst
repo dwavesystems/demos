@@ -4,6 +4,13 @@ A demo on using the D-Wave Ocean SDK to solve the colour mapping problem. Namely
 given a map, colour the regions of the map such that no two regions sharing a
 border would share the same colour.
 
+.. figure:: graph.png
+  :align: center
+  :figclass: align-center
+  
+  A graph representation of Canada's provinces. Provinces connected by edges share
+  a border together. This is a sample output produced by this demo.
+
 Usage
 -----
 Simply run the code with
