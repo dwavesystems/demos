@@ -17,8 +17,8 @@ schedule our tasks onto those machines so that our jobs complete as early
 as possible?
 
 Here is a breakfast example with making pancakes and frying some eggs:
-
 ::
+
   {"pancakes": [("mixer", 5), ("stove", 2)],
    "eggs": [("stove", 3)]}
 
@@ -32,9 +32,14 @@ pancakes are being mixed).
 
 Usage
 -----
+To run the demo:
+::
+  python demo.py
 
 Code Overview
 -------------
+Most of the Job Shop Scheduling magic happens in `job_shop_scheduler.py`, so
+the following overview is on that code.
 
 Constraints:
 
@@ -45,6 +50,9 @@ Constraints:
 
 Code Specifics
 --------------
+As mentioned before, core code for Job Shop Scheduling lives in
+`job_shop_scheduler.py`, so the following sections will be describing that code.
+
 Inputs
 ~~~~~~
 'jobs' dict describes the jobs we're interested in scheduling. Namely, the dict
@@ -52,16 +60,16 @@ key is the name of the job and the dict value is the ordered list of tasks that
 the job must do.
 
 It follows the format:
-
 ::
+
   {"job_a": [(machine_name, time_duration_on_machine), ..],
    "job_b": [(some_machine, time_duration_on_machine), ..],
    ..
    "job_n": [(machine_name, time_duration_on_machine), ..]}
 
 For example,
-
 ::
+
   {"pancakes": [("mixer", 5), ("stove", 2)],
    "eggs": [("stove", 3)]}
 
