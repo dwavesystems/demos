@@ -29,7 +29,6 @@ Good schedule: while mixing pancake ingredients, make eggs. Jobs will complete
 after 7 minutes (5 + 2 = 7; making eggs happens during the 5 minutes the
 pancakes are being mixed).
 
-
 Usage
 -----
 To run the demo:
@@ -39,22 +38,30 @@ To run the demo:
 Code Overview
 -------------
 Most of the Job Shop Scheduling magic happens in `job_shop_scheduler.py`, so
-the following overview is on that code.
+the following overview is on that code. (Note: the `job_shop_scheduler` module
+gets imported into `demo.py`.)
 
-Constraints:
+In the `job_shop_scheduler.py`, we describe the Job Shop Scheduling Problem
+with the following constraints:
 
 * Each task starts only once
 * Each task within the job must follow a particular order
 * At most, one task can run on a machine at a given time
 * Remove impossible task times
 
+Using tools from the D-Wave Ocean, these constraints get converted into a BQM,
+a type of equation that we can then submit to a solver. Afterwards, the solver
+will return a solution that will indicate the times in which tasks should be
+scheduled.
+
 Code Specifics
 --------------
-As mentioned before, core code for Job Shop Scheduling lives in
-`job_shop_scheduler.py`, so the following sections will be describing that code.
+As mentioned before, the core code for Job Shop Scheduling lives in
+`job_shop_scheduler.py`, so the following sections will be describing that
+code.
 
-Inputs
-~~~~~~
+Input
+~~~~~
 'jobs' dict describes the jobs we're interested in scheduling. Namely, the dict
 key is the name of the job and the dict value is the ordered list of tasks that
 the job must do.
