@@ -26,7 +26,8 @@ Bad schedule: make pancakes and then make eggs. Jobs will complete after 10
 minutes (5 + 2 + 3 = 10).
 
 Good schedule: while mixing pancake ingredients, make eggs. Jobs will complete
-after 7 minutes (5 + 2 = 7).
+after 7 minutes (5 + 2 = 7; making eggs happens during the 5 minutes the
+pancakes are being mixed).
 
 
 Usage
