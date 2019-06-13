@@ -19,10 +19,10 @@ from dwave.system.samplers import DWaveSampler
 
 from job_shop_scheduler import get_jss_bqm
 
-# Construct a BQM for jobs 'a', 'b' and 'c'
-jobs = {"a": [("mixer", 2), ("oven", 1)],
-        "b": [("mixer", 1)],
-        "c": [("oven", 2)]}
+# Construct a BQM for the jobs
+jobs = {"cake": [("mixer", 2), ("oven", 1)],
+        "smoothie": [("mixer", 1)],
+        "lasagna": [("oven", 2)]}
 max_time = 4	  # Upperbound on how long the schedule can be
 bqm = get_jss_bqm(jobs, max_time)
 
@@ -35,18 +35,18 @@ sampleset = sampler.sample(bqm, chain_strength=2, num_reads=1000)
 solution = sampleset.first.sample
 
 # Visualize solution
-# Note0: each node in our BQM is labelled as "<job>_<task_index>,<time>".
+# Note0: we are making the solution simpler to interpret by restructuring it
+#  into the following format:
+#   task_times = {"job": [start_time_for_task0, start_time_for_task1, ..],
+#                 "other_job": [start_time_for_task0, ..]
+#                 ..}
+#
+# Note1: each node in our BQM is labelled as "<job>_<task_index>,<time>".
 #  For example, the node "a_1,2" refers to job 'a', its 1st task (where we are
 #  using zero-indexing, so task '("oven", 1)'), starting at time 2.
 #
 #  Hence, we are grabbing the nodes selected by our solver (i.e. nodes flagged
 #  with 1s) that will make a good schedule. (see 'selected_nodes')
-#
-# Note1: we are making the solution simpler to interpret by restructuring it
-#  into the following format:
-#   task_times = {"job": [start_time_for_task0, start_time_for_task1, ..],
-#                 "other_job": [start_time_for_task0, ..]
-#                 ..}
 #
 # Note2: if a start_time_for_task == -1, it means that the solution is invalid
 
@@ -64,9 +64,9 @@ for node in selected_nodes:
 # Print problem and restructured solution
 print("Jobs and their machine-specific tasks:")
 for job, task_list in jobs.items():
-    print("{}: {}".format(job, task_list))
+    print("{0:9}: {1}".format(job, task_list))
 
 print("\nJobs and the start times of each task:")
 for job, times in task_times.items():
-    print("{}: {}".format(job, times))
+    print("{0:9}: {1}".format(job, times))
 

@@ -4,14 +4,14 @@ A demo on how to optimally schedule jobs using a quantum computer.
 
 Given a set of jobs and a finite number of machines, how should you schedule
 your jobs on those machines such that all your jobs are completed at the
-earliest possible time? This question is the Job Shop Scheduling Problem!
+earliest possible time? This question is the job shop scheduling problem!
 
 Each of our jobs can be broken down into smaller machine-specific tasks. For
 example, the job of making pancakes can be broken down into several
 machine-specific tasks: mixing ingredients in a *mixer* and cooking the batter
-on the *stove*. There is an order to these tasks (ex. you can't bake the batter
+on the *stove*. There is an order to these tasks (e.g. you can't bake the batter
 before you mix the ingredients) and there is a time associated with each task
-(ex. 5 minutes on the mixer, 2 minutes to cook on the stove). Now supposing
+(e.g. 5 minutes on the mixer, 2 minutes to cook on the stove). Given that
 that you have multiple jobs with only a set number of machines, how do we
 schedule our tasks onto those machines so that our jobs complete as early
 as possible?
@@ -19,7 +19,7 @@ as possible?
 Here is a breakfast example with making pancakes and frying some eggs:
 ::
 
-  # Interpret as
+  # Note that jobs and tasks in this demo are described in the following format:
   # {"job_name": [("machine_name", duration_on_machine), ..], ..}
 
   {"pancakes": [("mixer", 5), ("stove", 2)],
@@ -50,12 +50,12 @@ with the following constraints:
 * Each task starts only once
 * Each task within the job must follow a particular order
 * At most, one task can run on a machine at a given time
-* Remove impossible task times
+* Task times must be possible
 
 Using tools from the D-Wave Ocean, these constraints get converted into a BQM,
-a type of equation that we can then submit to a solver. Afterwards, the solver
-will return a solution that will indicate the times in which tasks should be
-scheduled.
+a type of mathematical expression that we can then submit to a solver.
+Afterwards, the solver will return a solution that will indicate the times in
+which tasks should be scheduled.
 
 Code Specifics
 --------------
