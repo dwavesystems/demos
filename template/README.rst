@@ -5,7 +5,6 @@ Short blurb on what this demo does.
 If your demo produces a visualization, consider displaying an image of it here.
 
 .. image:: dwave_logo.png
-  :align: center
 
 Usage
 -----
