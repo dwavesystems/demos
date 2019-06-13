@@ -19,6 +19,9 @@ as possible?
 Here is a breakfast example with making pancakes and frying some eggs:
 ::
 
+  # Interpret as
+  # {"job_name": [("machine_name", duration_on_machine), ..], ..}
+
   {"pancakes": [("mixer", 5), ("stove", 2)],
    "eggs": [("stove", 3)]}
 
@@ -62,9 +65,9 @@ code.
 
 Input
 ~~~~~
-'jobs' dict describes the jobs we're interested in scheduling. Namely, the dict
-key is the name of the job and the dict value is the ordered list of tasks that
-the job must do.
+The jobs dictionary describes the jobs we're interested in scheduling. Namely,
+the dictionary key is the name of the job and the dictionary value is the
+ordered list of tasks that the job must do.
 
 It follows the format:
 ::
