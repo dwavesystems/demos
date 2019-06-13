@@ -56,11 +56,11 @@ select_one = {(0, 0, 0, 1),
               (0, 1, 0, 0),
               (1, 0, 0, 0)}
 
-# Apply one colour constraint
+# Apply one color constraint
 for p in provinces:
     csp.add_constraint(select_one, {p.red, p.green, p.blue, p.yellow})
 
-# Apply no colour sharing between neighbours
+# Apply no color sharing between neighbours
 for x, y in neighbours:
     csp.add_constraint(not_both, {x.red, y.red})
     csp.add_constraint(not_both, {x.green, y.green})
