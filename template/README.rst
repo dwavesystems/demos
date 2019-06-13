@@ -22,7 +22,7 @@ Notable parts of the code implementation.
 
 This is the place to:
 
-* Highlight an implementation
+* Highlight a part of the code implementation
 * Talk about unusual or potentially difficult parts of the code
 * Explain a code decision
 

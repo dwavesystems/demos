@@ -15,7 +15,8 @@
 """
 Things to do:
  - Please name this file `test_<demo_name>.py`
- - Fill in [yyyy] and [name of copyright owner] in the license
+ - Fill in [yyyy] and [name of copyright owner] in the copyright (top line)
  - Add unit tests for your demo
  - Add a smoke test (i.e. does the demo actually run?)
+ - Format code so that it conforms with PEP 8
 """
