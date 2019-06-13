@@ -20,7 +20,7 @@ from dwave.system.samplers import DWaveSampler
 from job_shop_scheduler import get_jss_bqm
 
 # Construct a BQM for the jobs
-jobs = {"cake": [("mixer", 2), ("oven", 1)],
+jobs = {"cupcakes": [("mixer", 2), ("oven", 1)],
         "smoothie": [("mixer", 1)],
         "lasagna": [("oven", 2)]}
 max_time = 4	  # Upperbound on how long the schedule can be
