@@ -71,7 +71,7 @@ for x, y in neighbours:
 bqm = dwavebinarycsp.stitch(csp)
 
 # Solve BQM
-solution = KerberosSampler().sample(bqm, max_iter=10, convergence=3)
+solution = KerberosSampler().sample(bqm)
 best_solution = solution.first.sample
 print("Solution: ", best_solution)
 
