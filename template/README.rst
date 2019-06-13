@@ -4,22 +4,21 @@ Short blurb on what this demo does.
 
 Usage
 -----
-A simple command on how to run the demo. For example,
+A simple command that runs the demo. For example,
 ::
   python <demo_name>.py
 
 Code Overview
 -------------
-Give a general overview of how the code works.
+A general overview of how the code works.
 
-When possible, use bullet points so that:
+Prefer bize-sized descriptions in bullet points:
 
-* Ideas are bite-sized
-* Ideas are quickly conveyed
+* Here's an example bullet point
 
 Code Specifics
 --------------
-Draw attention to certain parts of the code implementation.
+Notable parts of the code implementation.
 
 This is the place to:
 
