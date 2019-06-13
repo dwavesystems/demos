@@ -35,25 +35,25 @@ sampleset = sampler.sample(bqm, chain_strength=2, num_reads=1000)
 solution = sampleset.first.sample
 
 # Visualize solution
-# Note0: Each node in our BQM is labelled as "<job>_<task_index>,<time>".
+# Note0: each node in our BQM is labelled as "<job>_<task_index>,<time>".
 #  For example, the node "a_1,2" refers to job 'a', its 1st task (where we are
 #  using zero-indexing, so task '("oven", 1)'), starting at time 2.
 #
 #  Hence, we are grabbing the nodes selected by our solver (i.e. nodes flagged
 #  with 1s) that will make a good schedule. (see 'selected_nodes')
 #
-# Note1: We are making the solution simpler to interpret by restructuring it
+# Note1: we are making the solution simpler to interpret by restructuring it
 #  into the following format:
 #   task_times = {"job": [start_time_for_task0, start_time_for_task1, ..],
 #                 "other_job": [start_time_for_task0, ..]
 #                 ..}
 #
-# Note2: If a start_time_for_task == -1, it means that the solution is invalid
+# Note2: if a start_time_for_task == -1, it means that the solution is invalid
 
-# Grabbing selected nodes
+# Grab selected nodes
 selected_nodes = [k for k, v in solution.items() if v == 1]
 
-# Parsing node information
+# Parse node information
 task_times = {k: [-1]*len(v) for k, v in jobs.items()}
 for node in selected_nodes:
     job_name, task_time = node.rsplit("_", 1)

@@ -37,11 +37,11 @@ To run the demo:
 
 Code Overview
 -------------
-Most of the Job Shop Scheduling magic happens in `job_shop_scheduler.py`, so
-the following overview is on that code. (Note: the `job_shop_scheduler` module
-gets imported into `demo.py`.)
+Most of the Job Shop Scheduling magic happens in ``job_shop_scheduler.py``, so
+the following overview is on that code. (Note: the ``job_shop_scheduler``
+module gets imported into ``demo.py``.)
 
-In the `job_shop_scheduler.py`, we describe the Job Shop Scheduling Problem
+In the ``job_shop_scheduler.py``, we describe the Job Shop Scheduling Problem
 with the following constraints:
 
 * Each task starts only once
@@ -57,7 +57,7 @@ scheduled.
 Code Specifics
 --------------
 As mentioned before, the core code for Job Shop Scheduling lives in
-`job_shop_scheduler.py`, so the following sections will be describing that
+``job_shop_scheduler.py``, so the following sections will be describing that
 code.
 
 Input
