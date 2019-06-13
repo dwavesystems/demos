@@ -14,7 +14,8 @@
 
 """
 Things to do:
- - Fill in [yyyy] and [name of copyright owner] in the license
+ - Please name this file <demo_name>.py
+ - Fill in [yyyy] and [name of copyright owner] in the copyright (top line)
  - Add demo code below
  - Format code so that it conforms with PEP 8
 """
