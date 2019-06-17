@@ -85,6 +85,34 @@ For example,
   {"pancakes": [("mixer", 5), ("stove", 2)],
    "eggs": [("stove", 3)]}
 
+Comment on ``max_time``
+~~~~~~~~~~~~~~~~~~~~~~~
+In ``demo.py`` and ``job_shop_scheduler.py``, we see a variable called
+``max_time``. It refers to the maximum possible end time in our job shop
+schedule.
+
+Naively, we could set our ``max_time`` to infinity, so that our solver
+would consider all possible schedules with end times from 0 to infinity.
+However, this is a huge space to explore, and makes our BQM unnecessarily
+large and difficult to solve.
+
+Instead, we can apply our knowledge on the *worst possible* schedule scenario
+so that we can put an upper bound on the schedule end times. The worst possible scenario
+is if all job tasks require the same exact machine, hence there is no opportunity
+for parallelization. In this case, the schedule end time is the sum of all
+task durations because that one machine will run those tasks back-to-back. We know
+the optimal schedule for these tasks must finish earlier or at the same time as
+this worst case scenario because these tasks don't necessarily all need to run
+on that one machine; this allows for parallelization and a shorter schedule. Thus,
+by default, the ``max_time`` considered for a schedule is the sum of task durations.
+
+Note that we can lower ``max_time`` so that the solver considers a smaller space
+of schedule solutions. In terms of quantum computing hardware, this means
+using fewer qubits as we are considering over a smaller range of end times
+and thus, fewer possible schedules. This is acceptable so long as the optimal
+schedule has an end time that is less than ``max_time``. Otherwise, no valid
+schedule would be explored as we are considering schedule end times that are
+shorter than that of the optimal schedule.
 
 References
 ----------
