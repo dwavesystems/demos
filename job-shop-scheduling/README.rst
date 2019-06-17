@@ -2,17 +2,18 @@ Job Shop Scheduling Demo
 ========================
 A demo on how to optimally schedule jobs using a quantum computer.
 
-Given a set of jobs and a finite number of machines, how should you schedule
-your jobs on those machines such that all your jobs are completed at the
+Given a set of jobs and a finite number of machines, how should we schedule
+our jobs on those machines such that all our jobs are completed at the
 earliest possible time? This question is the job shop scheduling problem!
 
-Each of our jobs can be broken down into smaller machine-specific tasks. For
+Now let's go over some details about job shop scheduling. Each of our jobs
+can be broken down into smaller machine-specific tasks. For
 example, the job of making pancakes can be broken down into several
 machine-specific tasks: mixing ingredients in a *mixer* and cooking the batter
-on the *stove*. There is an order to these tasks (e.g. you can't bake the batter
-before you mix the ingredients) and there is a time associated with each task
+on the *stove*. There is an order to these tasks (e.g. we can't bake the batter
+before we mix the ingredients) and there is a time associated with each task
 (e.g. 5 minutes on the mixer, 2 minutes to cook on the stove). Given that
-that you have multiple jobs with only a set number of machines, how do we
+that we have multiple jobs with only a set number of machines, how do we
 schedule our tasks onto those machines so that our jobs complete as early
 as possible?
 
@@ -25,10 +26,10 @@ Here is a breakfast example with making pancakes and frying some eggs:
   {"pancakes": [("mixer", 5), ("stove", 2)],
    "eggs": [("stove", 3)]}
 
-Bad schedule: make pancakes and then make eggs. Jobs will complete after 10
+Bad schedule: make pancakes and then make eggs. The jobs complete after 10
 minutes (5 + 2 + 3 = 10).
 
-Good schedule: while mixing pancake ingredients, make eggs. Jobs will complete
+Good schedule: while mixing pancake ingredients, make eggs. The jobs complete
 after 7 minutes (5 + 2 = 7; making eggs happens during the 5 minutes the
 pancakes are being mixed).
 
@@ -52,15 +53,16 @@ with the following constraints:
 * At most, one task can run on a machine at a given time
 * Task times must be possible
 
-Using tools from the D-Wave Ocean, these constraints get converted into a BQM,
-a type of mathematical expression that we can then submit to a solver.
-Afterwards, the solver will return a solution that will indicate the times in
-which tasks should be scheduled.
+Using tools from the D-Wave Ocean, these constraints get converted into a
+`BQM <https://docs.ocean.dwavesys.com/en/latest/glossary.html#glossary>`_,
+a mathematical model that we can then submit to a solver.
+Afterwards, the solver returns a solution that indicates the times in
+which the tasks should be scheduled.
 
 Code Specifics
 --------------
 As mentioned before, the core code for Job Shop Scheduling lives in
-``job_shop_scheduler.py``, so the following sections will be describing that
+``job_shop_scheduler.py``, so the following sections describe that
 code.
 
 Input
