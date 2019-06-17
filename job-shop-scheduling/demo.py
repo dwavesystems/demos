@@ -42,8 +42,9 @@ solution = sampleset.first.sample
 #                 ..}
 #
 # Note1: each node in our BQM is labelled as "<job>_<task_index>,<time>".
-#  For example, the node "a_1,2" refers to job 'a', its 1st task (where we are
-#  using zero-indexing, so task '("oven", 1)'), starting at time 2.
+#  For example, the node "cupcakes_1,2" refers to job 'cupcakes', its 1st task
+#  (where we are using zero-indexing, so task '("oven", 1)'), starting at time
+#  2.
 #
 #  Hence, we are grabbing the nodes selected by our solver (i.e. nodes flagged
 #  with 1s) that will make a good schedule. (see 'selected_nodes')
