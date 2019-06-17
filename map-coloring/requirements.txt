@@ -1,2 +1,2 @@
 dwave-ocean-sdk==1.4.0
-matplotlib==3.1.0
+matplotlib==2.2.4
