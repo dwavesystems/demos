@@ -108,11 +108,12 @@ by default, the ``max_time`` considered for a schedule is the sum of task durati
 
 Note that we can lower ``max_time`` so that the solver considers a smaller space
 of schedule solutions. In terms of quantum computing hardware, this means
-using fewer qubits as we are considering over a smaller range of end times
+using fewer qubits as we are considering a smaller range of end times
 and thus, fewer possible schedules. This is acceptable so long as the optimal
 schedule has an end time that is less than ``max_time``. Otherwise, no valid
 schedule would be explored as we are considering schedule end times that are
-shorter than that of the optimal schedule.
+shorter than that of the optimal schedule (i.e. shortest possible of any valid
+schedule).
 
 References
 ----------
