@@ -47,7 +47,8 @@ solution = sampleset.first.sample
 #  2.
 #
 #  Hence, we are grabbing the nodes selected by our solver (i.e. nodes flagged
-#  with 1s) that will make a good schedule. (see 'selected_nodes')
+#  with 1s) that will make a good schedule.
+#  (see next line of code, 'selected_nodes')
 #
 # Note2: if a start_time_for_task == -1, it means that the solution is invalid
 
