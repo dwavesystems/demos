@@ -11,7 +11,7 @@ jobs:
       # Note: SUM_REQ_FILE is hardcoded for save_cache and restore_cache. See dicussion on
       # https://discuss.circleci.com/t/cannot-use-circle-yml-environment-variables-in-cache-keys/10994/20
       SUM_REQ_FILE: temp_requirements_summary.txt
-      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template
 
     steps:
       - checkout
@@ -99,7 +99,7 @@ jobs:
       PYTHON: 3.7.0
       HOMEBREW_NO_AUTO_UPDATE: 1
       SUM_REQ_FILE: temp_requirements_summary.txt  # Note: hardcoded for save_cache and restore_cache
-      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template
 
     working_directory: ~/repo
 
@@ -143,7 +143,7 @@ jobs:
       PYTHON: 3.6.5
       HOMEBREW_NO_AUTO_UPDATE: 1
       SUM_REQ_FILE: temp_requirements_summary.txt
-      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template
 
   test-osx-3.5:
     <<: *osx-tests-template
@@ -151,7 +151,7 @@ jobs:
       PYTHON: 3.5.5
       HOMEBREW_NO_AUTO_UPDATE: 1
       SUM_REQ_FILE: temp_requirements_summary.txt
-      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template
 
   test-osx-2.7:
     <<: *osx-tests-template
@@ -159,7 +159,7 @@ jobs:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
       SUM_REQ_FILE: temp_requirements_summary.txt
-      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring
+      IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template
 
 
   deploy:
