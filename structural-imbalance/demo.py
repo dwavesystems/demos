@@ -2,7 +2,8 @@ from __future__ import division
 import os
 import sys
 
-import dwave_structural_imbalance_demo as sbdemo
+from dwave_structural_imbalance_demo.interfaces import GlobalSignedSocialNetwork
+from dwave_structural_imbalance_demo.drawing import draw
 
 
 def diagramDateRange(gssn, graph_name, start, end, subarea_name=None):
@@ -47,7 +48,7 @@ def diagramDateRange(gssn, graph_name, start, end, subarea_name=None):
         # Draw graph
         file_name = 'Structural Imbalance %s.png' % year
         file_path = os.path.join(directory_path, file_name)
-        sbdemo.draw(file_path, nld_subrange_solved)
+        draw(file_path, nld_subrange_solved)
         print('Created graphic file: %s' % file_path)
 
     print('Created CSV file: %s' % csv_path)
@@ -68,12 +69,12 @@ if __name__ == '__main__':
     print('Running demo on %s...' % sys.argv[1])
 
     # get the graphs
-    gssn = sbdemo.GlobalSignedSocialNetwork(qpu)
+    gssn = GlobalSignedSocialNetwork(qpu)
 
     # draw Global graph before solving; save node layout for reuse
     nld_global = gssn.get_node_link_data()['results'][0]
     file_name = 'global.png'
-    position = sbdemo.draw(file_name, nld_global)
+    position = draw(file_name, nld_global)
     print('Created graphic file: %s' % file_name)
 
     # calculate the imbalance of Global
@@ -81,10 +82,10 @@ if __name__ == '__main__':
 
     # draw the Global graph; reusing the above layout, and calculating a new grouped layout
     file_name = 'global_imbalance.png'
-    sbdemo.draw(file_name, nld_global_solved, position)
+    draw(file_name, nld_global_solved, position)
     print('Created graphic file: %s' % file_name)
     file_name = 'global_imbalance_grouped.png'
-    sbdemo.draw(file_name, nld_global_solved)
+    draw(file_name, nld_global_solved)
     print('Created graphic file: %s' % file_name)
 
     # Images of the structural imbalance in the local Syrian SSN
