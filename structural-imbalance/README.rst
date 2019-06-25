@@ -35,6 +35,7 @@ D-Wave System Execution
 
 .. code-block:: bash
 
+   export MPLBACKEND="agg"
    python demo.py
 
 The demo fetches data from the Stanford Militants Mapping Project, calculates the networks,
@@ -44,7 +45,16 @@ copy of the demo repository and in a Results subdirectory.
 Note that this CLI command runs the entire demo and can take a few minutes to complete. You can
 easily modify the code to run just parts of the demo from within a Python interpreter.
 
+Remark on ``export MPLBACKEND="agg"``: the code in ``demo.py`` uses matplotlib
+to make hardcopy image files (ex. PNG) rather than interactive image pop-ups.
+Since the interactive matplotlib backend may not be necessarily installed in
+your computer, by using the line ``export MPLBACKEND="agg"``, you are simply
+stating that matplotlib to should use the non-interactive backend for your
+current shell. See
+`here <https://matplotlib.org/faq/usage_faq.html#what-is-a-backend>`_
+for details.
+
 License
 -------
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
 
-See LICENSE file.
