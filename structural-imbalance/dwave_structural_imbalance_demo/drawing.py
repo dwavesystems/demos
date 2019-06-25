@@ -34,6 +34,13 @@ def draw(filename, node_link_data, position=None):
 
     """
 
+    # select a non-interactive matplotlib backend
+    # note: since there are people without an interactive matplotlib backend
+    # and since the code does not need said backend, we will explicitly call for
+    # a non-interactive backend, Agg. See the following for details:
+    # https://matplotlib.org/faq/usage_faq.html#what-is-a-backend
+    import matplotlib
+    matplotlib.use("agg")   # must select backend before importing pyplot
     import matplotlib.pyplot as plt
 
     S = nx.node_link_graph(node_link_data)

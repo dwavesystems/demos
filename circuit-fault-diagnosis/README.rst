@@ -18,61 +18,6 @@ multiply, and the circuit's output, P, which represents either a valid or incorr
 The algorithm returns the minimum fault diagnosis (the smallest number of faulty components it found to cause the given
 inputs and product) and the number of distinct fault states with this many faults it observed.
 
-Running the Demo
-----------------
-
-You can run the demo on classical hardware (a CPU) or on a D-Wave QPU, with the selection made by the pip requirements
-file used.
-
-.. code-block:: bash
-
-  pip install -r requirements_cpu.txt                                                     # to run on CPU
-  pip install -r requirements_qpu.txt --extra-index-url https://pypi.dwavesys.com/simple  # to run on QPU
-
-The demo code has a dependency on `penaltymodel_maxgap`_, which requires that an SMT solver is installed. The solvers
-are accessed through the pysmt_ package. See the accompanying *pysmt* documentation for installing smt solvers.
-
-Running on a CPU
-~~~~~~~~~~~~~~~~
-
-The demo constructs a binary quadratic model and uses `qbsolv's`_ tabu search to solve the problem classically.
-
-First, install the required files:
-
-.. code-block:: bash
-
-  pip install -r requirements_cpu.txt
-
-Use :code:`pysmt-install` as outlined in the `pysmt installation instructions`_ to setup an smt solver.
-
-Note: For Windows, ``z3`` is currently the only supported solver.
-
-.. code-block:: bash
-
-  python demo.py
-
-Running on a QPU
-~~~~~~~~~~~~~~~~
-
-The demo constructs a binary quadratic model and minor-embeds it on the D-Wave system.
-
-Access to a D-Wave system must be configured, as described in the `dwave-cloud-client`_ documentation. A default solver
-is required.
-
-First, install the required files:
-
-.. code-block:: bash
-
-  pip install -r requirements_qpu.txt --extra-index-url https://pypi.dwavesys.com/simple
-
-Use :code:`pysmt-install` as outlined in the `pysmt installation instructions`_ to setup an smt solver.
-
-Note: For Windows, ``z3`` is currently the only supported solver.
-
-.. code-block:: bash
-
-  python demo.py
-
 Advanced Options
 ~~~~~~~~~~~~~~~~
 
