@@ -1,42 +1,30 @@
-<demo_name> Demo
+Pipelines Demo
 =============
-Short blurb on what this demo does.
 
-If your demo produces a visualization, consider displaying an image of it here.
+.. image:: readme_imgs/Alberta_pipelines.png
 
-.. image:: dwave_logo.png
+Pipeline networks can be viewed as a graph built up of edges (pipeline segments) and nodes (junctions of pipeline segments).  Suppose that within this network of pipelines, we want to determine a set of junctions from which we can monitor every pipeline segment.  This problem can be modeled as a vertex cover problem in which we want to find a subset of nodes in a graph such that every edge has at least one end point in our subset.
+
+Let's look at a simple example.  Below we have a graph representing a simple network of pipelines with seven junctions.  Note that each junction is identical in terms of its utility as a monitoring location.
+
+.. image:: readme_imgs/example_original.png
+
+Problem: Given the above set of junctions, which ones should you choose such that you minimize the number selected for monitoring, while still monitoring every segment?
+
+Solution: One possible solution is indicated by the red nodes below.
+
+.. image:: readme_imgs/example_solution.png
 
 Usage
 -----
-A simple command that runs the demo. For example,
+To run the demo:
 ::
-  python <demo_name>.py
-
-Code Overview
--------------
-A general overview of how the code works.
-
-Prefer bize-sized descriptions in bullet points:
-
-* Here's an example bullet point
-
-Code Specifics
---------------
-Notable parts of the code implementation.
-
-This is the place to:
-
-* Highlight a part of the code implementation
-* Talk about unusual or potentially difficult parts of the code
-* Explain a code decision
-
-Note: there is no need to repeat everything that is already well-documented in
-the code.
+  python pipelines.py
 
 References
 ----------
-A. Person, "Title of Amazing Information",
-`short link name <https://example.com/>`_
+
+Image of Alberta pipelines from National Energy Board of Canada, <https://www.neb-one.gc.ca/nrg/ntgrtd/mrkt/nrgsstmprfls/ab-eng.html>`_
 
 License
 -------
