@@ -24,7 +24,7 @@ To run the demo:
 References
 ----------
 
-Image of Alberta pipelines from National Energy Board of Canada, <https://www.neb-one.gc.ca/nrg/ntgrtd/mrkt/nrgsstmprfls/ab-eng.html>`_
+Image of Alberta pipelines from National Energy Board of Canada, <https://www.neb-one.gc.ca/nrg/ntgrtd/mrkt/nrgsstmprfls/ab-eng.html>
 
 License
 -------
