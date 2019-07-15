@@ -19,11 +19,6 @@ To run the demo:
 ::
   python pipelines.py
 
-References
-----------
-
-Image of Alberta pipelines from National Energy Board of Canada, <https://www.neb-one.gc.ca/nrg/ntgrtd/mrkt/nrgsstmprfls/ab-eng.html>
-
 License
 -------
 Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
