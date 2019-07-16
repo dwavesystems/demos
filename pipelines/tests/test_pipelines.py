@@ -5,7 +5,6 @@ import sys
 from dwave.system.samplers import DWaveSampler
 
 # /tests/integration/test_demo.py
-PY2 = sys.version_info.major == 2
 project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
