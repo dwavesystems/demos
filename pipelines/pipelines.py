@@ -19,6 +19,12 @@ import networkx as nx
 import dwave_networkx as dnx
 
 # Import matplotlib.pyplot to draw graphs on screen
+# note: since there are people without an interactive matplotlib backend
+# and since the code does not need said backend, we will explicitly call for
+# a non-interactive backend, Agg. See the following for details:
+# https://matplotlib.org/faq/usage_faq.html#what-is-a-backend
+import matplotlib
+matplotlib.use("agg")    # must select backend before importing pyplot
 import matplotlib.pyplot as plt
 
 # Set the solver we're going to use
