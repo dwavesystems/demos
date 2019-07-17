@@ -11,5 +11,5 @@ class TestDemo(unittest.TestCase):
         """run demo.py and check that nothing crashes"""
 
         demo_file = os.path.join(project_dir, 'demo.py')
-        subprocess.check_output(["python", project_dir, "--mnist", "--wisc"])
+        subprocess.check_output(["python", demo_file, "--mnist", "--wisc"])
 
