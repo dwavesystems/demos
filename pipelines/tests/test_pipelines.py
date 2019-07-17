@@ -2,7 +2,7 @@ import os
 import subprocess
 import unittest
 
-# /tests/test_demo.py
+# /path/to/demos/pipelines/tests/test_pipelines.py
 project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
