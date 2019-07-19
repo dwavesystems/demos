@@ -2,6 +2,14 @@ Sudoku Demo
 ===========
 A demo on how to solve a Sudoku puzzle with D-Wave Ocean.
 
+Usage
+-----
+``python sudoku.py <sudoku file path>``
+
+For example,
+::
+    python sudoku.py problem.txt
+
 Code Overview
 -------------
 The idea is to describe the Sudoku puzzle as a set of constraints that our
@@ -16,14 +24,6 @@ There are several constraints in Sudoku:
 * No row may have duplicate digits
 * No column may have duplicate digits
 * No sub-square may have duplicate digits
-
-Usage
------
-``python sudoku.py <sudoku file path>``
-
-For example,
-::
-    python sudoku.py problem.txt
 
 Code Specifics
 --------------
@@ -70,3 +70,7 @@ Comments on the solver
   chunks that could then be solved by our quantum computer. The quantum
   and classical solutions are then combined together, resulting in our final
   solution
+
+License
+-------
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.

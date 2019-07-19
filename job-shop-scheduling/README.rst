@@ -120,3 +120,7 @@ References
 D. Venturelli, D. Marchand, and G. Rojo,
 "Quantum Annealing Implementation of Job-Shop Scheduling",
 `arXiv:1506.08479v2 <https://arxiv.org/abs/1506.08479v2>`_
+
+License
+-------
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
