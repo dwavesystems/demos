@@ -42,6 +42,5 @@ embedding can be called by using:
 
 License
 -------
-
-Released under the Apache License 2.0. See LICENSE file.
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
 
