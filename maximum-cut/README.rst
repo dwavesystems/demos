@@ -10,6 +10,8 @@ Below we see a simple network of five nodes and three different ways to split th
 
 .. image:: cut_examples.png
 
+We will run the maximum cut problem on the network shown above to find the best way to split the network into two groups to maximize the number of cut edges.
+
 Usage
 -----
 To run the demo, use
@@ -18,31 +20,11 @@ To run the demo, use
 
 After running, output will be printed to the command line that provides a list of nodes in each set (labeled sets S0 and S1), the energy corresponding to the given solution, and the cut size of the given solution.
 
-Code Overview
--------------
-A general overview of how the code works.
-
-Prefer bize-sized descriptions in bullet points:
-
-* Here's an example bullet point
-
-Code Specifics
---------------
-Notable parts of the code implementation.
-
-This is the place to:
-
-* Highlight a part of the code implementation
-* Talk about unusual or potentially difficult parts of the code
-* Explain a code decision
-
-Note: there is no need to repeat everything that is already well-documented in
-the code.
-
 References
 ----------
-A. Person, "Title of Amazing Information",
-`short link name <https://example.com/>`_
+A. Lucas,
+"Ising formulations of many NP problems",
+`doi: 10.3389/fphy.2014.00005 <https://www.frontiersin.org/articles/10.3389/fphy.2014.00005/full>`_
 
 License
 -------
