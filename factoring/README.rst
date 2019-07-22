@@ -1,6 +1,3 @@
-.. image:: https://circleci.com/gh/dwavesystems/factoring-demo.svg?style=svg
-    :target: https://circleci.com/gh/dwavesystems/factoring-demo
-
 Demo of Factoring
 =================
 
@@ -18,23 +15,6 @@ input values do not need to flow through a series of gates to yield a result, as
 
 This code demonstrates the use of the D-Wave system to solve such a problem in the case of a three-bit multiplier
 circuit.
-
-Setting Up the Demo
--------------------
-
-Copy (clone) this factoring-demo repository to your local machine
-
-To set up the required dependencies, in the root directory of a copy (clone) of this repository, run the following:
-
-.. code-block:: bash
-
-  pip install .
-
-Configuring the Demo
---------------------
-
-Access to a D-Wave system must be configured, as described in the `dwave-cloud-client`_ documentation. A default solver
-is required.
 
 Running the Demo
 ----------------
@@ -65,4 +45,3 @@ License
 
 Released under the Apache License 2.0. See LICENSE file.
 
-.. _`dwave-cloud-client`: http://dwave-cloud-client.readthedocs.io/en/latest/#module-dwave.cloud.config
