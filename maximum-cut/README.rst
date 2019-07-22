@@ -8,7 +8,7 @@ One way to solve this problem is with the maximum cut problem.  If we think of o
 
 Below we see a simple network of five nodes and three different ways to split the set of nodes into two groups.  The red edges in each graph highlight the cut edges.
 
-![Screenshot](./readme_imgs/cut_examples.png)
+.. image:: cut_examples.png
 
 We will run the maximum cut problem on the network shown above to find the best way to split the network into two groups to maximize the number of cut edges.
 
