@@ -1,6 +1,3 @@
-.. image:: https://circleci.com/gh/dwavesystems/structural-imbalance-demo.svg?style=svg
-    :target: https://circleci.com/gh/dwavesystems/structural-imbalance-demo
-
 Demo of Structural Imbalance in Signed Social Networks
 ======================================================
 
