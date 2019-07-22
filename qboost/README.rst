@@ -33,9 +33,9 @@ machine learning business unit of D-Wave Systems.
 References
 ----------
 H. Neven, V. S. Denchev, G. Rose, and W. G. Macready, "Training a Binary
-Classifier with the Quantum Adiabatic Algorithm", `arXiv:0811.0416v1 <https://arxiv.org/pdf/0811.0416.pdf>`
+Classifier with the Quantum Adiabatic Algorithm", `arXiv:0811.0416v1 <https://arxiv.org/pdf/0811.0416.pdf>`_
 
 License
 -------
-Released under the Apache License 2.0. See LICENSE file.
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
 
