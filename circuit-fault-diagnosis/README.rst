@@ -1,10 +1,17 @@
 Demo of Circuit Fault Diagnosis
 ===============================
-
 Fault diagnosis is the combinational problem of quickly localizing failures as soon as they are detected in systems.
 Circuit fault diagnosis is the problem of identifying a minimum-sized set of components that, if faulty, explains an
 observation of incorrect outputs given a set of inputs.
 
+Usage
+-----
+Run ``demo.py`` and then follow the on-screen instructions.
+::
+  python demo.py
+
+Code Overview
+-------------
 This code demonstrates the use of the D-Wave system to solve such a problem in the case of a three-bit multiplier
 circuit. The user is prompted to enter three integers: A and B, which are the inputs the circuit is expected to
 multiply, and the circuit's output, P, which represents either a valid or incorrect product of the inputs.
@@ -17,6 +24,9 @@ multiply, and the circuit's output, P, which represents either a valid or incorr
 
 The algorithm returns the minimum fault diagnosis (the smallest number of faulty components it found to cause the given
 inputs and product) and the number of distinct fault states with this many faults it observed.
+
+Code Specifics
+--------------
 
 Advanced Options
 ~~~~~~~~~~~~~~~~
@@ -59,13 +69,8 @@ lead to five incorrect bits in the product's six bits in this case (one of many 
 
 In general, the number of incorrect bits in the product is greater than or equal to the number of faulty components.
 
-License
--------
-
-Released under the Apache License 2.0. See LICENSE file.
-
-Further Reading
----------------
+References
+----------
 
 * Z. Bian, F. Chudak, R. B. Israel, B. Lackey, W. G. Macready, and A. Roy, “Mapping constrained optimization problems
   to quantum annealing with application to fault diagnosis,” Frontiers in ICT, vol. 3, p. 14, 2016.
@@ -74,9 +79,7 @@ Further Reading
   fault detection and diagnosis of graph-based systems,” European Physical Journal Special Topics, vol. 224, Feb. 2015.
   https://arxiv.org/abs/1406.7601v2
 
-.. _`penaltymodel_maxgap`: https://github.com/dwavesystems/penaltymodel_maxgap
-.. _pysmt: https://github.com/pysmt/pysmt
-.. _`qbsolv's`: https://github.com/dwavesystems/qbsolv
-.. _`dwave-cloud-client`: http://dwave-cloud-client.readthedocs.io/en/latest/#module-dwave.cloud.config
-.. _z3: https://github.com/Z3Prover/z3
-.. _`pysmt installation instructions`: https://github.com/pysmt/pysmt#installation
+License
+-------
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
+
