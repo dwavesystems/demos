@@ -52,7 +52,7 @@ print('-' * 60)
 print('{:>15s}{:>15s}{:^15s}{:^15s}'.format('Set 0','Set 1','Energy','Cut Size'))
 print('-' * 60)
 for line in response:
-    S0 = list([k for k,v in line.items() if v == 0])
-    S1 = list([k for k,v in line.items() if v == 1])
+    S0 = (k for k,v in line.items() if v == 0)
+    S1 = (k for k,v in line.items() if v == 1)
     E = next(energies).energy
     print('{:>15s}{:>15s}{:^15s}{:^15s}'.format(str(S0),str(S1),str(E),str(int(-1*E))))
