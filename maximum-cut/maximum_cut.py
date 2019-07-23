@@ -35,9 +35,7 @@ for u in G.nodes:
         Q[(u,v)]=0
 
 # Update Q matrix for every edge in the graph
-for uv in G.edges:
-    u = uv[0]
-    v = uv[1]
+for u, v in G.edges:
     Q[(u,u)]+= -1
     Q[(v,v)]+= -1
     Q[(u,v)]+= 2
