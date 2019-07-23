@@ -14,7 +14,7 @@ We will run the maximum cut problem on the network shown above to find the best 
 
 Usage
 -----
-To run the demo, use
+To run the demo, type:
 ::
   python maximum_cut.py
 
