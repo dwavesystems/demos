@@ -13,8 +13,8 @@
 # limitations under the License.
 
 # ------ Import necessary packages ----
-
 import networkx as nx
+from collections import defaultdict
 from dwave.system.samplers import DWaveSampler
 from dwave.system.composites import EmbeddingComposite
 
@@ -28,11 +28,8 @@ G.add_edges_from([(1,2),(1,3),(2,4),(3,4),(3,5),(4,5)])
 
 # ------- Set up our QUBO dictionary -------
 
-# Initialize our Q matrix with all zeros
-Q = {}
-for u in G.nodes:
-    for v in G.nodes:
-        Q[(u,v)]=0
+# Initialize our Q matrix
+Q = defaultdict(int)
 
 # Update Q matrix for every edge in the graph
 for u, v in G.edges:
