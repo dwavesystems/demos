@@ -12,8 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# ------- Set up our graph -------
+# ------ Import necessary packages ----
+
 import networkx as nx
+from dwave.system.samplers import DWaveSampler
+from dwave.system.composites import EmbeddingComposite
+
+# ------- Set up our graph -------
 
 # Create empty graph
 G = nx.Graph()
@@ -43,8 +48,6 @@ chainstrength = 8
 numruns = 10
 
 # Run the QUBO on the solver from your config file
-from dwave.system.samplers import DWaveSampler
-from dwave.system.composites import EmbeddingComposite
 response = EmbeddingComposite(DWaveSampler()).sample_qubo(Q, chain_strength=chainstrength, num_reads=numruns)
 energies = iter(response.data())
 
