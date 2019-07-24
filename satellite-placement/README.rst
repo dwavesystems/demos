@@ -28,8 +28,7 @@ These rules (or constraints) will:
 Code Specifics
 --------------
 
-* The ``score_threshold`` - used to determine "bad" constellations - was
-assigned an arbitrarily picked number
+* The ``score_threshold`` - used to determine "bad" constellations - was assigned an arbitrarily picked number
 * In ``bqm.add_variable(frozenset(constellation), -score)``, we are using
 ``frozenset`` because ...?
 
