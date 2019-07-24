@@ -13,6 +13,8 @@ To run the demo,
 ::
   python satellite.py
 
+It will print out a set of satellite constellations.
+
 Code Overview
 -------------
 The idea is to consider all possible combinations of satellites, eliminate
