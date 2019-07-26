@@ -32,10 +32,16 @@ Code Specifics
   assigned an arbitrarily picked number
 * In ``bqm.add_variable(frozenset(constellation), -score)``, we are using
   ``frozenset(constellation)`` rather than simply ``constellation`` because
-  (1) we want our ``constellation`` variable to be a set (i.e. the order of the
-  satellites in a constellation should not matter.
-  ``{'a', 'b', 'c'} == {'c','a','b'}``) and (2) ``add_variable(..)`` needs its
-  variables to be immutable (hence a ``frozenset`` rather than simply ``set``.
+
+  1. We want our ``constellation`` variable to be a set (i.e. the order of the
+     satellites in a constellation should not matter.
+     ``{'a', 'b', 'c'} == {'c','a','b'}``)
+  2. ``add_variable(..)`` needs its variables to be immutable (hence a
+     ``frozenset`` rather than simply ``set``.
+  3. Since are there are more different ways to form the set
+     ``{'a', 'b', 'c'}`` than the set ``{'a','a','a'} -> {'a'}``, the set
+     ``{'a', 'b', 'c'}`` will accumulate a more negative score and thus be more
+     likely to get selected.
 
 References
 ----------
