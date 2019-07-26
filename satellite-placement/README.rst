@@ -1,11 +1,15 @@
 Satellite Placement Demo
 ========================
-A demo on how to group a set of satellites into constellations of
-size x, such that the average coverage of each constellation is maximized.
+Suppose you have a set of ``N`` satellites and ``k`` targets on Earth that you
+want to observe. Each of your satellites has varying capabilities for Earth
+observation; in particular, the amount of ground that they can observe for a
+set amount of time is different. Since there are ``k`` targets, you would like
+to have ``k`` constellations to monitor said targets. How do you group your
+satellites into ``k`` constellations such that the average coverage of each
+constellation is maximized? This is the question that we will be addressing in
+this demo!
 
-An alternate interpretation of this code could be: how do you group your class
-of students into teams of size x, such that you maximize the average
-performance of each team?
+Note: in this demo we are assuming that ``N`` is a multiple of ``k``.
 
 Usage
 -----
@@ -23,7 +27,8 @@ properties in our final solution. Namely, we want to encourage:
 
 * Constellations that have better coverage
 * Satellites to only join *one* constellation
-* A specific number of constellations in our final solution
+* A specific number of constellations in our final solution (i.e. encourage the
+  solution to have ``k`` constellations)
 
 Code Specifics
 --------------
@@ -35,13 +40,16 @@ Code Specifics
 
   1. We want our ``constellation`` variable to be a set (i.e. the order of the
      satellites in a constellation should not matter.
-     ``{'a', 'b', 'c'} == {'c','a','b'}``)
+     ``{a, b, c} == {c, a, b}``)
   2. ``add_variable(..)`` needs its variables to be immutable (hence a
      ``frozenset`` rather than simply ``set``.
-  3. Since are there are more different ways to form the set
-     ``{'a', 'b', 'c'}`` than the set ``{'a','a','a'} -> {'a'}``, the set
+  3. Since are there are more ways to form the set ``{a, b, c}``
+     than the set ``{a, a, a} -> {a}``, the set
      ``{'a', 'b', 'c'}`` will accumulate a more negative score and thus be more
-     likely to get selected.
+     likely to get selected. (Note: by "more ways to form the set", I am
+     referring to how ``(b, c, a)`` and ``(a, c, b)`` are tuples that would
+     map to the same set, where as ``(a, a, a)`` would be the only 3-tuple that
+     would map to the set ``{a}``.)
 
 References
 ----------
