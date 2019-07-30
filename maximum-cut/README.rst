@@ -20,11 +20,48 @@ To run the demo, type:
 
 After running, output will be printed to the command line that provides a list of nodes in each set (labeled sets S0 and S1), the energy corresponding to the given solution, and the cut size of the given solution.
 
+Code Overview
+-------------
+The code implements a QUBO formulation of this problem.
+
+The answer that we are looking for is a partition of the nodes in the graph, so we will assign a binary variable for each node, i.e. variable x_i denotes whether or node i is in one subset (call it Subset 0) or the other (Subset 1).
+
+The objective function that we are looking to optimize is maximizing the number of cut edges.  To count how many cut edges we have given a partition of the nodes (assignment of our binary variables), we consider a single edge in a graph in the table below.  We only want to count an edge if the endpoints are in different subsets, and so we assign a 1 for the edge column in this case and a 0 otherwise.
+
+=== === ==========
+x_i x_j edge (i,j)
+--- --- ----------
+0   0   0
+0   1   1 
+1   0   1
+1   1   0
+=== === ==========
+
+From this table, we see that we can use the expression x_i+x_j-2x_ix_j to calculate the edge column in our table.  Now for our entire graph, our objective function can be written as shown below, where the sum is over all edges in the graph.
+
+.. image:: readme_imgs/QUBO.png
+
+Since our system is used to minimize an objective function, we must convert this maximization problem to a minimization problem by multiplying the expression by -1.  Our final QUBO expression is the following.
+
+.. image:: readme_imgs/final_QUBO.png
+
+For the graph shown above, this QUBO results in the following Q matrix.  In the Q matrix (implemented as a dictionary using Ocean), we put the coefficients on the linear terms in our QUBO along the diagonal and the quadratic terms on the off-diagonal.
+
+=== === === === ===
+-2  2   2   0   0
+0   -2  0   2   0    
+0   0   -3  2   2
+0   0   0   -3  2
+0   0   0   0   -2
+=== === === === ===
+
+In the code, we create this Q matrix as a dictionary iteratively, looping over the edges in our graph just as we see in the summation of our QUBO expression.
+
+There are two parameters to be set by the user in this code:  chain strength and number of reads.  Since this is a small problem, we set a low number of reads (shown on line 43 with `numruns = 10`).  For chain strength, we examine the entries in our Q matrix and choose a relatively large number to enforce chains in our embedding.  For this problem, our matrix entries range from -3 to +2 and so a value of 8 is chosen on line 42.
+
 References
 ----------
-A. Lucas,
-"Ising formulations of many NP problems",
-`doi: 10.3389/fphy.2014.00005 <https://www.frontiersin.org/articles/10.3389/fphy.2014.00005/full>`_
+Dunning, Iain, Swati Gupta, and John Silberholz. "What works best when? A systematic evaluation of heuristics for Max-Cut and QUBO." INFORMS Journal on Computing 30.3 (2018): 608-624.
 
 License
 -------
