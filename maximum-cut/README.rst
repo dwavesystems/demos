@@ -45,9 +45,15 @@ Since our system is used to minimize an objective function, we must convert this
 
 .. image:: readme_imgs/final_QUBO.png
 
-For the graph shown above, this results in the following Q matrix.  In the Q matrix (implemented as a dictionary using Ocean), we put the coefficients on the linear terms in our QUBO along the diagonal and the quadratic terms on the off-diagonal.
+For the graph shown above, this QUBO results in the following Q matrix.  In the Q matrix (implemented as a dictionary using Ocean), we put the coefficients on the linear terms in our QUBO along the diagonal and the quadratic terms on the off-diagonal.
 
-.. image:: readme_imgs/Q_matrix.png
+=== === === === ===
+-2  2   2   0   0
+0   -2  0   2   0    
+0   0   -3  2   2
+0   0   0   -3  2
+0   0   0   0   -2
+=== === === === ===
 
 In the code, we create this Q matrix as a dictionary iteratively, looping over the edges in our graph just as we see in the summation of our QUBO expression.
 
