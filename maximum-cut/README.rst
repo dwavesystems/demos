@@ -55,9 +55,7 @@ There are two parameters to be set by the user in this code:  chain strength and
 
 References
 ----------
-A. Lucas,
-"Ising formulations of many NP problems",
-`doi: 10.3389/fphy.2014.00005 <https://www.frontiersin.org/articles/10.3389/fphy.2014.00005/full>`_
+Dunning, Iain, Swati Gupta, and John Silberholz. "What works best when? A systematic evaluation of heuristics for Max-Cut and QUBO." INFORMS Journal on Computing 30.3 (2018): 608-624.
 
 License
 -------
