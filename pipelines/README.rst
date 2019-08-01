@@ -19,6 +19,11 @@ To run the demo:
 ::
   python pipelines.py
 
+Code Overview
+-------------
+
+The program `pipelines.py` creates a graph using the Python package `networkx`, and then uses the Ocean software tools to run the `minimum_vertex_cover` function from within the `dwave_networkx` package.
+
 License
 -------
 Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
