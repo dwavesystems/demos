@@ -24,7 +24,7 @@ Code Overview
 -------------
 The code implements a QUBO formulation of this problem.
 
-The answer that we are looking for is a partition of the nodes in the graph, so we will assign a binary variable for each node, i.e. variable x_i denotes whether or node i is in one subset (call it Subset 0) or the other (Subset 1).
+The answer that we are looking for is a partition of the nodes in the graph, so we will assign a binary variable for each node, i.e. variable x_i denotes whether node i is in one subset (call it Subset 0) or the other (Subset 1).
 
 The objective function that we are looking to optimize is maximizing the number of cut edges.  To count how many cut edges we have given a partition of the nodes (assignment of our binary variables), we consider a single edge in a graph in the table below.  We only want to count an edge if the endpoints are in different subsets, and so we assign a 1 for the edge column in this case and a 0 otherwise.
 
@@ -57,7 +57,7 @@ For the graph shown above, this QUBO results in the following Q matrix.  In the 
 
 In the code, we create this Q matrix as a dictionary iteratively, looping over the edges in our graph just as we see in the summation of our QUBO expression.
 
-There are two parameters to be set by the user in this code:  chain strength and number of reads.  Since this is a small problem, we set a low number of reads (shown on line 43 with `numruns = 10`).  For chain strength, we examine the entries in our Q matrix and choose a relatively large number to enforce chains in our embedding.  For this problem, our matrix entries range from -3 to +2 and so a value of 8 is chosen on line 42.
+There are two parameters to be set by the user in this code:  chain strength and number of reads.  Since this is a small problem, we set a low number of reads (shown on line 43 with ``numruns = 10``).  For chain strength, we examine the entries in our Q matrix and choose a relatively large number to enforce chains in our embedding.  For this problem, our matrix entries range from -3 to +2 and so a value of 8 is chosen on line 42 ``chainstrength``.
 
 References
 ----------
