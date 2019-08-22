@@ -35,14 +35,16 @@ Code Specifics
 
 * The ``score_threshold`` - used to determine bad constellations - was
   assigned an arbitrarily picked number
-* In ``bqm.add_variable(frozenset(constellation), -score)``, we are using
-  ``frozenset(constellation)`` rather than simply ``constellation`` because
+* In the code, we add weights to each constellation such that we are favoring
+  constellations with a high average coverage (aka high score). This is done
+  with ``bqm.add_variable(frozenset(constellation), -score)``. Observe that we
+  are using ``frozenset(constellation)`` as the variable rather than simply
+  ``constellation`` as
 
-  1. We want our ``constellation`` variable to be a set (i.e. the order of the
-     satellites in a constellation should not matter.
-     ``{a, b, c} == {c, a, b}``)
-  2. ``add_variable(..)`` needs its variables to be immutable (hence a
-     ``frozenset`` rather than simply ``set``.
+  1. We need our variable to be a set (i.e. the order of the satellites in a
+     constellation should not matter, ``{a, b, c} == {c, a, b}``). In addition,
+     ``add_variable(..)`` needs its variables to be immutable, hence, we are
+     using ``frozenset`` rather than simply ``set``.
   3. Since are there are more ways to form the set ``{a, b, c}``
      than the set ``{a, a, a} -> {a}``, the set
      ``{'a', 'b', 'c'}`` will accumulate a more negative score and thus be more
