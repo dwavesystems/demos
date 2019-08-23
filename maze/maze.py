@@ -195,6 +195,33 @@ class Maze:
 
         return bqm
 
+    def visualize(self, solution=None):
+        # Set up default maze values
+        # Note: using list(..) to get a copy of the list, rather than get a reference to the list
+        horizontal_border = ["#"] * (2*self.n_cols + 1)
+        default_row = [" "] * (2*self.n_cols - 1)
+        default_row = ["#"] + default_row + ["#"]       # adding maze borders
+        visual = [list(default_row) for _ in range(2*self.n_rows - 1)]
+        visual.insert(0, list(horizontal_border))
+        visual.append(list(horizontal_border))
+
+        # Add in maze start, end, and interior walls
+        coord_pattern = "(\d+),(\d+)([nw])"
+        start_row, start_col, start_dir = re.findall(coord_pattern, self.start)[0]
+        start_row = int(start_row)
+        start_col = int(start_col)
+        start_row, start_col = (start_row-1, start_col) if start_dir=="n" else (start_row, start_col-1)
+
+        #end_row, end_col, end_dir = re.findall(coord_pattern, self.end)[0]
+        #end_row, end_col = (end_row-1, end_col) if end_dir=="n" else (end_row, end_col-1)
+        visual[start_row][start_col] = "s"
+
+        # Add in solution
+
+        # Print solution
+        for s in visual:
+            print("".join(s))
+
 
 
 
