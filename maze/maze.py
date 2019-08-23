@@ -196,6 +196,18 @@ class Maze:
         return bqm
 
     def visualize(self, solution=None):
+        def get_visual_coords(coords):
+            coord_pattern = "(\d+),(\d+)([nw])"
+            row, col, dir = re.findall(coord_pattern, coords)[0]
+            new_row, new_col = map(lambda x: int(x) * 2 + 1, [row, col])
+            new_row, new_col = (new_row-1, new_col) if dir == "n" else (new_row, new_col-1)
+
+            return new_row, new_col
+
+        # Check parameters
+        if solution is None:
+            solution = []
+
         # Set up default maze values
         # Note: using list(..) to get a copy of the list, rather than get a reference to the list
         horizontal_border = ["#"] * (2*self.n_cols + 1)
@@ -205,23 +217,22 @@ class Maze:
         visual.insert(0, list(horizontal_border))
         visual.append(list(horizontal_border))
 
-        # Add in maze start, end, and interior walls
-        coord_pattern = "(\d+),(\d+)([nw])"
-        start_row, start_col, start_dir = re.findall(coord_pattern, self.start)[0]
-        start_row = int(start_row)
-        start_col = int(start_col)
-        start_row, start_col = (start_row-1, start_col) if start_dir=="n" else (start_row, start_col-1)
-
-        #end_row, end_col, end_dir = re.findall(coord_pattern, self.end)[0]
-        #end_row, end_col = (end_row-1, end_col) if end_dir=="n" else (end_row, end_col-1)
+        # Add maze start and end to visual
+        start_row, start_col = get_visual_coords(self.start)
+        end_row, end_col = get_visual_coords(self.end)
         visual[start_row][start_col] = "s"
+        visual[end_row][end_col] = "e"
 
-        # Add in solution
+        # Add interior walls to visual
+        for w in self.walls:
+            row, col = get_visual_coords(w)
+            visual[row][col] = "#"
+
+        # Add solution path to visual
+        for s in solution:
+            row, col = get_visual_coords(s)
+            visual[row][col] = "*"
 
         # Print solution
         for s in visual:
             print("".join(s))
-
-
-
-
