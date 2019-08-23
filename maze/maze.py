@@ -208,14 +208,19 @@ class Maze:
         if solution is None:
             solution = []
 
-        # Set up default maze values
-        # Note: using list(..) to get a copy of the list, rather than get a reference to the list
-        horizontal_border = ["#"] * (2*self.n_cols + 1)
-        default_row = [" "] * (2*self.n_cols - 1)
-        default_row = ["#"] + default_row + ["#"]       # adding maze borders
-        visual = [list(default_row) for _ in range(2*self.n_rows - 1)]
-        visual.insert(0, list(horizontal_border))
-        visual.append(list(horizontal_border))
+        # Construct empty maze visual
+        width = 2*self.n_cols + 1       # maze visual's width
+        height = 2*self.n_rows + 1      # maze visual's height
+        empty_row = [" "] * (width-2)
+        empty_row = ["#"] + empty_row + ["#"]   # add left and right borders
+
+        visual = [list(empty_row) for _ in range(height)]
+        visual[0] = ["#"] * width      # top border
+        visual[-1] = ["#"] * width     # bottom border
+
+        # Add possible locations in maze visual
+        for position_row in visual[1::2]:
+            position_row[1::2] = ["."]*(self.n_cols - 1) + ["."]
 
         # Add maze start and end to visual
         start_row, start_col = get_visual_coords(self.start)
