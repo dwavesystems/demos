@@ -312,6 +312,7 @@ class TestGetMazeBqm(unittest.TestCase):
         bqm = get_maze_bqm(n_rows, n_cols, start, end, walls)
         self.assertIsInstance(bqm, BinaryQuadraticModel)
 
+
 class TestMazeVisualization(unittest.TestCase):
     def test_maze_setup(self):
         """Test that the maze setup is visualized correctly
