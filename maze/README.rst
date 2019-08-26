@@ -13,7 +13,7 @@ demonstrates the steps of submitting such problems to the quantum computer.
   #. .#. ._
   #########
 
-The above ascii figure is a visualization of a maze and the path through said
+The above ASCII figure is a visualization of a maze and the path through said
 maze.
 
 Usage
@@ -22,7 +22,7 @@ Usage
 
   python demo.py
 
-Returns ascii visual of the maze and a QPU sampled maze path. As well, there is
+Returns ASCII visual of the maze and a QPU sampled maze path. As well, there is
 a print out of the path segments and their associated boolean value (see "Code
 Specifics - Interpreting Results" for details).
  
