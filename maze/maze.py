@@ -218,32 +218,32 @@ class Maze:
         # Construct empty maze visual
         width = 2*self.n_cols + 1       # maze visual's width
         height = 2*self.n_rows + 1      # maze visual's height
-        empty_row = [" "] * (width-2)
-        empty_row = ["#"] + empty_row + ["#"]   # add left and right borders
+        empty_row = [EMPTY] * (width-2)
+        empty_row = [WALL] + empty_row + [WALL]   # add left and right borders
 
         visual = [list(empty_row) for _ in range(height)]
-        visual[0] = ["#"] * width      # top border
-        visual[-1] = ["#"] * width     # bottom border
+        visual[0] = [WALL] * width      # top border
+        visual[-1] = [WALL] * width     # bottom border
 
         # Add possible locations in maze visual
         for position_row in visual[1::2]:
-            position_row[1::2] = ["."]*(self.n_cols - 1) + ["."]
+            position_row[1::2] = [POS]*(self.n_cols - 1) + [POS]
 
         # Add maze start and end to visual
         start_row, start_col, start_dir = get_visual_coords(self.start)
         end_row, end_col, end_dir = get_visual_coords(self.end)
-        visual[start_row][start_col] = "|" if start_dir=="n" else "_"
-        visual[end_row][end_col] = "|" if end_dir=="n" else "_"
+        visual[start_row][start_col] = NS if start_dir == "n" else EW
+        visual[end_row][end_col] = NS if end_dir == "n" else EW
 
         # Add interior walls to visual
         for w in self.walls:
             row, col, _ = get_visual_coords(w)
-            visual[row][col] = "#"
+            visual[row][col] = WALL
 
         # Add solution path to visual
         for s in solution:
             row, col, dir = get_visual_coords(s)
-            visual[row][col] = "|" if dir=="n" else "_"
+            visual[row][col] = NS if dir == "n" else EW
 
         # Print solution
         for s in visual:
