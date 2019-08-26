@@ -5,6 +5,24 @@ Getting the D-Wave quantum computer to solve a maze!
 The following code takes a simple and familiar problem---solving a maze---and
 demonstrates the steps of submitting such problems to the quantum computer.
 
+::
+  #|#######
+  #._._. .#
+  #  # |  #
+  #. . ._.#
+  #      |#
+  #. .#. ._
+  #########
+
+Usage
+-----
+::
+  python demo.py
+
+Returns ascii visual of the maze and a QPU sampled maze path. As well, there is
+a print out of the path segments and their associated boolean value (i.e. is
+the path segment selected? ``True (1)`` or ``False (0)``).
+ 
 Code Overview
 -------------
 The solution technique is to construct a set of constraints that enforces the
