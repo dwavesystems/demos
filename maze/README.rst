@@ -81,7 +81,7 @@ Consider the following 2 by 2 maze with
 
 This can be visualized as the following maze:
 ::
-  #|###		<-- start location
+  #|###	    <-- start location
   #. .#
   #  ##     <-- wall
   _. .#     <-- end location
