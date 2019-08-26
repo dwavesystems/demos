@@ -313,11 +313,9 @@ class TestGetMazeBqm(unittest.TestCase):
         self.assertIsInstance(bqm, BinaryQuadraticModel)
 
 class TestMazeVisualization(unittest.TestCase):
-    def test_empty(self):
-        #m = Maze(0, 0, "", "", [])
-        pass
-
     def test_maze_setup(self):
+        """Test that the maze setup is visualized correctly
+        """
         m = Maze(3, 2, "2,0w", "0,1n", ["0,1w", "1,1w", "2,0n"])
         expected_out = ("###|#\n" 
                         "#.#.#\n"
@@ -327,20 +325,29 @@ class TestMazeVisualization(unittest.TestCase):
                         "_. .#\n"
                         "#####\n")
 
+        # Replace sys.stdout with mock
         with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
             m.visualize()
             self.assertEqual(mock_stdout.getvalue(), expected_out)
 
     def test_maze_solution(self):
-        m = Maze(3, 3, "", "", [])
-        expected_out = ("###|###
-#. . .#\n"
-#     #\n"
-#. . .#
-#     #
-_. . .#
-#######
-"
+        """Test that the maze path is visualized correctly
+        """
+        m = Maze(3, 3, "2,0w", "0,3w", ["1,2n", "2,0n", "2,1n"])
+        path = ["2,1w", "2,2w", "2,2n", "1,2w", "1,1w", "1,0n", "0,1w", "0,2w"]
+        expected_out = ("#######\n"
+                        "#._._._\n"
+                        "#|   ##\n"
+                        "#._._.#\n"
+                        "## # |#\n"
+                        "_._._.#\n"
+                        "#######\n")
+
+        # Replace sys.stdout with mock
+        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+            m.visualize(path)
+            self.assertEqual(mock_stdout.getvalue(), expected_out)
+
 
 if __name__ == "__main__":
     unittest.main()
