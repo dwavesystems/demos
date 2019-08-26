@@ -4,7 +4,6 @@ Getting the D-Wave quantum computer to solve a maze!
 
 The following code takes a simple and familiar problem---solving a maze---and
 demonstrates the steps of submitting such problems to the quantum computer.
-
 ::
   #|#######
   #._._. .#
@@ -16,7 +15,7 @@ demonstrates the steps of submitting such problems to the quantum computer.
 
 Usage
 -----
-::
+.. code-block :: python
   python demo.py
 
 Returns ascii visual of the maze and a QPU sampled maze path. As well, there is
