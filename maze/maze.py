@@ -222,8 +222,8 @@ class Maze:
         #   respectively. Thus, the "2 * original-maze-dimension" is needed.
         #      |      <-- north edge
         #     _.      <-- west edge and position
-        #   To get a south-edge or a east-edge, the north-edge from the row
-        #   below or the west-edge from the column on the right could be used
+        #   To get a south-edge or an east-edge, the north-edge from the row
+        #   below or the west-edge from the column on the right can be used
         #   respectively. This trick, however, cannot be used for the last row
         #   nor for the rightmost column, hence the "+ 1" in the equation.
         width = 2*self.n_cols + 1       # maze visual's width
@@ -241,7 +241,7 @@ class Maze:
         #   could potentially be a path segment sitting between the two
         #   positions.
         for position_row in visual[1::2]:
-            position_row[1::2] = [POS]*(self.n_cols - 1) + [POS]
+            position_row[1::2] = [POS] * self.n_cols
 
         # Add maze start and end to visual
         start_row, start_col, start_dir = get_visual_coords(self.start)
