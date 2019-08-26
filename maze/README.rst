@@ -13,14 +13,17 @@ demonstrates the steps of submitting such problems to the quantum computer.
   #. .#. ._
   #########
 
+The above ascii figure is a visualization of a maze and the path through said
+maze.
+
 Usage
 -----
 .. code-block :: python
   python demo.py
 
 Returns ascii visual of the maze and a QPU sampled maze path. As well, there is
-a print out of the path segments and their associated boolean value (i.e. is
-the path segment selected? ``True (1)`` or ``False (0)``).
+a print out of the path segments and their associated boolean value ("Code
+Specifics - Interpreting Results" for details).
  
 Code Overview
 -------------
@@ -46,6 +49,8 @@ below.
 
 Code Specifics
 --------------
+Coordinate Notation
+~~~~~~~~~~~~~~~~~~~
 The maze is a rectangular grid. The path segments (aka edges) that can be
 formed in this grid are described with respect to a grid point. For example,
 the edge labelled ``'1,0w'``:
@@ -66,40 +71,39 @@ south or east directions can be restated as edges in north and west directions:
   '<row>,<col>s' == '<row+1>,<col>n'
   '<row>,<col>e' == '<row>,<col+1>w'
 
-Example
--------
-.. code-block:: python
+Result Interpretation
+~~~~~~~~~~~~~~~~~~~~~
+Consider the following 2 by 2 maze with
+ 
+- start = ``'0,0n'``
+- end = ``'1,0w'``
+- walls = ``['1,1n']``
 
-  from maze import get_maze_bqm
-  from dwave.system.samplers import DWaveSampler
-  from dwave.system.composites import EmbeddingComposite
+This can be visualized as the following maze:
+::
+  #|###		<-- start location
+  #. .#
+  #  ##     <-- wall
+  _. .#     <-- end location
+  #####
 
-  # Create maze
-  n_rows = 2
-  n_cols = 2
-  start = '0,0n'
-  end = '1,0w'
-  walls = ['1,1n']
-
-  # Get BQM
-  bqm = get_maze_bqm(n_rows, n_cols, start, end, walls)
-
-  # Submit BQM to a D-Wave sampler
-  sampler = EmbeddingComposite(DWaveSampler())
-  result = sampler.sample(bqm, num_reads=1000)
-  print(result)
-
-.. code-block:: none
-
+When running the demo code and submitting this problem, the following result
+would be produced:
+::
+  #|###
+  #. .#
+  #| ##
+  _. .#
+  #####
+ 
      1,0n  0,1w  1,1w  energy  num_occ.  chain_b.
   0     1     0     0    -3.5      1000       0.0
 
-Printed results:
+Comments on the printed result:
 
 - The 1s and 0s beneath each path segment indicate whether or not the
   segment is included in the path. Specifically, 1 indicates that the segment
   contributes to the path, while 0 indicates otherwise.
 - As shown above, ``'1,0n'`` is a segment that is needed in our tiny maze path
 - Hence, the path from start to end is ``'0,0n' -> '1,0n' -> '1,0w'``
-
 
