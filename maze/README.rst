@@ -19,6 +19,7 @@ maze.
 Usage
 -----
 .. code-block :: python
+
   python demo.py
 
 Returns ascii visual of the maze and a QPU sampled maze path. As well, there is
