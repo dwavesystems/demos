@@ -13,10 +13,13 @@
 # limitations under the License.
 
 import itertools
+import io
 import re
 import unittest
 
 from dimod import BinaryQuadraticModel
+from unittest.mock import patch
+
 from maze import Maze, get_label, get_maze_bqm
 from neal import SimulatedAnnealingSampler
 
@@ -309,6 +312,35 @@ class TestGetMazeBqm(unittest.TestCase):
         bqm = get_maze_bqm(n_rows, n_cols, start, end, walls)
         self.assertIsInstance(bqm, BinaryQuadraticModel)
 
+class TestMazeVisualization(unittest.TestCase):
+    def test_empty(self):
+        #m = Maze(0, 0, "", "", [])
+        pass
+
+    def test_maze_setup(self):
+        m = Maze(3, 2, "2,0w", "0,1n", ["0,1w", "1,1w", "2,0n"])
+        expected_out = ("###|#\n" 
+                        "#.#.#\n"
+                        "#   #\n"
+                        "#.#.#\n"
+                        "##  #\n"
+                        "_. .#\n"
+                        "#####\n")
+
+        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+            m.visualize()
+            self.assertEqual(mock_stdout.getvalue(), expected_out)
+
+    def test_maze_solution(self):
+        m = Maze(3, 3, "", "", [])
+        expected_out = ("###|###
+#. . .#\n"
+#     #\n"
+#. . .#
+#     #
+_. . .#
+#######
+"
 
 if __name__ == "__main__":
     unittest.main()
