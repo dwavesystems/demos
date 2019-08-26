@@ -23,7 +23,7 @@ Usage
   python demo.py
 
 Returns ascii visual of the maze and a QPU sampled maze path. As well, there is
-a print out of the path segments and their associated boolean value ("Code
+a print out of the path segments and their associated boolean value (see "Code
 Specifics - Interpreting Results" for details).
  
 Code Overview
