@@ -202,7 +202,14 @@ class Maze:
             new_row, new_col = map(lambda x: int(x) * 2 + 1, [row, col])
             new_row, new_col = (new_row-1, new_col) if dir == "n" else (new_row, new_col-1)
 
-            return new_row, new_col
+            return new_row, new_col, dir
+
+        # Constants for maze symbols
+        WALL = "#"      # maze wall
+        NS = "|"        # path going in north-south direction
+        EW = "_"        # path going in east-west direction
+        POS = "."       # coordinate position
+        EMPTY = " "     # whitespace; indicates no path drawn
 
         # Check parameters
         if solution is None:
@@ -223,20 +230,20 @@ class Maze:
             position_row[1::2] = ["."]*(self.n_cols - 1) + ["."]
 
         # Add maze start and end to visual
-        start_row, start_col = get_visual_coords(self.start)
-        end_row, end_col = get_visual_coords(self.end)
-        visual[start_row][start_col] = "s"
-        visual[end_row][end_col] = "e"
+        start_row, start_col, start_dir = get_visual_coords(self.start)
+        end_row, end_col, end_dir = get_visual_coords(self.end)
+        visual[start_row][start_col] = "|" if start_dir=="n" else "_"
+        visual[end_row][end_col] = "|" if end_dir=="n" else "_"
 
         # Add interior walls to visual
         for w in self.walls:
-            row, col = get_visual_coords(w)
+            row, col, _ = get_visual_coords(w)
             visual[row][col] = "#"
 
         # Add solution path to visual
         for s in solution:
-            row, col = get_visual_coords(s)
-            visual[row][col] = "*"
+            row, col, dir = get_visual_coords(s)
+            visual[row][col] = "|" if dir=="n" else "_"
 
         # Print solution
         for s in visual:
