@@ -13,8 +13,10 @@ demonstrates the steps of submitting such problems to the quantum computer.
   #. .#. ._
   #########
 
-The above ASCII figure is a visualization of a maze and the path through said
-maze.
+The above ASCII figure is a visualization of a maze and a maze path returned as
+samples from the QPU. The hashes (`#`) represent maze walls, the pipes (`|`)
+and underscores (`_`) mark the maze path, and the periods (`.`) act as
+gridpoints for this maze.
 
 Usage
 -----
