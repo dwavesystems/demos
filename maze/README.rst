@@ -23,7 +23,7 @@ Usage
   python demo.py
 
 Returns ASCII visual of the maze and a QPU sampled maze path. As well, there is
-a print out of the path segments and their associated boolean value (see "Code
+a printout of the path segments and their associated boolean value (see "Code
 Specifics - Interpreting Results" for details).
  
 Code Overview
@@ -56,7 +56,7 @@ The maze is a rectangular grid. The path segments (aka edges) that can be
 formed in this grid are described with respect to a grid point. For example,
 the edge labelled ``'1,0w'``:
 
-- ``1,0`` refers to grid point on row 1, column 0
+- ``1,0`` refers to a grid point on row 1, column 0
 - ``w`` refers to "west"
 
 Hence, if you imagine a compass that is centered at position ``1,0``, the edge
