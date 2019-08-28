@@ -21,9 +21,9 @@ from maze import get_maze_bqm, Maze
 # Create maze
 n_rows = 3
 n_cols = 4
-start = '0,0n'
-end = '2,4w'
-walls = ['1,1n', '2,2w']
+start = '0,0n'  # maze entrance location
+end = '2,4w'    # maze exit location
+walls = ['1,1n', '2,2w']    # maze interior wall locations
 
 # Get BQM
 m = Maze(n_rows, n_cols, start, end, walls)
