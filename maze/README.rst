@@ -44,11 +44,8 @@ There are several constraints involved with a maze:
 - Path cannot pass maze borders
 - Path cannot pass through the internal walls of the maze
 
-Each of these constraints are implemented by the ``maze`` functions:
-``_apply_valid_move_constraint()``, ``_set_start_and_end()``,
-``_set_borders()``, and ``_set_inner_walls()``, respectively. These functions
-are called when the user calls ``get_maze_bqm(..)`` in the Example section
-below.
+Each of these constraints get implemented when the user calls Maze's
+``get_bqm()``.
 
 Code Specifics
 --------------
