@@ -30,9 +30,14 @@ m = Maze(n_rows, n_cols, start, end, walls)
 bqm = m.get_bqm()
 
 # Submit BQM to a D-Wave sampler
-# Note: the values of num_reads and chain_strength were arbitrarily picked. They
-#   just needed to be slightly higher than the default values in order to get
-#   this demo to produce the correct solution.
+# Note: occasionally, multiple qubits are used to represent a single variable
+#   (e.g. using multiple qubits to represent a single path segment in a maze).
+#   The reason for this representation has to do with the way the quantum
+#   computing hardware is structured. In order to get this set of qubits
+#   - known as a chain - to each produce same result for the single variable,
+#   we add weights to them such that this behaviour is becomes more likely.
+#   Below, we have slightly increased the default chain strength in order to
+#   help maintain the chain during sampling.
 sampler = EmbeddingComposite(DWaveSampler())
 result = sampler.sample(bqm, num_reads=1000, chain_strength=2)
 
