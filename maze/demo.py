@@ -21,11 +21,11 @@ from maze import get_maze_bqm, Maze
 # Create maze
 n_rows = 3
 n_cols = 4
-start = '0,0n'  # maze entrance location
-end = '2,4w'    # maze exit location
+start = '0,0n'              # maze entrance location
+end = '2,4w'                # maze exit location
 walls = ['1,1n', '2,2w']    # maze interior wall locations
 
-# Get BQM
+# Construct BQM
 m = Maze(n_rows, n_cols, start, end, walls)
 bqm = m.get_bqm()
 
@@ -39,7 +39,8 @@ result = sampler.sample(bqm, num_reads=1000, chain_strength=2)
 # Interpret result
 # Note: when grabbing the path, we are only grabbing path segments that have
 #   been "selected" (i.e. indicated with a 1).
-# Note2: in order to get the BQM at the right energy levels, auxiliary variables
+# Note2: in order construct the BQM such that the maze solution corresponds to
+#   the ground energy, auxiliary variables
 #   may have been included in the BQM. These auxiliary variables are no longer
 #   useful once we have our result. Hence, we can just ignore them by filtering
 #   them out with regex (i.e. re.match(r"^aux(\d+)$", k)])
