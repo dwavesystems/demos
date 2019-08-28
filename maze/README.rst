@@ -82,12 +82,13 @@ Consider the following 2 by 2 maze with
 - end = ``'1,0w'``
 - walls = ``['1,1n']``
 
-This can be visualized as the following maze:
+This can be visualized as the following maze. Note that the periods (`.`) act
+as gridpoints, which means that the maze below has 2 rows and 2 columns.
 ::
-  #|###	    <-- start location
+  #|###	    <-- start location (`'0,0n'`); the path "north" of coordinate `0,0`
   #. .#
-  #  ##     <-- wall
-  _. .#     <-- end location
+  #  ##     <-- wall (`'1,1n'`); blocks the path "north" of coordinate `1,1`
+  _. .#     <-- end location; the path "west" of coordinate `1,0`
   #####
 
 When running the demo code and submitting this problem, the following result
