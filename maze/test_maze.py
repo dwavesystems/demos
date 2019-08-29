@@ -13,10 +13,13 @@
 # limitations under the License.
 
 import itertools
+import io
 import re
 import unittest
 
 from dimod import BinaryQuadraticModel
+from unittest.mock import patch
+
 from maze import Maze, get_label, get_maze_bqm
 from neal import SimulatedAnnealingSampler
 
@@ -308,6 +311,43 @@ class TestGetMazeBqm(unittest.TestCase):
         # Get bqm
         bqm = get_maze_bqm(n_rows, n_cols, start, end, walls)
         self.assertIsInstance(bqm, BinaryQuadraticModel)
+
+
+class TestMazeVisualization(unittest.TestCase):
+    def test_maze_setup(self):
+        """Test that the maze setup is visualized correctly
+        """
+        m = Maze(3, 2, "2,0w", "0,1n", ["0,1w", "1,1w", "2,0n"])
+        expected_out = ("###|#\n" 
+                        "#.#.#\n"
+                        "#   #\n"
+                        "#.#.#\n"
+                        "##  #\n"
+                        "_. .#\n"
+                        "#####\n")
+
+        # Replace sys.stdout with mock
+        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+            m.visualize()
+            self.assertEqual(mock_stdout.getvalue(), expected_out)
+
+    def test_maze_solution(self):
+        """Test that the maze path is visualized correctly
+        """
+        m = Maze(3, 3, "2,0w", "0,3w", ["1,2n", "2,0n", "2,1n"])
+        path = ["2,1w", "2,2w", "2,2n", "1,2w", "1,1w", "1,0n", "0,1w", "0,2w"]
+        expected_out = ("#######\n"
+                        "#._._._\n"
+                        "#|   ##\n"
+                        "#._._.#\n"
+                        "## # |#\n"
+                        "_._._.#\n"
+                        "#######\n")
+
+        # Replace sys.stdout with mock
+        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+            m.visualize(path)
+            self.assertEqual(mock_stdout.getvalue(), expected_out)
 
 
 if __name__ == "__main__":

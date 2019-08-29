@@ -187,7 +187,7 @@ class Maze:
         # Edit bqm to favour optimal solutions
         for v in bqm.variables:
             # Ignore auxiliary variables
-            if isinstance(v, str) and re.match(r'aux\d+$', v):
+            if isinstance(v, str) and re.match(r'^aux\d+$', v):
                 continue
 
             # Add a penalty to every tile of the path
@@ -195,6 +195,70 @@ class Maze:
 
         return bqm
 
+    def visualize(self, solution=None):
+        def get_visual_coords(coords):
+            coord_pattern = "^(\d+),(\d+)([nw])$"
+            row, col, dir = re.findall(coord_pattern, coords)[0]
+            new_row, new_col = map(lambda x: int(x) * 2 + 1, [row, col])
+            new_row, new_col = (new_row-1, new_col) if dir == "n" else (new_row, new_col-1)
 
+            return new_row, new_col, dir
 
+        # Constants for maze symbols
+        WALL = "#"      # maze wall
+        NS = "|"        # path going in north-south direction
+        EW = "_"        # path going in east-west direction
+        POS = "."       # coordinate position
+        EMPTY = " "     # whitespace; indicates no path drawn
 
+        # Check parameters
+        if solution is None:
+            solution = []
+
+        # Construct empty maze visual
+        # Note: the maze visual is (2 * original-maze-dimension + 1) because
+        #   each position has an associated north-edge and an associated
+        #   west-edge. This requires two rows and two columns to draw,
+        #   respectively. Thus, the "2 * original-maze-dimension" is needed.
+        #      |      <-- north edge
+        #     _.      <-- west edge and position
+        #   To get a south-edge or an east-edge, the north-edge from the row
+        #   below or the west-edge from the column on the right can be used
+        #   respectively. This trick, however, cannot be used for the last row
+        #   nor for the rightmost column, hence the "+ 1" in the equation.
+        width = 2*self.n_cols + 1       # maze visual's width
+        height = 2*self.n_rows + 1      # maze visual's height
+
+        empty_row = [EMPTY] * (width-2)
+        empty_row = [WALL] + empty_row + [WALL]   # add left and right borders
+
+        visual = [list(empty_row) for _ in range(height)]
+        visual[0] = [WALL] * width      # top border
+        visual[-1] = [WALL] * width     # bottom border
+
+        # Add coordinate positions in maze visual
+        # Note: the symbol POS appears at every other position because there
+        #   could potentially be a path segment sitting between the two
+        #   positions.
+        for position_row in visual[1::2]:
+            position_row[1::2] = [POS] * self.n_cols
+
+        # Add maze start and end to visual
+        start_row, start_col, start_dir = get_visual_coords(self.start)
+        end_row, end_col, end_dir = get_visual_coords(self.end)
+        visual[start_row][start_col] = NS if start_dir=="n" else EW
+        visual[end_row][end_col] = NS if end_dir=="n" else EW
+
+        # Add interior walls to visual
+        for w in self.walls:
+            row, col, _ = get_visual_coords(w)
+            visual[row][col] = WALL
+
+        # Add solution path to visual
+        for s in solution:
+            row, col, dir = get_visual_coords(s)
+            visual[row][col] = NS if dir=="n" else EW
+
+        # Print solution
+        for s in visual:
+            print("".join(s))
