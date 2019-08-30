@@ -45,7 +45,7 @@ jobs:
               if [ -d "$demo" ]; then
                 (
                   # Call pyenv if we are using MacOS
-                  os="$(uname -s"
+                  os="$(uname -s)"
                   if [ "$os" == "Darwin" ]; then
                     eval "$(pyenv init -)"
                     pyenv local $PYTHON
