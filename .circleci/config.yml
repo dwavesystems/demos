@@ -44,13 +44,6 @@ jobs:
             for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 (
-                  # Call pyenv if we are using MacOS
-                  os="$(uname -s)"
-                  if [ "$os" == "Darwin" ]; then
-                    eval "$(pyenv init -)"
-                    pyenv local $PYTHON
-                  fi
-
                   # Create demo specific virtual environments
                   env="envs/$demo"
                   python -m virtualenv "$env"
