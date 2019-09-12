@@ -15,14 +15,17 @@
 import itertools
 import io
 import re
+import sys
 import unittest
 
 from dimod import BinaryQuadraticModel
-from unittest.mock import patch
+if sys.version_info >= (3,):
+    from unittest.mock import patch
+else:
+    from mock import patch
 
 from maze import Maze, get_label, get_maze_bqm
 from neal import SimulatedAnnealingSampler
-
 
 def fill_with_zeros(solution_dict, n_rows, n_cols, ignore_list=None):
     keys = set(itertools.chain(solution_dict.keys(), ignore_list or []))
