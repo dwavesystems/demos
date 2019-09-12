@@ -11,7 +11,8 @@ As each demo may have a different set of package requirements, you may want to
 set up a virtual environment to contain said packages and run your demo within
 that environment.
 
-Setting up a virtual environment and installing package requirements:
+Virtual environment set up and package installation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ::
 
   git clone git@github.com:dwavesystems/demos.git
@@ -24,7 +25,9 @@ Once your virtual environment has been *activated* (see
 ``source <desired-demo>_env/bin/activate``) and the package requirements have
 been installed, you can run your demo.
 
-When you're ready to deactivate your virtual environment, simply type:
+Virtual environment deactivation
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Once you're ready to leave your virtual environment, simply type:
 ::
   deactivate
 
