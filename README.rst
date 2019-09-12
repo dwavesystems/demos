@@ -3,7 +3,8 @@ Demos
 A collection of demos using the D-Wave Ocean SDK.
 
 **NOTE** Each demo is stored in its own subdirectory and may have its own
-set of package requirements (see <desired-demo>/requirements.txt).
+set of package requirements (for example, `antenna-selection/requirements.txt
+<antenna-selection/requirements.txt>`_).
 
 Setup Instructions
 ------------------
