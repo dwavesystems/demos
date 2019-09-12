@@ -11,7 +11,7 @@ As each demo may have a different set of package requirements, you may want to
 set up a virtual environment to contain said packages and run your demo within
 that environment.
 
-Virtual environment set up and package installation
+Virtual environment setup and package installation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 ::
 
@@ -21,9 +21,8 @@ Virtual environment set up and package installation
   source <desired-demo>_env/bin/activate
   pip install -r requirements.txt
 
-Once your virtual environment has been *activated* (see
-``source <desired-demo>_env/bin/activate``) and the package requirements have
-been installed, you can run your demo.
+Once the commands above have created and activated your virtual environment,
+and installed the package requirements, you can run your demo.
 
 Virtual environment deactivation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,7 +31,9 @@ Once you're ready to leave your virtual environment, simply type:
   deactivate
 
 When you want to run your demo again, remember to activate your virtual
-environment before running.
+environment first:
+::
+  source <desired-demo>_env/bin/activate
 
 Note to Python 2.7 users
 ~~~~~~~~~~~~~~~~~~~~~~~~
