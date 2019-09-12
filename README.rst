@@ -36,8 +36,8 @@ environment before running.
 
 Note to Python 2.7 users
 ~~~~~~~~~~~~~~~~~~~~~~~~
-Python 2.7 does not ship with `venv`, so in that case, instead of the command
-`python3 -m venv <desired-demo>_env`, do the following:
+Python 2.7 does not ship with ``venv``, so in that case, instead of the command
+``python3 -m venv <desired-demo>_env``, do the following:
 ::
   pip install virtualenv
   virtualenv <desired-demo>_env
