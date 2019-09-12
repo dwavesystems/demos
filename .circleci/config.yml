@@ -103,7 +103,7 @@ jobs:
     environment:
       PYTHON: 3.7.0
       HOMEBREW_NO_AUTO_UPDATE: 1
-      BASH_ENV: ~/.circleci/.bashrc_macOS
+      PATH: "Users/distiller/.pyenv/shims:$PATH"
       SUM_REQ_FILE: temp_requirements_summary.txt  # Note: hardcoded for save_cache and restore_cache
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template|qboost
 
@@ -113,6 +113,20 @@ jobs:
       - checkout
 
       - run: brew install pyenv
+
+      #- run:
+      #    name: Add to BASH_ENV
+      #    command: |
+      #      cat > $BASH_ENV <<-"EOF"
+      #      echo "Hello Mello"
+      #      export PYENV_ROOT="$HOME/.pyenv"
+      #      export PATH="$PYENV_ROOT/bin:$PATH"
+      #      if [[ -n "$PYENV_LOADING" ]]; then
+      #          export PYENV_LOADING=1
+      #          eval "$(pyenv init -)"
+      #          unset PYENV_LOADING
+      #      fi
+      #      EOF
 
       - restore_cache:
           keys:
@@ -142,7 +156,7 @@ jobs:
     environment:
       PYTHON: 3.6.5
       HOMEBREW_NO_AUTO_UPDATE: 1
-      BASH_ENV: ~/.circleci/.bashrc_macOS
+      PATH: "/Users/distiller/.pyenv/shims:$PATH"
       SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template|qboost
 
@@ -151,7 +165,7 @@ jobs:
     environment:
       PYTHON: 3.5.5
       HOMEBREW_NO_AUTO_UPDATE: 1
-      BASH_ENV: ~/.circleci/.bashrc_macOS
+      BASH_ENV: /Users/distiller/repo/.circleci/.bashrc_macOS
       SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template|qboost
 
@@ -160,7 +174,7 @@ jobs:
     environment:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
-      BASH_ENV: ~/.circleci/.bashrc_macOS
+      BASH_ENV: /Users/distiller/repo/.circleci/.bashrc_macOS
       SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template|qboost
 
@@ -219,14 +233,14 @@ workflows:
   version: 2
   tests:
     jobs:
-      - test-3.7
-      - test-3.6
-      - test-3.5
-      - test-2.7
-      - test-osx-3.7
+     # - test-3.7
+     # - test-3.6
+     # - test-3.5
+     # - test-2.7
+     # - test-osx-3.7
       - test-osx-3.6
-      - test-osx-3.5
-      - test-osx-2.7
+     # - test-osx-3.5
+     # - test-osx-2.7
 
   deploy:
     jobs:
