@@ -23,7 +23,7 @@ Virtual environment setup and package installation
   pip install -r requirements.txt
 
 Once the commands above have created and activated your virtual environment,
-and installed the package requirements, you can run your demo.
+and have installed the package requirements, you can run your demo.
 
 Virtual environment deactivation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
