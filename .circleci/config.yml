@@ -113,32 +113,24 @@ jobs:
 
       - run: brew install pyenv
 
+      # Manually put pyenv shims into PATH
+      # Note: this is typically done with "eval $(pyenv init -)". Since we
+      #   need this initialized at every run, we could put it in BASH_ENV.
+      #   However, pyenv init calls bash, so we end up with an infinite loop.
+      #   This is the workaround.
       - run: echo 'export PATH="~/.pyenv/shims:$PATH"' >> $BASH_ENV
 
-      #- run:
-      #    name: Add to BASH_ENV
-      #    command: |
-      #      cat > $BASH_ENV <<-"EOF"
-      #      echo "Hello Mello"
-      #      export PYENV_ROOT="$HOME/.pyenv"
-      #      export PATH="$PYENV_ROOT/bin:$PATH"
-      #      if [[ -n "$PYENV_LOADING" ]]; then
-      #          export PYENV_LOADING=1
-      #          eval "$(pyenv init -)"
-      #          unset PYENV_LOADING
-      #      fi
-      #      EOF
-
+      # Install desired python version
       - restore_cache:
           keys:
             - pyenv-{{ .Environment.CIRCLE_JOB }}
-
       - run: pyenv install $PYTHON -s
       - save_cache:
           key: pyenv-{{ .Environment.CIRCLE_JOB }}
           paths:
             - ~/.pyenv
 
+      # Set local python version
       - run: pyenv local $PYTHON
 
       # Restore cache
