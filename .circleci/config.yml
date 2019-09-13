@@ -227,14 +227,14 @@ workflows:
   version: 2
   tests:
     jobs:
-     # - test-3.7
-     # - test-3.6
-     # - test-3.5
-     # - test-2.7
-     # - test-osx-3.7
+      - test-3.7
+      - test-3.6
+      - test-3.5
+      - test-2.7
+      - test-osx-3.7
       - test-osx-3.6
-     # - test-osx-3.5
-     # - test-osx-2.7
+      - test-osx-3.5
+      - test-osx-2.7
 
   deploy:
     jobs:
