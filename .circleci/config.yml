@@ -118,7 +118,7 @@ jobs:
       #   need this initialized at every run, we could put it in BASH_ENV.
       #   However, pyenv init calls bash, so we end up with an infinite loop.
       #   This is the workaround.
-      - run: echo 'export PATH="~/.pyenv/shims:$PATH"' >> $BASH_ENV
+      - run: echo 'export PATH=~/".pyenv/shims:$PATH"' >> $BASH_ENV
 
       # Install desired python version
       - restore_cache:
