@@ -103,7 +103,6 @@ jobs:
     environment:
       PYTHON: 3.7.0
       HOMEBREW_NO_AUTO_UPDATE: 1
-      PATH: "Users/distiller/.pyenv/shims:$PATH"
       SUM_REQ_FILE: temp_requirements_summary.txt  # Note: hardcoded for save_cache and restore_cache
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template|qboost
 
@@ -113,6 +112,8 @@ jobs:
       - checkout
 
       - run: brew install pyenv
+
+      - run: echo 'export PATH="/Users/distiller/.pyenv/shims:$PATH"' >> $BASH_ENV
 
       #- run:
       #    name: Add to BASH_ENV
@@ -156,7 +157,6 @@ jobs:
     environment:
       PYTHON: 3.6.5
       HOMEBREW_NO_AUTO_UPDATE: 1
-      PATH: "/Users/distiller/.pyenv/shims:$PATH"
       SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template|qboost
 
