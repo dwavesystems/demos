@@ -16,7 +16,7 @@ Code Overview
 -------------
 A general overview of how the code works.
 
-Prefer bize-sized descriptions in bullet points:
+Prefer bite-sized descriptions in bullet points:
 
 * Here's an example bullet point
 
