@@ -108,3 +108,7 @@ Comments on the printed result:
 - As shown above, ``'1,0n'`` is a segment that is needed in our tiny maze path
 - Hence, the path from start to end is ``'0,0n' -> '1,0n' -> '1,0w'``
 
+License
+-------
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
+
