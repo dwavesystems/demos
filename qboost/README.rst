@@ -19,9 +19,6 @@ Disclaimer
 This demo and its code are intended for demonstrative purposes only and are not
 designed for performance.
 
-For state-of-the-art machine learning, please contact `Quadrant <https://quadrant.ai/>`_, the
-machine learning business unit of D-Wave Systems.
-
 Usage
 -----
 A minimal working example using the main interface function can be seen by running:
