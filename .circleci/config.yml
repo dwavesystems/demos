@@ -49,8 +49,6 @@ jobs:
                   virtualenv -p python "$env"
                   . "$env/bin/activate"
 
-                  python --version
-
                   pip install -r "$demo/requirements.txt"
                   pip install coverage
 
