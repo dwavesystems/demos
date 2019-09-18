@@ -34,7 +34,7 @@ jobs:
               fi
             done
       - restore_cache:
-          key: v2-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          key: v4-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
       - run: &install-dependences-template
           name: Install dependences
           command: |
@@ -44,17 +44,19 @@ jobs:
             for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
                 (
+                  # Create demo specific virtual environments
                   env="envs/$demo"
-                  python -m virtualenv "$env"
+                  virtualenv -p python "$env"
                   . "$env/bin/activate"
 
                   pip install -r "$demo/requirements.txt"
                   pip install coverage
+
                 )
               fi
             done
       - save_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          key: v4-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
           paths:
             - envs
 
@@ -108,6 +110,15 @@ jobs:
       - checkout
 
       - run: brew install pyenv
+
+      # Manually put pyenv shims into PATH
+      # Note: this is typically done with "eval $(pyenv init -)". Since we
+      #   need this initialized at every run, we could put it in BASH_ENV.
+      #   However, pyenv init calls bash, so we end up with an infinite loop.
+      #   This is the workaround.
+      - run: echo 'export PATH=~/".pyenv/shims:$PATH"' >> $BASH_ENV
+
+      # Install desired python version
       - restore_cache:
           keys:
             - pyenv-{{ .Environment.CIRCLE_JOB }}
@@ -117,26 +128,21 @@ jobs:
           paths:
             - ~/.pyenv
 
-      - run:
-          name: Create virtualenv
-          command: |
-            eval "$(pyenv init -)"
-            pyenv local $PYTHON
-            python -m pip install virtualenv
+      # Set local python version
+      - run: pyenv local $PYTHON
 
       # Restore cache
       - run: *set-requirements-summary-template
       - restore_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          key: v4-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
       - run: *install-dependences-template
       - save_cache:
-          key: v1-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
+          key: v4-dependencies-{{ checksum "temp_requirements_summary.txt" }}-{{ .Environment.CIRCLE_JOB }}
           paths:
             - envs
 
       - run: *run-tests-template
 
-#      - run: *codecov-template
 
   test-osx-3.6:
     <<: *osx-tests-template
@@ -151,6 +157,7 @@ jobs:
     environment:
       PYTHON: 3.5.5
       HOMEBREW_NO_AUTO_UPDATE: 1
+      BASH_ENV: /Users/distiller/repo/.circleci/.bashrc_macOS
       SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template|qboost
 
@@ -159,6 +166,7 @@ jobs:
     environment:
       PYTHON: 2.7.15
       HOMEBREW_NO_AUTO_UPDATE: 1
+      BASH_ENV: /Users/distiller/repo/.circleci/.bashrc_macOS
       SUM_REQ_FILE: temp_requirements_summary.txt
       IGNORED_DIRS: envs|tests|circuit-fault-diagnosis|factoring|template|qboost
 

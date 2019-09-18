@@ -13,12 +13,17 @@
 # limitations under the License.
 
 import itertools
-import io
 import re
+import sys
 import unittest
 
 from dimod import BinaryQuadraticModel
-from unittest.mock import patch
+if sys.version_info >= (3,):
+    from unittest.mock import patch
+    from io import StringIO
+else:
+    from mock import patch
+    from StringIO import StringIO
 
 from maze import Maze, get_label, get_maze_bqm
 from neal import SimulatedAnnealingSampler
@@ -327,7 +332,7 @@ class TestMazeVisualization(unittest.TestCase):
                         "#####\n")
 
         # Replace sys.stdout with mock
-        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
             m.visualize()
             self.assertEqual(mock_stdout.getvalue(), expected_out)
 
@@ -345,7 +350,7 @@ class TestMazeVisualization(unittest.TestCase):
                         "#######\n")
 
         # Replace sys.stdout with mock
-        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+        with patch('sys.stdout', new_callable=StringIO) as mock_stdout:
             m.visualize(path)
             self.assertEqual(mock_stdout.getvalue(), expected_out)
 
