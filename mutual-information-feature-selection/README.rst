@@ -73,10 +73,9 @@ prior selection of another feature; maximizing selects features that complement 
 variable of interest rather than provide redundant information.
 
 This approximation is still a hard calculation. MIQUBO is a method for formulating it
-for solution on the D-Wave quantum computer based on the 2014 paper, `Effective Global
-Approaches for Mutual Information Based Feature Selection`_, by Nguyen, Chan, Romano,
+for solution on the D-Wave quantum computer based on the 2014 paper,
+`Effective Global Approaches for Mutual Information Based Feature Selection`_, by Nguyen, Chan, Romano,
 and Bailey published in the Proceedings of the 20th ACM SIGKDD international conference on knowledge
 discovery and data mining.
 
-.. _`Effective Global
-Approaches for Mutual Information Based Feature Selection`: https://dl.acm.org/citation.cfm?id=2623611
+.. _`Effective Global Approaches for Mutual Information Based Feature Selection`: https://dl.acm.org/citation.cfm?id=2623611
