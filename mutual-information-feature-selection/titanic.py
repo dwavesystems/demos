@@ -94,8 +94,8 @@ plt.bar(np.arange(len(labels)), values)
 # Select 8 features with the top MI ranking found above.
 keep = 8
 
-sorted_mi = sorted(mi.items(), key=lambda pair: pair[1], reverse=True)
-dataset = dataset[[column[0] for column in sorted_mi[0:keep]] + ["survived"]]
+sorted_scores = sorted(scores.items(), key=lambda pair: pair[1], reverse=True)
+dataset = dataset[[column[0] for column in sorted_scores[0:keep]] + ["survived"]]
 features = list(set(dataset.columns).difference(('survived',)))
 
 # Build a QUBO that maximizes MI between survival and a subset of features
