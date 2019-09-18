@@ -83,6 +83,21 @@ ax1.set_ylabel('MI Between Survival and Feature')
 plt.xticks(np.arange(len(labels)), labels, rotation=90)
 plt.bar(np.arange(len(labels)), values)
 
+# The Titanic dataset provides a familiar, intuitive example available in the public
+# domain. In itself, however, it is not a good fit for solving by sampling. Run naively on
+# this dataset, it finds numerous good solutions but is unlikely to find the exact optimal solution.
+# There are many techniques for reformulating problems for the D-Wave system that can
+# improve performance on various metrics, some of which can help narrow down good solutions
+# to closer approach an optimal solution.
+# This demo solves the problem for just the highest-scoring features.
+
+# Select 8 features with the top MI ranking found above.
+keep = 8
+
+sorted_mi = sorted(mi.items(), key=lambda pair: pair[1], reverse=True)
+dataset = dataset[[column[0] for column in sorted_mi[0:keep]] + ["survived"]]
+features = list(set(dataset.columns).difference(('survived',)))
+
 # Build a QUBO that maximizes MI between survival and a subset of features
 bqm = dimod.BinaryQuadraticModel.empty(dimod.BINARY)
 
