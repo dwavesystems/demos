@@ -16,13 +16,14 @@ Package Installation
 ~~~~~~~~~~~~~~~~~~~~
 ::
 
-  git clone git@github.com:dwavesystems/demos.git
+  git clone https://github.com/dwavesystems/demos.git
   cd demos/<desired-demo>
   pip install -r requirements.txt
 
 Please note that as the demos will be using the Ocean SDK, they will likely
 need access to a D-Wave system. If you are accessing this for the first time,
 you will need to:
+
 * Sign up for `D-Wave Leap <https://cloud.dwavesys.com/leap/signup/>`_ in order
   to get an Authentication token
 * Create a `configuration file <https://docs.ocean.dwavesys.com/en/latest/overview/dwavesys.html#configuring-a-d-wave-system-as-a-solver>`_
