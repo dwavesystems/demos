@@ -1,3 +1,8 @@
+.. image:: https://circleci.com/gh/dwavesystems/demos.svg?style=svg
+    :target: https://circleci.com/gh/dwavesystems/demos
+    :alt: Linux/Mac build status
+
+=====
 Demos
 =====
 A collection of demos using the D-Wave Ocean SDK.
