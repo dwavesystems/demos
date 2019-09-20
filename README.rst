@@ -26,9 +26,9 @@ time, you will need to:
 
 * Sign up for `D-Wave Leap <https://cloud.dwavesys.com/leap/signup/>`_ in order
   to get an authentication token
-* Create a `configuration file <https://docs.ocean.dwavesys.com/en/latest/overview/dwavesys.html#configuring-a-d-wave-system-as-a-solver>`_
-  , so that you can easily submit your problems to a D-Wave system without
-  your authentication token being stored within your code
+* Create a `configuration file <https://docs.ocean.dwavesys.com/en/latest/overview/dwavesys.html#configuring-a-d-wave-system-as-a-solver>`_,
+  so that you can easily submit your problems to a D-Wave system without your
+  authentication token being stored within your code
 
 Now you're ready to run your demo!
 
