@@ -20,13 +20,15 @@ Package Installation
   cd demos/<desired-demo>
   pip install -r requirements.txt
 
-Please note that as the demos will be using the Ocean SDK, they will likely
-need access to a D-Wave system. If you are accessing this for the first time,
-you will need to:
+Please note that as the demos will be using the D-Wave Ocean SDK, they will
+likely need access to a D-Wave system. If you are accessing this for the first
+time, you will need to:
 
 * Sign up for `D-Wave Leap <https://cloud.dwavesys.com/leap/signup/>`_ in order
-  to get an Authentication token
+  to get an authentication token
 * Create a `configuration file <https://docs.ocean.dwavesys.com/en/latest/overview/dwavesys.html#configuring-a-d-wave-system-as-a-solver>`_
+  , so that you can easily submit your problems to a D-Wave system without
+  your authentication token being stored within your code
 
 Now you're ready to run your demo!
 
