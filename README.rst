@@ -9,38 +9,24 @@ set of package requirements (for example, `antenna-selection/requirements.txt
 Setup Instructions
 ------------------
 As each demo may have a different set of package requirements, you may want to
-set up a virtual environment to contain said packages and run your demo within
-that environment.
+set up a `virtual environment <https://docs.ocean.dwavesys.com/en/latest/overview/install.html#python-virtual-environment>`_
+to contain said packages and run your demo within that environment.
 
-Virtual environment setup and package installation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Package Installation
+~~~~~~~~~~~~~~~~~~~~
 ::
 
-  git clone git@github.com:dwavesystems/demos.git
+  git clone https://github.com/dwavesystems/demos.git
   cd demos/<desired-demo>
-  python3 -m venv <desired-demo>_env
-  source <desired-demo>_env/bin/activate
   pip install -r requirements.txt
 
-Once the commands above have created and activated your virtual environment,
-and have installed the package requirements, you can run your demo.
+Please note that to run demos that access a D-Wave system, you must:
 
-Virtual environment deactivation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Once you're ready to leave your virtual environment, simply type:
-::
-  deactivate
+* Sign up for `D-Wave Leap <https://cloud.dwavesys.com/leap/signup/>`_ in order
+  to get an authentication token
+* Create a `configuration file <https://docs.ocean.dwavesys.com/en/latest/overview/dwavesys.html#configuring-a-d-wave-system-as-a-solver>`_,
+  so that you can easily submit your problems to a D-Wave system without your
+  authentication token being stored within your code
 
-When you want to run your demo again, remember to activate your virtual
-environment first:
-::
-  source <desired-demo>_env/bin/activate
-
-Note to Python 2.7 users
-~~~~~~~~~~~~~~~~~~~~~~~~
-Python 2.7 does not ship with ``venv``, so in that case, instead of the command
-``python3 -m venv <desired-demo>_env``, do the following:
-::
-  pip install virtualenv
-  virtualenv <desired-demo>_env
+Now you're ready to run your demo!
 
