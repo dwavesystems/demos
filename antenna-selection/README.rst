@@ -35,7 +35,7 @@ The program ``antennas.py`` creates a graph using the Python package ``networkx`
 
 Further Information
 -------------------
-.. [1] S.Butenko and P.M. Pardalos. "Maximum independent set and related problems, with applications." PhD dissertationo, University of Florida, 2003.
+.. [1] S.Butenko and P.M. Pardalos. "Maximum independent set and related problems, with applications." PhD dissertation, University of Florida, 2003.
 
 .. [2] V.Goliber, "Quantum Programming with the Ocean Tools Suite", `www.youtube.com/watch?v=ckJ59gsFllU <https://www.youtube.com/watch?v=ckJ59gsFllU>`_
 
