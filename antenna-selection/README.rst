@@ -36,3 +36,7 @@ V. Goliber,
 A. Lucas,
 "Ising formulations of many NP problems",
 `doi: 10.3389/fphy.2014.00005 <https://www.frontiersin.org/articles/10.3389/fphy.2014.00005/full>`_
+
+License
+-------
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
