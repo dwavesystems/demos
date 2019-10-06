@@ -24,6 +24,8 @@ To run the demo:
 ::
   python antennas.py
 
+After running, the largest independent set found in the graph will be printed to the command line and two images (.png files) will be created.  An image of the original graph can be found in the file ``antenna_plot_original.png``, and an image of the graph with the nodes in the independent set highlighted in a different color can be found in the file ``antenna_plot_solution.png``. 
+
 To modify the program to consider a different set of antennas locations, modify the graph G.
 
 Code Overview
