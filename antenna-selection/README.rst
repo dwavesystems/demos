@@ -16,7 +16,7 @@ Solution: One possible solution is indicated by the red nodes below.
 
 .. image:: readme_imgs/example_solution.png
 
-This problem is an example of an unconstrained optimization problem, known as the maximum independent set problem.  There are a wide variety of applications for this problem, such as scheduling and error correcting codes (as shown in [1]_).
+This problem is an example of an optimization problem, known as the maximum independent set problem.  Our objective is to maximize the number of nodes in a set, with the constraint that no edges be contained in the set.  For the D-Wave System, we can modify this problem to formulate it as a quadratic unconstrained binary optimization problem (QUBO).  There are a wide variety of applications for this problem, such as scheduling and error correcting codes (as shown in [1]_).
 
 Usage
 -----
