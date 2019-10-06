@@ -16,11 +16,15 @@ Solution: One possible solution is indicated by the red nodes below.
 
 .. image:: readme_imgs/example_solution.png
 
+This problem is an example of an unconstrained optimization problem, known as the maximum independent set problem.  There are a wide variety of applications for this problem, such as scheduling and error correcting codes (as shown in [1]_).
+
 Usage
 -----
 To run the demo:
 ::
   python antennas.py
+
+To modify the program to consider a different set of antennas locations, modify the graph G.
 
 Code Overview
 -------------
@@ -29,13 +33,17 @@ The program ``antennas.py`` creates a graph using the Python package ``networkx`
 
 Further Information
 -------------------
-V. Goliber,
+.. [1] S. Butenko and P.M. Pardalos. "Maximum independent set and related problems, with applications." PhD dissertationo, University of Florida, 2003.
+
+.. [2] V. Goliber,
 "Quantum Programming with the Ocean Tools Suite",
 `www.youtube.com/watch?v=ckJ59gsFllU <https://www.youtube.com/watch?v=ckJ59gsFllU>`_
 
-A. Lucas,
+.. [3] A. Lucas,
 "Ising formulations of many NP problems",
 `doi: 10.3389/fphy.2014.00005 <https://www.frontiersin.org/articles/10.3389/fphy.2014.00005/full>`_
+
+
 
 License
 -------
