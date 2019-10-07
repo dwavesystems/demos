@@ -1,6 +1,6 @@
 Demo of Antennas Selection
 ===========================
-This code was taken from the webinar, *Quantum Programming with the Ocean Tools Suite*.
+This code was taken from the webinar, *Quantum Programming with the Ocean Tools Suite [2]_.
 
 This is a graph representing antenna coverage. Each of the seven nodes below represents
 an antenna with some amount of coverage. Note that the coverage provided by each
