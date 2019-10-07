@@ -2,7 +2,7 @@ Demo of Antennas Selection
 ===========================
 This code was taken from the webinar, *Quantum Programming with the Ocean Tools Suite [2]_.
 
-This is a graph representing antenna coverage. Each of the seven nodes below represents
+The graph below represents antenna coverage. Each of the seven nodes below represents
 an antenna with some amount of coverage. Note that the coverage provided by each
 antenna is identical. The edges between each node represent antennas with overlapping
 coverage.
@@ -16,7 +16,7 @@ Solution: One possible solution is indicated by the red nodes below.
 
 .. image:: readme_imgs/example_solution.png
 
-This problem is an example of an optimization problem, known as the maximum independent set problem.  Our objective is to maximize the number of nodes in a set, with the constraint that no edges be contained in the set.  For the D-Wave System, we can modify this problem to formulate it as a quadratic unconstrained binary optimization problem (QUBO).  There are a wide variety of applications for this problem, such as scheduling and error correcting codes (as shown in [1]_).
+This problem is an example of an optimization problem known as the maximum independent set problem.  Our objective is to maximize the number of nodes in a set, with the constraint that no edges be contained in the set.  To solve on a D-Wave system, we can reformulate this problem as a quadratic unconstrained binary optimization problem (QUBO).  There are a wide variety of applications for this problem, such as scheduling and error correcting codes (as shown in [1]_).
 
 Usage
 -----
@@ -26,7 +26,7 @@ To run the demo:
 
 After running, the largest independent set found in the graph will be printed to the command line and two images (.png files) will be created.  An image of the original graph can be found in the file ``antenna_plot_original.png``, and an image of the graph with the nodes in the independent set highlighted in a different color can be found in the file ``antenna_plot_solution.png``. 
 
-To modify the program to consider a different set of antennas locations, modify the graph G.
+To run the program on a different problem, modify graph G to represent a different antenna network.
 
 Code Overview
 -------------
