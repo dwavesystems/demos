@@ -152,17 +152,25 @@ class JobShopScheduler:
         tasks = []
         last_task_indices = [-1]    # -1 for zero-indexing
         total_time = 0  # total time of all jobs
+        max_job_time = 0
 
         for job_name, job_tasks in jobs.items():
             last_task_indices.append(last_task_indices[-1] + len(job_tasks))
+            job_time = 0
 
             for i, (machine, time_span) in enumerate(job_tasks):
                 tasks.append(Task(job_name, i, machine, time_span))
                 total_time += time_span
+                job_time += time_span
+
+            # Store the time of the longest running job
+            if job_time > max_job_time:
+                max_job_time = job_time
 
         # Update values
         self.tasks = tasks
         self.last_task_indices = last_task_indices[1:]
+        self.max_job_time = max_job_time
 
         if self.max_time is None:
             self.max_time = total_time
@@ -322,11 +330,18 @@ class JobShopScheduler:
             for t in range(self.max_time):
                 end_time = t + task.duration
 
-                # Check task's end time; do not add in absurd times
-                if end_time > self.max_time:
+                # Check task's end time
+                # Note: first condition is to prevent adding in absurd times. Second condition is
+                #   to prevent penalizing job end-times shorter than the shortest possible schedule
+                #   end-time (i.e. the time it take to run the longest job).
+                if end_time > self.max_time or end_time < self.max_job_time:
                     continue
 
                 # Add bias to variable
+                # Note: the bias shown here is a scaled version of the proof shown above. Rather
+                #   than simply doing base**end_time, I have scaled the all biases with
+                #   2 / base**self.max_time. This way, the largest possible bias
+                #   (when end_time==self.max_time) is 2.
                 bias = 2 * base**(end_time - self.max_time)
                 label = get_label(task, t)
                 if label in pruned_variables:
