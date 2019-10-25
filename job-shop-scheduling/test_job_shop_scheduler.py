@@ -455,8 +455,15 @@ class TestGetBqm(unittest.TestCase):
             bqm = scheduler.get_bqm()
 
         # Check linear biases
-        # Specifically, check that tasks with end-times greater than longest_job are penalized
-        # with biases that encourage shorter schedules
+        # Note: I have grouped the tests by job-task and am comparing the linear biases between
+        #   adjacent times. Tasks that finish before or at the lowerbound of the optimal schedule
+        #   are not penalized with an additional bias; hence all these task-times should have the
+        #   same bias.
+        #   For example, the 0th task of job 2 (aka 'j2_0') will have the same linear
+        #   bias for times 0 through 2 because with these start times, the task would complete
+        #   before the optimal schedule lowerbound. (i.e. "j2_0,0", "j2_0,1", "j2_0,2" all have the
+        #   same linear biases). The remaining task-times will have increasing biases with time, in
+        #   this way, the shortest schedule is encouraged.
         self.assertEqual(bqm.linear['j2_0,0'], bqm.linear['j2_0,1'])
         self.assertEqual(bqm.linear['j2_0,1'], bqm.linear['j2_0,2'])
         self.assertLess(bqm.linear['j2_0,2'], bqm.linear['j2_0,3'])
