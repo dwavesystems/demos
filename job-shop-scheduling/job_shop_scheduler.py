@@ -270,24 +270,7 @@ class JobShopScheduler:
                 label = get_label(task, self.max_time - t)
                 self.csp.fix_variable(label, 0)
 
-    def get_bqm(self, stitch_kwargs=None):
-        """Returns a BQM to the Job Shop Scheduling problem.
-
-        Args:
-            stitch_kwargs: A dict. Kwargs to be passed to dwavebinarycsp.stitch.
-        """
-        if stitch_kwargs == None:
-            stitch_kwargs = {}
-
-        # Apply constraints to self.csp
-        self._add_one_start_constraint()
-        self._add_precedence_constraint()
-        self._add_share_machine_constraint()
-        self._remove_absurd_times()
-
-        # Get BQM
-        bqm = dwavebinarycsp.stitch(self.csp, **stitch_kwargs)
-
+    def _edit_bqm_for_shortest_schedule(self, bqm):
         # Edit BQM to encourage the shortest schedule
         # Overview of this added penalty:
         # - Want any-optimal-schedule-penalty < any-non-optimal-schedule-penalty
@@ -349,6 +332,27 @@ class JobShopScheduler:
                 label = get_label(task, t)
                 if label in pruned_variables:
                     bqm.add_variable(label, bias)
+
+    def get_bqm(self, stitch_kwargs=None):
+        """Returns a BQM to the Job Shop Scheduling problem.
+
+        Args:
+            stitch_kwargs: A dict. Kwargs to be passed to dwavebinarycsp.stitch.
+        """
+        if stitch_kwargs == None:
+            stitch_kwargs = {}
+
+        # Apply constraints to self.csp
+        self._add_one_start_constraint()
+        self._add_precedence_constraint()
+        self._add_share_machine_constraint()
+        self._remove_absurd_times()
+
+        # Get BQM
+        bqm = dwavebinarycsp.stitch(self.csp, **stitch_kwargs)
+
+        # Edit BQM to encourage an optimal schedule
+        self._edit_bqm_for_shortest_schedule(bqm)
 
         return bqm
 
