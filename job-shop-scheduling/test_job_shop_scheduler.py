@@ -448,7 +448,8 @@ class TestGetBqm(unittest.TestCase):
                      ('j2_0,2', 'j2_0,1'): 4.0, ('j2_0,2', 'aux0'): 4.0, ('j2_0,4', 'j2_0,0'): 4.0,
                      ('j2_0,4', 'j2_0,1'): 4.0, ('j2_0,4', 'aux0'): 4.0, ('j2_0,0', 'j2_0,1'): 4.0,
                      ('j2_0,0', 'aux0'): 4.0, ('j2_0,1', 'aux0'): 4.0}
-        mock_stitched_bqm = BinaryQuadraticModel(linear, quadratic, 14.0, dbc.BINARY)
+        vartype = dbc.BINARY
+        mock_stitched_bqm = BinaryQuadraticModel(linear, quadratic, 14.0, vartype)
 
         scheduler = JobShopScheduler(jobs)
         with unittest.mock.patch.object(dbc, "stitch", return_value=mock_stitched_bqm):
@@ -469,8 +470,11 @@ class TestGetBqm(unittest.TestCase):
         self.assertLess(bqm.linear['j1_1,3'], bqm.linear['j1_1,4'])
 
         # Check quadratic biases
-        # Specifically, quadratic biases should not be penalized to encourage shorter schedules
-        self.assertDictEqual(bqm.quadratic, quadratic)
+        # Specifically, quadratic biases should not be penalized when encouraging shorter schedules
+        # Note: Unable to simply compare dicts as BQM's quadraticview may re-order dict tuple-keys;
+        #   hence, we're comparing BQM adjacencies.
+        bqm_with_unchanged_quadratic = BinaryQuadraticModel({}, quadratic, 0, vartype)
+        self.assertEqual(bqm.adj, bqm_with_unchanged_quadratic.adj)
 
 
 if __name__ == "__main__":
