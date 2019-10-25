@@ -328,7 +328,7 @@ class JobShopScheduler:
             task = self.tasks[i]
 
             for t in range(self.max_time):
-                end_time = t + task.duration
+                end_time = t + task.duration - 1    # -1 to get last unit of time the task occupies
 
                 # Check task's end time
                 # Note: first condition is to prevent adding in absurd times. Second condition is
