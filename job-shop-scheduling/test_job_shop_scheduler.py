@@ -430,7 +430,6 @@ class TestGetBqm(unittest.TestCase):
         """
         jobs = {"j1": [("m1", 2), ("m2", 2)],
                 "j2": [("m1", 2)]}
-        longest_job = 4   # Remove hardcode
 
         # Create mock object for stitch(..) output
         linear = {'j1_0,0': -2.0, 'j1_0,1': -2.0, 'j1_0,2': -2.0,
