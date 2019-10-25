@@ -139,7 +139,7 @@ class JobShopScheduler:
 
         self.tasks = []
         self.last_task_indices = []
-        self.max_time = max_time - 1    # -1 to account for zero-indexing
+        self.max_time = max_time    # will get decremented by 1 for zero-indexing; see _process_data
         self.csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
 
         # Populates self.tasks and self.max_time
@@ -175,7 +175,8 @@ class JobShopScheduler:
         self.max_job_time = max_job_time - 1    # -1 to account for zero-indexing
 
         if self.max_time is None:
-            self.max_time = total_time - 1    # -1 to account for zero-indexing
+            self.max_time = total_time
+        self.max_time -= 1    # -1 to account for zero-indexing
 
     def _add_one_start_constraint(self):
         """self.csp gets the constraint: A task can start once and only once
