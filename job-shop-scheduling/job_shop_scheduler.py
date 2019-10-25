@@ -139,7 +139,7 @@ class JobShopScheduler:
 
         self.tasks = []
         self.last_task_indices = []
-        self.max_time = max_time
+        self.max_time = max_time - 1    # -1 to account for zero-indexing
         self.csp = dwavebinarycsp.ConstraintSatisfactionProblem(dwavebinarycsp.BINARY)
 
         # Populates self.tasks and self.max_time
@@ -168,18 +168,20 @@ class JobShopScheduler:
                 max_job_time = job_time
 
         # Update values
+        # Note: max_job_time is a lowerbound to the time it takes for the optimal schedule. This is
+        #   because the longest job must be a part of this optimal schedule.
         self.tasks = tasks
         self.last_task_indices = last_task_indices[1:]
-        self.max_job_time = max_job_time
+        self.max_job_time = max_job_time - 1    # -1 to account for zero-indexing
 
         if self.max_time is None:
-            self.max_time = total_time
+            self.max_time = total_time - 1    # -1 to account for zero-indexing
 
     def _add_one_start_constraint(self):
         """self.csp gets the constraint: A task can start once and only once
         """
         for task in self.tasks:
-            task_times = {get_label(task, t) for t in range(self.max_time)}
+            task_times = {get_label(task, t) for t in range(self.max_time + 1)}
             self.csp.add_constraint(sum_to_one, task_times)
 
     def _add_precedence_constraint(self):
@@ -192,10 +194,10 @@ class JobShopScheduler:
                 continue
 
             # Forming constraints with the relevant times of the next task
-            for t in range(self.max_time):
+            for t in range(self.max_time + 1):
                 current_label = get_label(current_task, t)
 
-                for tt in range(min(t + current_task.duration, self.max_time)):
+                for tt in range(min(t + current_task.duration, self.max_time + 1)):
                     next_label = get_label(next_task, tt)
                     self.csp.add_constraint(valid_edges, {current_label, next_label})
 
@@ -226,10 +228,10 @@ class JobShopScheduler:
                     if task.job == other_task.job and task.position == other_task.position:
                         continue
 
-                    for t in range(self.max_time):
+                    for t in range(self.max_time + 1):
                         current_label = get_label(task, t)
 
-                        for tt in range(t, min(t + task.duration, self.max_time)):
+                        for tt in range(t, min(t + task.duration, self.max_time + 1)):
                             self.csp.add_constraint(valid_values, {current_label,
                                                                    get_label(other_task, tt)})
 
@@ -264,7 +266,7 @@ class JobShopScheduler:
 
             successor_time += task.duration
             for t in range(successor_time):
-                label = get_label(task, (self.max_time - 1) - t) # -1 for zero-indexed time
+                label = get_label(task, self.max_time - t)
                 self.csp.fix_variable(label, 0)
 
     def get_bqm(self, stitch_kwargs=None):
@@ -327,21 +329,21 @@ class JobShopScheduler:
         for i in self.last_task_indices:
             task = self.tasks[i]
 
-            for t in range(self.max_time):
+            for t in range(self.max_time + 1):
                 end_time = t + task.duration - 1    # -1 to get last unit of time the task occupies
 
                 # Check task's end time
                 # Note: first condition is to prevent adding in absurd times. Second condition is
                 #   to prevent penalizing job end-times shorter than the shortest possible schedule
-                #   end-time (i.e. the time it take to run the longest job).
-                if end_time > self.max_time or end_time < self.max_job_time:
+                #   end-time (i.e. the time it takes to run the longest job).
+                if end_time > self.max_time or end_time <= self.max_job_time:
                     continue
 
                 # Add bias to variable
                 # Note: the bias shown here is a scaled version of the proof shown above. Rather
                 #   than simply doing base**end_time, I have scaled the all biases with
                 #   2 / base**self.max_time. This way, the largest possible bias
-                #   (when end_time==self.max_time) is 2.
+                #   (when end_time==(self.max_time-1)) is 2.
                 bias = 2 * base**(end_time - self.max_time)
                 label = get_label(task, t)
                 if label in pruned_variables:
