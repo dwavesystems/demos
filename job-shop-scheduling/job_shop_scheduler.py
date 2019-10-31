@@ -339,7 +339,7 @@ class JobShopScheduler:
         Args:
             stitch_kwargs: A dict. Kwargs to be passed to dwavebinarycsp.stitch.
         """
-        if stitch_kwargs == None:
+        if stitch_kwargs is None:
             stitch_kwargs = {}
 
         # Apply constraints to self.csp

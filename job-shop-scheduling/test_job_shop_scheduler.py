@@ -12,14 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dimod import ExactSolver, BinaryQuadraticModel
-import dwavebinarycsp as dbc
-from dwavebinarycsp.exceptions import ImpossibleBQM
 from itertools import product
 from re import match
-from tabu import TabuSampler
+import sys
 import unittest
-from unittest.mock import patch
+if sys.version_info.major < 3:
+    from mock import patch
+else:
+    from unittest.mock import patch
+
+from dimod import ExactSolver, BinaryQuadraticModel
+import dwavebinarycsp
+from dwavebinarycsp.exceptions import ImpossibleBQM
+from tabu import TabuSampler
 
 from job_shop_scheduler import JobShopScheduler, get_jss_bqm
 
@@ -447,11 +452,11 @@ class TestGetBqm(unittest.TestCase):
                      ('j2_0,2', 'j2_0,1'): 4.0, ('j2_0,2', 'aux0'): 4.0, ('j2_0,4', 'j2_0,0'): 4.0,
                      ('j2_0,4', 'j2_0,1'): 4.0, ('j2_0,4', 'aux0'): 4.0, ('j2_0,0', 'j2_0,1'): 4.0,
                      ('j2_0,0', 'aux0'): 4.0, ('j2_0,1', 'aux0'): 4.0}
-        vartype = dbc.BINARY
+        vartype = dwavebinarycsp.BINARY
         mock_stitched_bqm = BinaryQuadraticModel(linear, quadratic, 14.0, vartype)
 
         scheduler = JobShopScheduler(jobs)
-        with unittest.mock.patch.object(dbc, "stitch", return_value=mock_stitched_bqm):
+        with patch.object(dwavebinarycsp, "stitch", return_value=mock_stitched_bqm):
             bqm = scheduler.get_bqm()
 
         # Check linear biases
