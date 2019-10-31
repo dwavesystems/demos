@@ -65,18 +65,23 @@ jobs:
           command: |
             shopt -s extglob
 
+            # Loop through unit tests
+            # Note: failed unit tests are skipped. Return the last failed unit
+            #   test exit code once the loop completes.
+            exit_code=0
             for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
-                (
-                  env="envs/$demo"
-                  . "$env/bin/activate"
+                env="envs/$demo"
+                . "$env/bin/activate"
 
-                  cd "$demo"
-                  echo "$demo"
-                  coverage run -m unittest discover
-                )
+                cd "$demo"
+                echo "$demo"
+                coverage run -m unittest discover || exit_code=$?
+                cd ..
               fi
             done
+
+            exit $exit_code
 
   test-3.6:
     <<: *full-test-template
