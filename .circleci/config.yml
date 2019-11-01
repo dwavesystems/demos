@@ -81,7 +81,7 @@ jobs:
               fi
             done
 
-            exit $exit_code
+            exit "$exit_code"
 
   test-3.6:
     <<: *full-test-template
