@@ -89,7 +89,7 @@ jobs:
                 # wait for tests to finish, collecting the exit status
                 # of the first failing command in the subshell
                 while (( test_status > 128 )); do
-                    wait $pid || test_status=$?
+                    wait $pid && test_status=0 || test_status=$?
                 done
 
                 # accumulate test status
