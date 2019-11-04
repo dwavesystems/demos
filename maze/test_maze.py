@@ -198,13 +198,15 @@ class TestMazeSolverResponse(unittest.TestCase):
         for key in common_keys:
             if re.match(r'aux\d+$', key):
                 continue
-            self.assertEqual(sample[key], expected[key], "Key {} does not match with expected value".format(key))
+            self.assertAlmostEqual(sample[key], expected[key],
+                                   "Key {} does not match with expected value".format(key))
 
         # Check that non-existent 'sample' variables are 0
         for key in different_keys:
             if re.match(r'aux\d+$', key):
                 continue
-            self.assertEqual(expected[key], 0, "Key {} does not match with expected value".format(key))
+            self.assertEqual(expected[key], 0,
+                             "Key {} does not match with expected value".format(key))
 
     def test_energy_level_one_optimal_path(self):
         # Create maze
@@ -261,8 +263,8 @@ class TestMazeSolverResponse(unittest.TestCase):
         energy_shortest_path1 = get_energy(shortest_path1, bqm)
         energy_shortest_path2 = get_energy(shortest_path2, bqm)
 
-        self.assertEqual(energy_shortest_path0, energy_shortest_path1)
-        self.assertEqual(energy_shortest_path0, energy_shortest_path2)
+        self.assertAlmostEqual(energy_shortest_path0, energy_shortest_path1)
+        self.assertAlmostEqual(energy_shortest_path0, energy_shortest_path2)
 
         # Compare energy level of longer path with shortest path
         longer_path = {'0,1w': 1, '1,1n': 1, '2,1n': 1, '2,2w': 1, '2,2n': 1, '1,3w': 1}

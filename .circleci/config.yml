@@ -65,8 +65,18 @@ jobs:
           command: |
             shopt -s extglob
 
+            # Loop through unit tests
+            # Note: failed unit tests are skipped. Return the last failed unit
+            #   test exit code once the loop completes.
+
+            declare -i job_status=0
+
             for demo in !($IGNORED_DIRS); do
               if [ -d "$demo" ]; then
+                declare -i pid test_status=255
+
+                # run tests for this demo in bg
+                # subshell exits on first error
                 (
                   env="envs/$demo"
                   . "$env/bin/activate"
@@ -74,9 +84,21 @@ jobs:
                   cd "$demo"
                   echo "$demo"
                   coverage run -m unittest discover
-                )
+                ) & pid=$!
+
+                # wait for tests to finish, collecting the exit status
+                # of the first failing command in the subshell
+                while (( test_status > 128 )); do
+                    wait $pid && test_status=0 || test_status=$?
+                done
+
+                # accumulate test status
+                # (don't fail for zero results in bash -e mode)
+                (( job_status |= test_status )) || true
               fi
             done
+
+            exit $job_status
 
   test-3.6:
     <<: *full-test-template
