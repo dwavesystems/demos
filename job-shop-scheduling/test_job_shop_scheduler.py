@@ -232,7 +232,7 @@ class TestJSSExactSolverResponse(unittest.TestCase):
         self.compare(response_sample, expected)
 
     def test_largerSchedule(self):
-        jobs = {'small1': [(1, 1)],
+        jobs = {'small1': [(1, 1), (1, 1)],
                 'small2': [(2, 2)],
                 'longJob': [(0, 1), (1, 1), (2, 1)]}
         max_time = 4
@@ -248,6 +248,7 @@ class TestJSSExactSolverResponse(unittest.TestCase):
 
         # Create expected solution
         expected = {"small1_0,0": 1,
+                    "small1_1,2": 1,
                     "small2_0,0": 1,
                     "longJob_0,0": 1, "longJob_1,1": 1, "longJob_2,2": 1}
 
