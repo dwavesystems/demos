@@ -14,12 +14,19 @@
 
 from itertools import product
 from re import match
+import sys
 import unittest
+if sys.version_info.major < 3:
+    from mock import patch
+else:
+    from unittest.mock import patch
 
 from dimod import ExactSolver, BinaryQuadraticModel
-from job_shop_scheduler import JobShopScheduler, get_jss_bqm
-from tabu import TabuSampler
+import dwavebinarycsp
 from dwavebinarycsp.exceptions import ImpossibleBQM
+from tabu import TabuSampler
+
+from job_shop_scheduler import JobShopScheduler, get_jss_bqm
 
 
 def fill_with_zeros(expected_solution_dict, job_dict, max_time):
@@ -225,7 +232,7 @@ class TestJSSExactSolverResponse(unittest.TestCase):
         self.compare(response_sample, expected)
 
     def test_largerSchedule(self):
-        jobs = {'small1': [(1, 1)],
+        jobs = {'small1': [(1, 1), (1, 1)],
                 'small2': [(2, 2)],
                 'longJob': [(0, 1), (1, 1), (2, 1)]}
         max_time = 4
@@ -241,12 +248,12 @@ class TestJSSExactSolverResponse(unittest.TestCase):
 
         # Create expected solution
         expected = {"small1_0,0": 1,
+                    "small1_1,2": 1,
                     "small2_0,0": 1,
                     "longJob_0,0": 1, "longJob_1,1": 1, "longJob_2,2": 1}
 
         # Compare variable values
         self.compare(response_sample, expected)
-
 
     def test_simple_schedule_more_machines(self):
         jobs = {"j0": [(0, 1)],
@@ -277,6 +284,7 @@ class TestJSSExactSolverResponse(unittest.TestCase):
         self.assertTrue(scheduler.csp.check(response_sample))
         self.assertEqual(expected_energy, sample_energy)
         self.compare(response_sample, expected)
+
 
 class TestJSSHeuristicResponse(unittest.TestCase):
     #TODO: make a general compare function
@@ -421,6 +429,64 @@ class TestGetBqm(unittest.TestCase):
         bad_stitch_kwargs = {"max_graph_size": 0}
         scheduler = JobShopScheduler(jobs, max_time)
         self.assertRaises(ImpossibleBQM, scheduler.get_bqm, bad_stitch_kwargs)
+
+    def test_time_dependent_biases(self):
+        """Test that the time-dependent biases that encourage short schedules are applied
+        appropriately
+        """
+        jobs = {"j1": [("m1", 2), ("m2", 2)],
+                "j2": [("m1", 2)]}
+
+        # Create mock object for stitch(..) output
+        linear = {'j1_0,0': -2.0, 'j1_0,1': -2.0, 'j1_0,2': -2.0,
+                  'j1_1,2': -2.0, 'j1_1,3': -2.0, 'j1_1,4': -2.0,
+                  'j2_0,0': -6.0, 'j2_0,1': -6.0, 'j2_0,2': -6.0, 'j2_0,3': -6.0, 'j2_0,4': -6.0,
+                  'aux0': -8.0}
+        quadratic = {('j1_0,0', 'j1_0,1'): 4.0, ('j1_0,0', 'j1_0,2'): 4.0, ('j1_0,0', 'j2_0,0'): 4,
+                     ('j1_0,0', 'j2_0,1'): 2, ('j1_0,1', 'j1_0,2'): 4.0, ('j1_0,1', 'j1_1,2'): 2,
+                     ('j1_0,1', 'j2_0,1'): 4, ('j1_0,1', 'j2_0,2'): 2, ('j1_0,1', 'j2_0,0'): 2,
+                     ('j1_0,2', 'j1_1,2'): 2, ('j1_0,2', 'j1_1,3'): 2, ('j1_0,2', 'j2_0,2'): 4,
+                     ('j1_0,2', 'j2_0,3'): 2, ('j1_0,2', 'j2_0,1'): 2, ('j1_1,2', 'j1_1,3'): 4.0,
+                     ('j1_1,2', 'j1_1,4'): 4.0, ('j1_1,3', 'j1_1,4'): 4.0, ('j2_0,3', 'j2_0,2'): 4,
+                     ('j2_0,3', 'j2_0,4'): 4.0, ('j2_0,3', 'j2_0,0'): 4.0, ('j2_0,3', 'j2_0,1'): 4,
+                     ('j2_0,3', 'aux0'): 4.0, ('j2_0,2', 'j2_0,4'): 4.0, ('j2_0,2', 'j2_0,0'): 4.0,
+                     ('j2_0,2', 'j2_0,1'): 4.0, ('j2_0,2', 'aux0'): 4.0, ('j2_0,4', 'j2_0,0'): 4.0,
+                     ('j2_0,4', 'j2_0,1'): 4.0, ('j2_0,4', 'aux0'): 4.0, ('j2_0,0', 'j2_0,1'): 4.0,
+                     ('j2_0,0', 'aux0'): 4.0, ('j2_0,1', 'aux0'): 4.0}
+        vartype = dwavebinarycsp.BINARY
+        mock_stitched_bqm = BinaryQuadraticModel(linear, quadratic, 14.0, vartype)
+
+        scheduler = JobShopScheduler(jobs)
+        with patch.object(dwavebinarycsp, "stitch", return_value=mock_stitched_bqm):
+            bqm = scheduler.get_bqm()
+
+        # Check linear biases
+        # Note: I have grouped the tests by job-task and am comparing the linear biases between
+        #   adjacent times. Tasks that finish before or at the lowerbound of the optimal schedule
+        #   are not penalized with an additional bias; hence all these task-times should have the
+        #   same bias.
+        #   For example, the 0th task of job 2 (aka 'j2_0') will have the same linear
+        #   bias for times 0 through 2 because with these start times, the task would complete
+        #   before the optimal schedule lowerbound. (i.e. "j2_0,0", "j2_0,1", "j2_0,2" all have the
+        #   same linear biases). The remaining task-times will have increasing biases with time, in
+        #   this way, the shortest schedule is encouraged.
+        self.assertEqual(bqm.linear['j2_0,0'], bqm.linear['j2_0,1'])
+        self.assertEqual(bqm.linear['j2_0,1'], bqm.linear['j2_0,2'])
+        self.assertLess(bqm.linear['j2_0,2'], bqm.linear['j2_0,3'])
+        self.assertLess(bqm.linear['j2_0,3'], bqm.linear['j2_0,4'])
+
+        self.assertEqual(bqm.linear['j1_0,0'], bqm.linear['j1_0,1'])
+        self.assertEqual(bqm.linear['j1_0,1'], bqm.linear['j1_0,2'])
+
+        self.assertLess(bqm.linear['j1_1,2'], bqm.linear['j1_1,3'])
+        self.assertLess(bqm.linear['j1_1,3'], bqm.linear['j1_1,4'])
+
+        # Check quadratic biases
+        # Specifically, quadratic biases should not be penalized when encouraging shorter schedules
+        # Note: Unable to simply compare dicts as BQM's quadraticview may re-order dict tuple-keys;
+        #   hence, we're comparing BQM adjacencies.
+        bqm_with_unchanged_quadratic = BinaryQuadraticModel({}, quadratic, 0, vartype)
+        self.assertEqual(bqm.adj, bqm_with_unchanged_quadratic.adj)
 
 
 if __name__ == "__main__":
