@@ -1,6 +1,8 @@
 Demo of the MIQUBO Method of Feature Selection
 ==============================================
 
+Code Overview
+-------------
 Statistical and machine-learning models use a set of input variables (features)
 to predict output variables of interest. `Feature selection`_, which can be
 part of the model design process, simplifies the model and reduces dimensionality by selecting,
@@ -40,8 +42,10 @@ Released under the Apache License 2.0
 
 .. _MIQUBO:
 
+Code Specifics
+--------------
 MIQUBO
-------
+~~~~~~
 
 There are different methods of approximating the hard calculation of optimally selecting ``k`` of ``n`` features
 to maximize MI. The approach followed here assumes conditional independence of features and limits
@@ -63,3 +67,6 @@ and Bailey published in the Proceedings of the 20th ACM SIGKDD international con
 discovery and data mining.
 
 .. _`Effective Global Approaches for Mutual Information Based Feature Selection`: https://dl.acm.org/citation.cfm?id=2623611
+
+References
+----------
