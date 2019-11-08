@@ -1,3 +1,4 @@
 dwave-ocean-sdk==1.4.0
 matplotlib==2.2.4
+jsonschema==3.1.1
 scipy
