@@ -1,5 +1,12 @@
 Demo of the MIQUBO Method of Feature Selection
 ==============================================
+The demo illustrates the MIQUBO method by finding an optimal feature set for predicting
+survival of Titanic passengers. It uses records provided in file
+``formatted_titanic.csv``, which is a feature-engineered version of a public database of
+passenger information recorded by the ship's crew (in addition to a column showing
+survival for each passenger, it contains information on gender, title, class, port
+of embarkation, etc). Its output is a ranking of subsets of features that have
+high MI with the variable of interest (survival) and low redundancy.
 
 Usage
 -----
@@ -22,14 +29,6 @@ This is a hard calculation because the number of states is exponential with ``k`
 The Mutual Information QUBO (`MIQUBO`_\ ) method of feature selection formulates a quadratic
 unconstrained binary optimization (QUBO) based on an approximation for ``I(Xs; Y)``,
 which is submitted to the D-Wave quantum computer for solution.
-
-The demo illustrates the MIQUBO method by finding an optimal feature set for predicting
-survival of Titanic passengers. It uses records provided in file
-``formatted_titanic.csv``, which is a feature-engineered version of a public database of
-passenger information recorded by the ship's crew (in addition to a column showing
-survival for each passenger, it contains information on gender, title, class, port
-of embarkation, etc). Its output is a ranking of subsets of features that have
-high MI with the variable of interest (survival) and low redundancy.
 
 .. _`Feature selection`: https://en.wikipedia.org/wiki/Feature_selection
 .. _`mutual information`: https://en.wikipedia.org/wiki/Mutual_information
@@ -54,7 +53,8 @@ variable of interest rather than provide redundant information.
 
 This approximation is still a hard calculation. MIQUBO is a method for formulating it
 for solution on the D-Wave quantum computer based on the 2014 paper,
-`Effective Global Approaches for Mutual Information Based Feature Selection <https://dl.acm.org/citation.cfm?id=2623611>`_, by Nguyen, Chan, Romano,
+`Effective Global Approaches for Mutual Information Based Feature Selection
+<https://dl.acm.org/citation.cfm?id=2623611>`_, by Nguyen, Chan, Romano,
 and Bailey published in the Proceedings of the 20th ACM SIGKDD international conference on knowledge
 discovery and data mining.
 
@@ -66,5 +66,5 @@ X. V. Nguyen, J. Chan, S. Romano, and J. Bailey,
 
 License
 -------
-Released under the Apache License 2.0
+Released under the Apache License 2.0. See `LICENSE <../LICENSE>`_ file.
 
