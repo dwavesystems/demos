@@ -1,6 +1,12 @@
 Demo of the MIQUBO Method of Feature Selection
 ==============================================
 
+Usage
+-----
+.. code-block:: bash
+
+  python titanic.py
+
 Code Overview
 -------------
 Statistical and machine-learning models use a set of input variables (features)
@@ -25,28 +31,14 @@ survival for each passenger, it contains information on gender, title, class, po
 of embarkation, etc). Its output is a ranking of subsets of features that have
 high MI with the variable of interest (survival) and low redundancy.
 
-Running the Demo
-----------------
-
-.. code-block:: bash
-
-  python titanic.py
-
-License
--------
-
-Released under the Apache License 2.0
-
 .. _`Feature selection`: https://en.wikipedia.org/wiki/Feature_selection
 .. _`mutual information`: https://en.wikipedia.org/wiki/Mutual_information
 
-.. _MIQUBO:
-
 Code Specifics
 --------------
+.. _MIQUBO:
 MIQUBO
 ~~~~~~
-
 There are different methods of approximating the hard calculation of optimally selecting ``k`` of ``n`` features
 to maximize MI. The approach followed here assumes conditional independence of features and limits
 conditional MI calculations to permutations of three features. The optimal set of features is then
@@ -62,11 +54,17 @@ variable of interest rather than provide redundant information.
 
 This approximation is still a hard calculation. MIQUBO is a method for formulating it
 for solution on the D-Wave quantum computer based on the 2014 paper,
-`Effective Global Approaches for Mutual Information Based Feature Selection`_, by Nguyen, Chan, Romano,
+`Effective Global Approaches for Mutual Information Based Feature Selection <https://dl.acm.org/citation.cfm?id=2623611>`_, by Nguyen, Chan, Romano,
 and Bailey published in the Proceedings of the 20th ACM SIGKDD international conference on knowledge
 discovery and data mining.
 
-.. _`Effective Global Approaches for Mutual Information Based Feature Selection`: https://dl.acm.org/citation.cfm?id=2623611
-
 References
 ----------
+X. V. Nguyen, J. Chan, S. Romano, and J. Bailey,
+"Effective global approaches for mutual information based feature selection",
+`https://dl.acm.org/citation.cfm?id=2623611 <https://dl.acm.org/citation.cfm?id=2623611>`_
+
+License
+-------
+Released under the Apache License 2.0
+
