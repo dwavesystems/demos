@@ -23,19 +23,6 @@ survival for each passenger, it contains information on gender, title, class, po
 of embarkation, etc). Its output is a ranking of subsets of features that have
 high MI with the variable of interest (survival) and low redundancy.
 
-.. For more information about MIQUBO and the concepts used in this demo, see the
-   Leap demo and Jupyter Notebook.
-
-Setting Up the Demo
--------------------
-
-Copy (clone) this demo repository to your local machine.
-
-The demo has the Ocean SDK as a dependency. Typically the demo is installed in a virtual
-environment in which the `SDK is installed`_.
-
-`Access to a D-Wave system`_ must be configured.
-
 Running the Demo
 ----------------
 
@@ -50,9 +37,6 @@ Released under the Apache License 2.0
 
 .. _`Feature selection`: https://en.wikipedia.org/wiki/Feature_selection
 .. _`mutual information`: https://en.wikipedia.org/wiki/Mutual_information
-.. _`dwave-cloud-client`: http://dwave-cloud-client.readthedocs.io/en/latest/#module-dwave.cloud.config
-.. _`SDK is installed`: https://docs.ocean.dwavesys.com/en/latest/overview/install.html
-.. _`Access to a D-Wave system`: https://docs.ocean.dwavesys.com/en/latest/overview/dwavesys.html
 
 .. _MIQUBO:
 
