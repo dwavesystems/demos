@@ -10,7 +10,6 @@ import pandas as pd
 
 # D-Wave Ocean tools
 import dimod
-import neal
 from dwave.embedding.chimera import find_clique_embedding
 from dwave.system import DWaveSampler, FixedEmbeddingComposite
 
@@ -151,7 +150,8 @@ ax2.set_yticklabels(np.arange(1, len(features)+1))
 ax2.set_xticks(np.arange(-0.5, len(features)), minor=True)
 ax2.set_yticks(np.arange(-0.5, len(features)), minor=True)
 ax2.grid(which='minor', color='black')
-
 ax2.imshow(selected_features, cmap=colors.ListedColormap(['white', 'red']))
-plt.tight_layout()
-plt.show()
+
+filename = "plots.png"
+plt.savefig(filename, bbox_inches="tight")
+print("Your plots are saved to {}".format(filename))
