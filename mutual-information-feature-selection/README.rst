@@ -7,17 +7,17 @@ part of the model design process, simplifies the model and reduces dimensionalit
 from a given set of potential features, a subset of highly informative ones. One
 statistical criterion that can guide this selection is `mutual information`_ (MI).
 
-Ideally, to select the k most relevant features, you might maximize I(Xs; Y),
-the MI between a set of k features, Xs, and the variable of interest, Y.
-This is a hard calculation because the number of states is exponential with k.
+Ideally, to select the ``k`` most relevant features, you might maximize ``I(Xs; Y)``,
+the MI between a set of ``k`` features, ``Xs``, and the variable of interest, ``Y``.
+This is a hard calculation because the number of states is exponential with ``k``.
 
 The Mutual Information QUBO (`MIQUBO`_\ ) method of feature selection formulates a quadratic
-unconstrained binary optimization (QUBO) based on an approximation for I(Xs; Y),
+unconstrained binary optimization (QUBO) based on an approximation for ``I(Xs; Y)``,
 which is submitted to the D-Wave quantum computer for solution.
 
 The demo illustrates the MIQUBO method by finding an optimal feature set for predicting
 survival of Titanic passengers. It uses records provided in file
-formatted_titanic.csv, which is a feature-engineered version of a public database of
+``formatted_titanic.csv``, which is a feature-engineered version of a public database of
 passenger information recorded by the ship's crew (in addition to a column showing
 survival for each passenger, it contains information on gender, title, class, port
 of embarkation, etc). Its output is a ranking of subsets of features that have
@@ -59,16 +59,16 @@ Released under the Apache License 2.0
 MIQUBO
 ------
 
-There are different methods of approximating the hard calculation of optimally selecting k of n features
+There are different methods of approximating the hard calculation of optimally selecting ``k`` of ``n`` features
 to maximize MI. The approach followed here assumes conditional independence of features and limits
 conditional MI calculations to permutations of three features. The optimal set of features is then
 approximated by:
 
 .. image:: readme_imgs/n_k_approx.png
 
-The left-hand component, I(Xi;Y), represents MI between the variable of interest and a particular
+The left-hand component, ``I(Xi;Y)``, represents MI between the variable of interest and a particular
 feature; maximizing selects features that best predict the variable of interest. The right-hand component,
-I(Xj;Y |Xi), represents conditional MI between the variable of interest and a feature given the
+``I(Xj;Y |Xi)``, represents conditional MI between the variable of interest and a feature given the
 prior selection of another feature; maximizing selects features that complement information about the
 variable of interest rather than provide redundant information.
 
