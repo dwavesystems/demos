@@ -15,10 +15,9 @@ from dwave.system import DWaveSampler, FixedEmbeddingComposite
 
 # Read the feature-engineered data into a pandas dataframe
 # Data obtained from http://biostat.mc.vanderbilt.edu/DataSets
-datapath = os.path.join(os.path.dirname(os.path.abspath(__file__)),
-                        'data',
-                        'formatted_titanic.csv')
-dataset = pd.read_csv(datapath)
+demo_path = os.path.dirname(os.path.abspath(__file__))
+data_path = os.path.join(demo_path, 'data', 'formatted_titanic.csv')
+dataset = pd.read_csv(data_path)
 
 
 # Define MI calculations
@@ -34,7 +33,7 @@ def prob(dataset):
 
 
 def shannon_entropy(p):
-    """Shannon entropy H(X) is the sum of P(X)log(P(X)) for probabilty
+    """Shannon entropy H(X) is the negative sum of P(X)log(P(X)) for probability
     distribution P(X).
     """
     p = p.flatten()
@@ -132,7 +131,7 @@ for k in range(1, len(features) + 1):
     kbqm.update(dimod.generators.combinations(features, k,
                                               strength=6))  # Determines the penalty
 
-    # sample = sampler.sample(kbqm, num_reads=10000).first.sample
+    #sample = sampler.sample(kbqm, num_reads=10000).first.sample
     sample = dimod.ExactSolver().sample(kbqm).first.sample
 
     for fi, f in enumerate(features):
@@ -152,6 +151,6 @@ ax2.set_yticks(np.arange(-0.5, len(features)), minor=True)
 ax2.grid(which='minor', color='black')
 ax2.imshow(selected_features, cmap=colors.ListedColormap(['white', 'red']))
 
-filename = "plots.png"
-plt.savefig(filename, bbox_inches="tight")
-print("Your plots are saved to {}".format(filename))
+plots_path = os.path.join(demo_path, "plots.png")
+plt.savefig(plots_path, bbox_inches="tight")
+print("Your plots are saved to {}".format(plots_path))
