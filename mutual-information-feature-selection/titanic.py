@@ -1,6 +1,8 @@
 import itertools
 import os
 
+import matplotlib
+matplotlib.use("agg")    # must select backend before importing pyplot
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import numpy as np
