@@ -131,8 +131,7 @@ for k in range(1, len(features) + 1):
     kbqm.update(dimod.generators.combinations(features, k,
                                               strength=6))  # Determines the penalty
 
-    #sample = sampler.sample(kbqm, num_reads=10000).first.sample
-    sample = dimod.ExactSolver().sample(kbqm).first.sample
+    sample = sampler.sample(kbqm, num_reads=10000).first.sample
 
     for fi, f in enumerate(features):
         selected_features[k-1, fi] = sample[f]
