@@ -13,12 +13,6 @@ import dimod
 from dwave.embedding.chimera import find_clique_embedding
 from dwave.system import DWaveSampler, FixedEmbeddingComposite
 
-# Read the feature-engineered data into a pandas dataframe
-# Data obtained from http://biostat.mc.vanderbilt.edu/DataSets
-demo_path = os.path.dirname(os.path.abspath(__file__))
-data_path = os.path.join(demo_path, 'data', 'formatted_titanic.csv')
-dataset = pd.read_csv(data_path)
-
 
 # Define MI calculations
 def prob(dataset):
@@ -67,7 +61,13 @@ def conditional_mutual_information(p, j, *conditional_indices):
             - conditional_shannon_entropy(p, j, *conditional_indices))
 
 
-if __name__ == "__main__":
+def run_demo():
+    # Read the feature-engineered data into a pandas dataframe
+    # Data obtained from http://biostat.mc.vanderbilt.edu/DataSets
+    demo_path = os.path.dirname(os.path.abspath(__file__))
+    data_path = os.path.join(demo_path, 'data', 'formatted_titanic.csv')
+    dataset = pd.read_csv(data_path)
+
     # Rank the MI between survival and every other variable
     scores = {}
     features = list(set(dataset.columns).difference(('survived',)))
@@ -154,3 +154,7 @@ if __name__ == "__main__":
     plots_path = os.path.join(demo_path, "plots.png")
     plt.savefig(plots_path, bbox_inches="tight")
     print("Your plots are saved to {}".format(plots_path))
+
+
+if __name__ == "__main__":
+    run_demo()
