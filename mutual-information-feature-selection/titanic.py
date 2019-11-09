@@ -137,20 +137,20 @@ if __name__ == "__main__":
         for fi, f in enumerate(features):
             selected_features[k-1, fi] = sample[f]
 
-# Plot the best feature set per number of selected features
-ax2 = plt.subplot(1, 2, 2)
-ax2.set_title("Best Feature Selection")
-ax2.set_ylabel('Number of Selected Features')
-ax2.set_xticks(np.arange(len(features)))
-ax2.set_xticklabels(features, rotation=90)
-ax2.set_yticks(np.arange(len(features)))
-ax2.set_yticklabels(np.arange(1, len(features)+1))
-# Set a grid on minor ticks
-ax2.set_xticks(np.arange(-0.5, len(features)), minor=True)
-ax2.set_yticks(np.arange(-0.5, len(features)), minor=True)
-ax2.grid(which='minor', color='black')
-ax2.imshow(selected_features, cmap=colors.ListedColormap(['white', 'red']))
+    # Plot the best feature set per number of selected features
+    ax2 = plt.subplot(1, 2, 2)
+    ax2.set_title("Best Feature Selection")
+    ax2.set_ylabel('Number of Selected Features')
+    ax2.set_xticks(np.arange(len(features)))
+    ax2.set_xticklabels(features, rotation=90)
+    ax2.set_yticks(np.arange(len(features)))
+    ax2.set_yticklabels(np.arange(1, len(features)+1))
+    # Set a grid on minor ticks
+    ax2.set_xticks(np.arange(-0.5, len(features)), minor=True)
+    ax2.set_yticks(np.arange(-0.5, len(features)), minor=True)
+    ax2.grid(which='minor', color='black')
+    ax2.imshow(selected_features, cmap=colors.ListedColormap(['white', 'red']))
 
-plots_path = os.path.join(demo_path, "plots.png")
-plt.savefig(plots_path, bbox_inches="tight")
-print("Your plots are saved to {}".format(plots_path))
+    plots_path = os.path.join(demo_path, "plots.png")
+    plt.savefig(plots_path, bbox_inches="tight")
+    print("Your plots are saved to {}".format(plots_path))
