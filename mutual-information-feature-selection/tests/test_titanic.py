@@ -1,9 +1,12 @@
+import os
+import subprocess
 import unittest
 
 import numpy as np
 
 from titanic import (prob, shannon_entropy, conditional_shannon_entropy,
                      mutual_information, conditional_mutual_information)
+
 
 class TestTitanicFunctions(unittest.TestCase):
     def test_prob(self):
@@ -32,8 +35,16 @@ class TestTitanicFunctions(unittest.TestCase):
         self.assertEqual(np.sum(flat_prob==0.4), 1)
         self.assertEqual(np.sum(flat_prob==0.2), 3)
 
-
     def test_shannon_entropy(self):
         pass
 
 
+class TestTitanicDemo(unittest.TestCase):
+    def test_run_demo(self):
+        """Run smoke test on demo code"""
+        # /path/to/demos/mutual-information-feature-selection/
+        project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+        # Raise error when return code is nonzero
+        demo_file = os.path.join(project_dir, 'titanic.py')
+        subprocess.check_output(["python", demo_file])
