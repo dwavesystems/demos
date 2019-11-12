@@ -36,6 +36,20 @@ class TestTitanicFunctions(unittest.TestCase):
         self.assertEqual(np.sum(flat_prob==0.2), 3)
 
     def test_shannon_entropy(self):
+        prob = np.array([[0.5, 0], [0.3, 0.2]])
+        result = shannon_entropy(prob)
+
+        # -0.5*np.log2(0.5) - 0.3*np.log2(0.3) -0.2*np.log2(0.2)
+        expected = 1.4854752972273344
+        self.assertAlmostEqual(result, expected)
+
+    def test_conditional_shannon_entropy(self):
+        pass
+
+    def test_mutual_information(self):
+        pass
+
+    def test_conditional_mutual_information(self):
         pass
 
 
