@@ -44,7 +44,30 @@ class TestTitanicFunctions(unittest.TestCase):
         self.assertAlmostEqual(result, expected)
 
     def test_conditional_shannon_entropy(self):
-        pass
+        p = np.array([[[0.2, 0.0],
+                       [0.1, 0.1]],
+                      [[0.0, 0.3],
+                       [0.25, 0.05]]])
+
+        p_x0 = sum(sum(p[0, :, :]))  # p(x=0)
+        p_x1 = sum(sum(p[1, :, :]))  # p(x=1)
+
+        expected = 0
+        for y in range(2):
+            p_x0_y = sum(p[0, y, :])
+            p_x1_y = sum(p[1, y, :])
+            expected += (p_x0_y * np.log2(p_x0/p_x0_y))
+            expected += (p_x1_y * np.log2(p_x1/p_x1_y))
+
+        for y in range(2):
+            p_x0_y = sum(p[0, :, y])
+            p_x1_y = sum(p[1, :, y])
+            expected += (p_x0_y * np.log2(p_x0/p_x0_y))
+            expected += (p_x1_y * np.log2(p_x1/p_x1_y))
+
+        result = conditional_shannon_entropy(p, 1,2)
+
+
 
     def test_mutual_information(self):
         pass
