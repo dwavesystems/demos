@@ -35,7 +35,7 @@ def shannon_entropy(p):
 
 
 def conditional_shannon_entropy(p, *conditional_indices):
-    """Conditional Shannon entropy H(X;Y) = H(X,Y) - H(Y)."""
+    """Conditional Shannon entropy H(X|Y) = H(X,Y) - H(Y)."""
 
     axis = tuple(i for i in np.arange(len(p.shape))
                  if i not in conditional_indices)
