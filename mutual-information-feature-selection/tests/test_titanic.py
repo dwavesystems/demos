@@ -52,16 +52,18 @@ class TestTitanicFunctions(unittest.TestCase):
         p_x0 = sum(sum(p[0, :, :]))  # p(x=0)
         p_x1 = sum(sum(p[1, :, :]))  # p(x=1)
 
+        # Calculating conditional shannon entropy using the definition
+        # sum [p(x,y,z) * log2 (p(x)/p(x,y,z))]
         expected = 0
-        for z in range(2):
-            for y in range(2):
-                p_x0_y = p[0, y, z]
-                p_x1_y = p[1, y, z]
+        for y in range(2):
+            for z in range(2):
+                p_xyz0 = p[0, y, z]     # p(x=0, y, z)
+                p_xyz1 = p[1, y, z]     # p(x=1, y, z)
 
-                if p_x0_y != 0:
-                    expected += (p_x0_y * np.log2(p_x0/p_x0_y))
-                if p_x1_y != 0:
-                    expected += (p_x1_y * np.log2(p_x1/p_x1_y))
+                if p_xyz0 != 0:
+                    expected += (p_xyz0 * np.log2(p_x0/p_xyz0))
+                if p_xyz1 != 0:
+                    expected += (p_xyz1 * np.log2(p_x1/p_xyz1))
 
         result = conditional_shannon_entropy(p, 0)
         self.assertAlmostEqual(result, expected)
