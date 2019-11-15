@@ -1,0 +1,3 @@
+[submodule "map-coloring"]
+	path = map-coloring
+	url = git@github.com:dwave-examples/map-coloring.git
