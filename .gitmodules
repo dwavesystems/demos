@@ -1,3 +1,6 @@
 [submodule "map-coloring"]
 	path = map-coloring
 	url = git@github.com:dwave-examples/map-coloring.git
+[submodule "antenna-selection"]
+	path = antenna-selection
+	url = git@github.com:dwave-examples/antenna-selection.git
