@@ -1,2 +1,0 @@
-dwave-ocean-sdk==1.2.0
-networkx==2.2
