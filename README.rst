@@ -1,3 +1,6 @@
+**WARNING**: This repository will eventually be obsolete. The content will
+exist under the `dwave-examples <https://github.com/dwave-examples>` account.
+
 Demos
 =====
 A collection of demos using the D-Wave Ocean SDK.
