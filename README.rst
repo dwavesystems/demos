@@ -1,5 +1,5 @@
 **WARNING**: This repository will eventually be obsolete. The content will
-exist under the `dwave-examples <https://github.com/dwave-examples>` account.
+exist under the `dwave-examples <https://github.com/dwave-examples>`_ account.
 
 Demos
 =====
