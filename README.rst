@@ -20,8 +20,9 @@ Package Installation
 ::
 
   git clone --recursive https://github.com/dwavesystems/demos.git
-  cd demos/<desired-demo>
-  pip install -r requirements.txt
+  cd demos/
+  git submodule foreach git pull origin master
+  pip install -r <desired-demo>/requirements.txt
 
 Please note that to run demos that access a D-Wave system, you must:
 
