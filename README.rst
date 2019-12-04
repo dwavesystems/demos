@@ -16,8 +16,8 @@ Package Installation
 ~~~~~~~~~~~~~~~~~~~~
 ::
 
-  git clone https://github.com/dwave-examples/<desired-demo>.git
-  cd <desired-demo>/
+  git clone --recursive https://github.com/dwavesystems/demos.git
+  cd demos/<desired-demo>
   pip install -r requirements.txt
 
 Please note that to run demos that access a D-Wave system, you must:
@@ -25,8 +25,8 @@ Please note that to run demos that access a D-Wave system, you must:
 * Sign up for `D-Wave Leap <https://cloud.dwavesys.com/leap/signup/>`_ in order
   to get an authentication token
 * Create a `configuration file <https://docs.ocean.dwavesys.com/en/latest/overview/dwavesys.html#configuring-a-d-wave-system-as-a-solver>`_,
-  so that you can easily submit your problems to a D-Wave system without your
-  authentication token being stored within your code
+  so that you can easily submit your problems to a D-Wave system without
+  storing your authentication token in your code.
 
 Now you're ready to run your demo!
 
