@@ -1,5 +1,6 @@
-**WARNING**: This repository will eventually be obsolete. The content will
-exist under the `dwave-examples <https://github.com/dwave-examples>`_ account.
+**WARNING**: This repository is obsolete. The content will continue to be
+maintained under the `dwave-examples <https://github.com/dwave-examples>`_
+account.
 
 Demos
 =====
@@ -30,7 +31,7 @@ Please note that to run demos that access a D-Wave system, you must:
   to get an authentication token
 * Create a `configuration file <https://docs.ocean.dwavesys.com/en/latest/overview/dwavesys.html#configuring-a-d-wave-system-as-a-solver>`_,
   so that you can easily submit your problems to a D-Wave system without
-  storing your authentication token in your code.
+  storing your authentication token in your code
 
 Now you're ready to run your demo!
 
