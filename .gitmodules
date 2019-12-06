@@ -7,12 +7,6 @@
 [submodule "satellite-placement"]
 	path = satellite-placement
 	url = git@github.com:dwave-examples/satellite-placement.git
-[submodule "circuit-fault-diagnosis"]
-	path = circuit-fault-diagnosis
-	url = git@github.com:dwave-examples/circuit-fault-diagnosis.git
-[submodule "factoring"]
-	path = factoring
-	url = git@github.com:dwave-examples/factoring.git
 [submodule "graph-partitioning"]
 	path = graph-partitioning
 	url = git@github.com:dwave-examples/graph-partitioning.git
@@ -40,3 +34,9 @@
 [submodule "sudoku"]
 	path = sudoku
 	url = git@github.com:dwave-examples/sudoku.git
+[submodule "factoring"]
+	path = factoring
+	url = git@github.com:dwave-examples/factoring.git
+[submodule "circuit-fault-diagnosis"]
+	path = circuit-fault-diagnosis
+	url = git@github.com:dwave-examples/circuit-fault-diagnosis.git
