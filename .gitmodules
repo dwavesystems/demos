@@ -1,42 +1,42 @@
 [submodule "map-coloring"]
 	path = map-coloring
-	url = git@github.com:dwave-examples/map-coloring.git
+	url = https://github.com/dwave-examples/map-coloring.git
 [submodule "antenna-selection"]
 	path = antenna-selection
-	url = git@github.com:dwave-examples/antenna-selection.git
+	url = https://github.com/dwave-examples/antenna-selection.git
 [submodule "satellite-placement"]
 	path = satellite-placement
-	url = git@github.com:dwave-examples/satellite-placement.git
+	url = https://github.com/dwave-examples/satellite-placement.git
 [submodule "graph-partitioning"]
 	path = graph-partitioning
-	url = git@github.com:dwave-examples/graph-partitioning.git
+	url = https://github.com/dwave-examples/graph-partitioning.git
 [submodule "job-shop-scheduling"]
 	path = job-shop-scheduling
-	url = git@github.com:dwave-examples/job-shop-scheduling.git
+	url = https://github.com/dwave-examples/job-shop-scheduling.git
 [submodule "maximum-cut"]
 	path = maximum-cut
-	url = git@github.com:dwave-examples/maximum-cut.git
+	url = https://github.com/dwave-examples/maximum-cut.git
 [submodule "maze"]
 	path = maze
-	url = git@github.com:dwave-examples/maze.git
+	url = https://github.com/dwave-examples/maze.git
 [submodule "mutual-information-feature-selection"]
 	path = mutual-information-feature-selection
-	url = git@github.com:dwave-examples/mutual-information-feature-selection.git
+	url = https://github.com/dwave-examples/mutual-information-feature-selection.git
 [submodule "pipelines"]
 	path = pipelines
-	url = git@github.com:dwave-examples/pipelines.git
+	url = https://github.com/dwave-examples/pipelines.git
 [submodule "qboost"]
 	path = qboost
-	url = git@github.com:dwave-examples/qboost.git
+	url = https://github.com/dwave-examples/qboost.git
 [submodule "structural-imbalance"]
 	path = structural-imbalance
-	url = git@github.com:dwave-examples/structural-imbalance.git
+	url = https://github.com/dwave-examples/structural-imbalance.git
 [submodule "sudoku"]
 	path = sudoku
-	url = git@github.com:dwave-examples/sudoku.git
+	url = https://github.com/dwave-examples/sudoku.git
 [submodule "factoring"]
 	path = factoring
-	url = git@github.com:dwave-examples/factoring.git
+	url = https://github.com/dwave-examples/factoring.git
 [submodule "circuit-fault-diagnosis"]
 	path = circuit-fault-diagnosis
-	url = git@github.com:dwave-examples/circuit-fault-diagnosis.git
+	url = https://github.com/dwave-examples/circuit-fault-diagnosis.git
