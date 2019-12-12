@@ -24,8 +24,8 @@ Package Installation
   cd demos/<desired-demo>
   pip install -r requirements.txt
 
-To pull the latest updates from each submodule, please run `git submodule
-foreach git pull origin master` after cloning.
+To pull the latest updates from each submodule, please run ``git submodule
+foreach git pull origin master`` after cloning.
 
 Please note that to run demos that access a D-Wave system, you must:
 
