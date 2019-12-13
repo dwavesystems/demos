@@ -28,9 +28,6 @@
 [submodule "qboost"]
 	path = qboost
 	url = https://github.com/dwave-examples/qboost.git
-[submodule "structural-imbalance"]
-	path = structural-imbalance
-	url = https://github.com/dwave-examples/structural-imbalance.git
 [submodule "sudoku"]
 	path = sudoku
 	url = https://github.com/dwave-examples/sudoku.git
@@ -40,3 +37,6 @@
 [submodule "circuit-fault-diagnosis"]
 	path = circuit-fault-diagnosis
 	url = https://github.com/dwave-examples/circuit-fault-diagnosis.git
+[submodule "structural-imbalance"]
+	path = structural-imbalance
+	url = https://github.com/dwave-examples/structural-imbalance.git
